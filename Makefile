@@ -1,4 +1,6 @@
-NAME = bsp
+MAKEFLAGS += --silent
+
+NAME = ircserv
 
 CC = c++
 CFLAGS = -Wall -Wextra -Werror -g3 -std=c++98
