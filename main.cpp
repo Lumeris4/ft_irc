@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:10:27 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/04 14:18:24 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/04 14:29:52 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int main(int argc, char **argv)
 	int socketfd;
 	int erreur;
 	int test2;
-	std::string test[100];
+	void *test[100];
 	
 	if (argc != 3)
 	{
@@ -47,6 +47,5 @@ int main(int argc, char **argv)
 		erreur = recv(socketfd, test, 100, MSG_PEEK);
 		std::cout << erreur << std::endl;
 	}
-
 	close(socketfd);
 }

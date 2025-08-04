@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   irc.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:22:10 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/04 14:14:15 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/04 14:23:50 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,3 +20,4 @@
 #include <arpa/inet.h> 
 #include <cstdlib>
 #include <unistd.h>
+#include <netdb.h>
