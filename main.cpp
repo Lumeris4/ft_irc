@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:10:27 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/04 14:18:24 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/04 14:31:02 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,5 @@ int main(int argc, char **argv)
 		erreur = recv(socketfd, test, 100, MSG_PEEK);
 		std::cout << erreur << std::endl;
 	}
-
 	close(socketfd);
 }
