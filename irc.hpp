@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:22:10 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/05 12:59:09 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/05 14:26:09 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@
 #include <errno.h>
 #include <string.h>
 #include <poll.h>
+#include <vector>
+#include <sstream>
 
 class Serveur
 {

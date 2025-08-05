@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:10:27 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/05 14:04:15 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/05 15:28:49 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,26 +17,23 @@
 // int bind(int socket, const struct sockaddr *address,
 //        socklen_t address_len);
 
-
 void parsing (char *buf)
 {
-	if (!strcmp(buf, "PASS"))
+	std::string input = buf;
+	if (!input.compare("PASS"))
 		return;
-	std::cout << "read in fd : " << buf << std::endl;
+	std::cout << "read in fd : " << input << std::endl;
 }
 
 int main(int argc, char **argv)
 {
 	int socketfd;
-	// int erreur;
-	// int test2;
-	// void *test[100];
 	char buffer[1024];
 	int socket2 = 0;
 	
 	if (argc != 3)
 	{
-		std::cerr << "Please respect this format: './ircserv <port> <password>'\n";
+		std::cerr << "Please respect this format: './ircserv <port> <password>" << std::endl;
 		return -1;
 	}
 	std::string password = argv[2];
@@ -73,9 +70,9 @@ int main(int argc, char **argv)
 	while (1)
 	{
 		struct pollfd fds[1];
-    	fds[0].fd = socket2;              // stdin
+    	fds[0].fd = socket2;
     	fds[0].events = POLLIN;     // on veut savoir si on peut lire
-		int ret = poll(fds, 1, -1); // attend max 5 secondes
+		int ret = poll(fds, 1, -1); // attend indefiniment
     	if (ret == -1)
 			std::cerr << strerror(errno) << std::endl;
 		else if (ret == 0)
