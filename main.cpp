@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:10:27 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/05 12:13:39 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/05 13:09:35 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,35 +42,56 @@ int main(int argc, char **argv)
 	serv_addr.sin_addr.s_addr = INADDR_ANY;    // toutes les interfaces locales	
 	serv_addr.sin_port = htons(atoi(argv[1]));          // port 8080	
 	if (bind(socketfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) != 0)
+	{
 	    std::cerr << strerror(errno) << std::endl;
+		exit (1);
+	}
+	if (listen(socketfd, 10) < 0)
+	{
+       	std::cerr << strerror(errno) << std::endl;
+       	close(socketfd);
+       	exit(1);
+    }
+	socklen_t clilen = sizeof(cli_addr);
+	socket2 = accept(socketfd, (struct sockaddr *)&cli_addr, &clilen);
+	if (socket2 < 0)
+	{
+       	std::cerr << strerror(errno) << std::endl;
+       	close(socketfd);
+       	exit(1);
+    }
+	std::cout << "Client connected to the server" << std::endl;
 	while (1)
 	{
-		if (listen(socketfd, 10) < 0)
+		struct pollfd fds[1];
+    	fds[0].fd = socket2;              // stdin
+    	fds[0].events = POLLIN;     // on veut savoir si on peut lire
+		int ret = poll(fds, 1, -1); // attend max 5 secondes
+    	if (ret == -1)
+			std::cerr << strerror(errno) << std::endl;
+		else if (ret == 0)
+        	std::cout << "Timeout : nothing to read\n" << std::endl;
+    	else
+		{
+        	if (fds[0].revents & POLLIN)
+			{
+            	char buf[200];
+            	int n = read(socket2, buf, sizeof(buf) - 1);
+            	if (n > 0) {
+            	    buf[n] = '\0';
+                std::cout << "read on fd : " << buf << std::endl;
+            }
+        }
+    }
+		int res;
+		if ((res = recv(socket2, test, sizeof(test), MSG_PEEK)) < 0)
 		{
         	std::cerr << strerror(errno) << std::endl;
         	close(socketfd);
         	exit(1);
     	}
-		socklen_t clilen = sizeof(cli_addr);
-		socket2 = accept(socketfd, (struct sockaddr *)&cli_addr, &clilen);
-		if (socket2 < 0)
-		{
-        	std::cerr << strerror(errno) << std::endl;
-        	close(socketfd);
-        	exit(1);
-    	}
-		if (send(socket2, "test", 4, MSG_EOR) < 0)
-		{
-        	std::cerr << strerror(errno) << std::endl;
-        	close(socketfd);
-        	exit(1);
-    	}
-		if (recv(socketfd, test, 4, MSG_PEEK) < 0)
-		{
-        	std::cerr << strerror(errno) << std::endl;
-        	close(socketfd);
-        	exit(1);
-    	}
+		std::cout << res << std::endl;
+		res = 0;
 	}
 	close(socketfd);
 	close(socket2);
