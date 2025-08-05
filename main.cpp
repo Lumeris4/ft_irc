@@ -6,12 +6,12 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:10:27 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/05 15:28:49 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/05 15:29:54 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
-#include "irc.hpp"
+#include "Server.hpp"
 
 // ssize_t send(int socket, const void *buf, size_t len, int flags);
 // int bind(int socket, const struct sockaddr *address,
@@ -75,8 +75,6 @@ int main(int argc, char **argv)
 		int ret = poll(fds, 1, -1); // attend indefiniment
     	if (ret == -1)
 			std::cerr << strerror(errno) << std::endl;
-		else if (ret == 0)
-        	std::cout << "Timeout : nothing to read\n" << std::endl;
     	else
 		{
         	if (fds[0].revents & POLLIN)
