@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:22:10 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/05 10:19:24 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/05 12:11:13 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,12 @@
 #include <netinet/in.h>     // pour struct sockaddr_in et constantes AF_INET, htons(), INADDR_ANY
 #include <arpa/inet.h> 
 #include <cstdlib>
+#include <netdb.h>
 #include <unistd.h>
 #include <netdb.h>
+#include <stdio.h>
+#include <errno.h>
+#include <string.h>
 
 class Serveur
 {
