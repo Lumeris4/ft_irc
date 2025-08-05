@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:10:27 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/05 13:09:35 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/05 14:04:15 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,20 @@
 //        socklen_t address_len);
 
 
+void parsing (char *buf)
+{
+	if (!strcmp(buf, "PASS"))
+		return;
+	std::cout << "read in fd : " << buf << std::endl;
+}
+
 int main(int argc, char **argv)
 {
 	int socketfd;
 	// int erreur;
 	// int test2;
-	void *test[100];
+	// void *test[100];
+	char buffer[1024];
 	int socket2 = 0;
 	
 	if (argc != 3)
@@ -31,6 +39,7 @@ int main(int argc, char **argv)
 		std::cerr << "Please respect this format: './ircserv <port> <password>'\n";
 		return -1;
 	}
+	std::string password = argv[2];
 	socketfd = socket(AF_INET, SOCK_STREAM, 0);
 	if (socketfd < 0)
 	{
@@ -75,24 +84,22 @@ int main(int argc, char **argv)
 		{
         	if (fds[0].revents & POLLIN)
 			{
-            	char buf[200];
-            	int n = read(socket2, buf, sizeof(buf) - 1);
-            	if (n > 0) {
-            	    buf[n] = '\0';
-                std::cout << "read on fd : " << buf << std::endl;
+            	ssize_t n = recv(socket2, buffer, sizeof(buffer) - 1, 0);
+    			if (n > 0)
+				{
+        			buffer[n] = '\0';
+        			parsing(buffer);
+    			}
+				else if (n == 0)
+				{
+        			std::cout << "Client déconnecté proprement." << std::endl;
+					break;
+				}
+				else
+				std::cerr << strerror(errno) << std::endl;
             }
         }
     }
-		int res;
-		if ((res = recv(socket2, test, sizeof(test), MSG_PEEK)) < 0)
-		{
-        	std::cerr << strerror(errno) << std::endl;
-        	close(socketfd);
-        	exit(1);
-    	}
-		std::cout << res << std::endl;
-		res = 0;
-	}
 	close(socketfd);
 	close(socket2);
 }
