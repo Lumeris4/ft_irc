@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:10:27 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/05 12:07:47 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/05 12:13:39 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,8 +59,18 @@ int main(int argc, char **argv)
         	close(socketfd);
         	exit(1);
     	}
-		send(socket2, "test", 4, MSG_EOR);
-		recv(socketfd, test, 4, MSG_PEEK);
+		if (send(socket2, "test", 4, MSG_EOR) < 0)
+		{
+        	std::cerr << strerror(errno) << std::endl;
+        	close(socketfd);
+        	exit(1);
+    	}
+		if (recv(socketfd, test, 4, MSG_PEEK) < 0)
+		{
+        	std::cerr << strerror(errno) << std::endl;
+        	close(socketfd);
+        	exit(1);
+    	}
 	}
 	close(socketfd);
 	close(socket2);
