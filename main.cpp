@@ -6,12 +6,12 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:10:27 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/05 14:07:12 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/05 14:44:15 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
-#include "irc.hpp"
+#include "Server.hpp"
 
 // ssize_t send(int socket, const void *buf, size_t len, int flags);
 // int bind(int socket, const struct sockaddr *address,
