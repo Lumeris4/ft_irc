@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   irc.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:22:10 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/05 11:04:33 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/05 12:11:13 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,17 @@
 #include <netdb.h>
 #include <unistd.h>
 #include <netdb.h>
-
-
-//attention
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
+
+class Serveur
+{
+	private:
+	std::string _password;
+	int _port;
+	
+	public:
+	Serveur(std::string password, int port);
+	~Serveur();
+};
