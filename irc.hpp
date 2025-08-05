@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:22:10 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/04 14:23:48 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/04 14:32:10 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,3 +21,4 @@
 #include <cstdlib>
 #include <netdb.h>
 #include <unistd.h>
+#include <netdb.h>

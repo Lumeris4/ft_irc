@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:10:27 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/04 14:31:02 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/04 14:48:28 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int main(int argc, char **argv)
 	int socketfd;
 	int erreur;
 	int test2;
-	std::string test[100];
+	void *test[100];
 	
 	if (argc != 3)
 	{
@@ -34,7 +34,7 @@ int main(int argc, char **argv)
 	struct sockaddr_in serv_addr;
 	serv_addr.sin_family = AF_INET;
 	serv_addr.sin_addr.s_addr = INADDR_ANY;    // toutes les interfaces locales	
-	serv_addr.sin_port = htons(atoi(argv[1]));          // port 8080	
+	serv_addr.sin_port = htons(atoi(argv[1]));	
 	if (bind(socketfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) != 0)
 	    std::cerr << "bind failed" << std::endl;
 	else 
