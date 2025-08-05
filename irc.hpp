@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:22:10 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/04 14:23:50 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/05 10:17:44 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,3 +21,11 @@
 #include <cstdlib>
 #include <unistd.h>
 #include <netdb.h>
+
+class Serveur
+{
+	private:
+	std::string _password;
+	int _port;
+		
+};
