@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:10:27 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/05 13:09:35 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/05 13:12:31 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,13 +64,11 @@ int main(int argc, char **argv)
 	while (1)
 	{
 		struct pollfd fds[1];
-    	fds[0].fd = socket2;              // stdin
+    	fds[0].fd = socket2;
     	fds[0].events = POLLIN;     // on veut savoir si on peut lire
-		int ret = poll(fds, 1, -1); // attend max 5 secondes
+		int ret = poll(fds, 1, -1);
     	if (ret == -1)
 			std::cerr << strerror(errno) << std::endl;
-		else if (ret == 0)
-        	std::cout << "Timeout : nothing to read\n" << std::endl;
     	else
 		{
         	if (fds[0].revents & POLLIN)
