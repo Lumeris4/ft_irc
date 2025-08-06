@@ -13,6 +13,8 @@
 #include <unistd.h>
 #include <netdb.h>
 #include <cstdio>
+#include <sstream>
+#include <cstdlib>
 #include <errno.h>
 #include <string.h>
 #include <poll.h>
