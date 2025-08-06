@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 14:33:16 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/06 13:57:14 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/06 14:02:17 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,5 +28,5 @@ class User
 		User();
 		User(std::string username, std::string nickname);
 		~User();
-		void	addChannel(std::string name, Server &serv);
+		const std::string getUsername
 };
