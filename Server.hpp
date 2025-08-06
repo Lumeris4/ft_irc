@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:22:10 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/06 13:42:42 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/06 13:54:24 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include "Channel.hpp"
 #include "User.hpp"
 
+class Server;
 
 class Server
 {
@@ -30,4 +31,5 @@ class Server
 	Server(std::string password, int port);
 	virtual ~Server();
 	void	addUser(std::string name, std::string nickname);
+	void	addChannel(std::string name, Channel &channel);
 };
