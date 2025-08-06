@@ -6,14 +6,14 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 09:08:11 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/06 10:26:21 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/06 13:11:57 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "include.hpp"
 #include "Channel.hpp"
 
-Channel::Channel(std::string name, std::string creator): _name(name), _access(false), _limit(-1)
+Channel::Channel(std::string name, std::string creator): _name(name), _access(false), _limit(-1), Server()
 {
 	this->_chef_usernames.push_back(creator);
 	this->_list_user.push_back(creator);
@@ -46,7 +46,7 @@ void	Channel::setLimit(int limit)
 	this->_limit = limit;
 }
 
-const int Channel::getLimit() const
+int Channel::getLimit() const
 {
 	return this->_limit;
 }
@@ -56,7 +56,7 @@ void	Channel::setAccess(bool n)
 	this->_access = n;
 }
 
-const bool Channel::getAccess() const
+bool Channel::getAccess() const
 {
 	return this->_access;
 }
