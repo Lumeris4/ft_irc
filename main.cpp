@@ -6,12 +6,13 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:10:27 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/06 13:10:37 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/06 13:15:17 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
 #include "Server.hpp"
+#include "parsing/parsing.hpp"
 
 // ssize_t send(int socket, const void *buf, size_t len, int flags);
 // int bind(int socket, const struct sockaddr *address,
