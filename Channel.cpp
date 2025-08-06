@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 09:08:11 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/06 10:26:21 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/06 13:04:19 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ void	Channel::setLimit(int limit)
 	this->_limit = limit;
 }
 
-const int Channel::getLimit() const
+int Channel::getLimit() const
 {
 	return this->_limit;
 }
@@ -56,7 +56,7 @@ void	Channel::setAccess(bool n)
 	this->_access = n;
 }
 
-const bool Channel::getAccess() const
+bool Channel::getAccess() const
 {
 	return this->_access;
 }
