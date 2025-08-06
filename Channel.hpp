@@ -6,15 +6,17 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 14:46:43 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/06 13:11:11 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/06 13:43:09 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
-#include "include.hpp"
-#include "Server.hpp"
 
-class Channel: public Server
+#include "include.hpp"
+
+class Channel;
+
+class Channel
 {
 	private:
 		std::string					_password;
