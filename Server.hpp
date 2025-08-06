@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:22:10 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/06 12:57:10 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/06 13:13:25 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,6 @@ class Server
 	public:
 	Server();
 	Server(std::string password, int port);
-	~Server();
+	virtual ~Server();
 	void	addUser(std::string name, std::string nickname);
 };
