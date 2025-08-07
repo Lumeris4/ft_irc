@@ -7,7 +7,7 @@ CFLAGS = -Wall -Wextra -Werror -g3 -std=c++98
 
 OBJDIR = obj
 
-SRCS = main.cpp parsing/parsing.cpp parsing/check_password.cpp
+SRCS = main.cpp parsing/parsing.cpp parsing/check_password.cpp Server.cpp Channel.cpp User.cpp
 OBJS = $(SRCS:%.cpp=$(OBJDIR)/%.o)
 
 all: $(NAME)

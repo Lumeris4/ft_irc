@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 09:08:11 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/06 13:04:19 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/07 09:29:57 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "include.hpp"
 #include "Channel.hpp"
 
-Channel::Channel(std::string name, std::string creator): _name(name), _access(false), _limit(-1)
+Channel::Channel(std::string name, std::string creator): _name(name), _limit(-1), _access(false)
 {
 	this->_chef_usernames.push_back(creator);
 	this->_list_user.push_back(creator);
@@ -76,25 +76,33 @@ const std::vector<std::string> &Channel::getListInvitation() const
 	return this->_invitate;
 }
 
-void	Channel::remote(std::string name)
+void	Channel::remote(std::string nickname)
 {
-	this->_chef_usernames.push_back(name);
+	this->_chef_usernames.push_back(nickname);
 }
 
-void	Channel::demote(std::string name)
+void	Channel::demote(std::string nickname)
 {
 	std::vector<std::string>::iterator it;
-	it = find(_chef_usernames.begin(), _chef_usernames.end(), name);
+	it = find(_chef_usernames.begin(), _chef_usernames.end(), nickname);
 	if (it != _chef_usernames.end())
 		this->_chef_usernames.erase(it);
 }
 
-void Channel::adduser(std::string name)
+void Channel::adduser(std::string nickname)
 {
-	this->_list_user.push_back(name);
+	this->_list_user.push_back(nickname);
 }
 
-void Channel::addinvitation(std::string name)
+void Channel::kickuser(std::string nickname)
 {
-	this->_invitate.push_back(name);
+	std::vector<std::string>::iterator it;
+	it = find(_list_user.begin(), _list_user.end(), nickname);
+	if(it != _list_user.end())
+		this->_list_user.erase(it);
+}
+
+void Channel::addinvitation(std::string nickname)
+{
+	this->_invitate.push_back(nickname);
 }
