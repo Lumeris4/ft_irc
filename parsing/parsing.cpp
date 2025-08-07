@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 13:10:28 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/06 13:11:24 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/07 09:53:33 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,21 +18,27 @@ int parsing (char *buf, std::string password)
 	std::stringstream ss(input);
 	std::string cmds;
 	std::string line;
+	std::string argument;
 	std::string array[] = {"CAP", "PASS", "NICK", "KICK", "MODE", "TOPIC", "USER", "JOIN", "INVITE"};
-	int last_upper;
-	int level;
+	int			size = sizeof(array) / sizeof(array[0]);
+	int			last_upper;
+	int			level;
 
 	while (std::getline(ss, cmds, '\n'))
 	{
 		last_upper = 0;
         line = cmds;
 		std::cout << line << std::endl;
-		line.erase(line.size() - 1, 1);
+		if (line[line.size() - 1] == '\n')
+			line.erase(line.size() - 1, 1);
 		for (int i = 0; isupper(line[i]) && i < (int)line.size(); i++)
 			last_upper = i + 1;
 		std::string raw_cmd = line.substr(0, last_upper);
-		std::string argument = line.substr(last_upper + 1);
-		for (size_t i = 0; i < array->length(); i++)
+		if (last_upper < (int)line.length())
+			argument = line.substr(last_upper + 1);
+		else
+			argument = "NULL";
+		for (int i = 0; i < size; i++)
 		{
 			if (!raw_cmd.compare(array[i]))
 				level = i;
@@ -86,6 +92,7 @@ int parsing (char *buf, std::string password)
 				std::cout << line << " is not a valid command" <<std::endl;
 				break;
 		}
-	}	
+		level = 0;
+	}
 	return (0);
 }

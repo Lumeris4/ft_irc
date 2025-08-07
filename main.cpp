@@ -6,18 +6,13 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:10:27 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/06 13:15:17 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/06 13:29:27 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
 #include "Server.hpp"
 #include "parsing/parsing.hpp"
-
-// ssize_t send(int socket, const void *buf, size_t len, int flags);
-// int bind(int socket, const struct sockaddr *address,
-//        socklen_t address_len);
-
 
 int main(int argc, char **argv)
 {
@@ -77,6 +72,7 @@ int main(int argc, char **argv)
     			if (n > 0)
 				{
         			buffer[n] = '\0';
+					std::cout << buffer << std::endl;
         			if (parsing(buffer, password) == -1)
 					{
 						std::cout << "invalid password detected : disconnecting user" << std::endl;
