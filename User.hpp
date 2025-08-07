@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 14:33:16 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/06 14:02:17 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/07 09:28:26 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,5 +28,6 @@ class User
 		User();
 		User(std::string username, std::string nickname);
 		~User();
-		const std::string getUsername
+		const std::string getUsername() const;
+		const std::string getNickname() const; // lui est prioritaire on uttilise jamais l'username
 };

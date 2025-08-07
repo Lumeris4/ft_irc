@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 14:46:43 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/06 13:43:09 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/07 09:29:29 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,9 @@ class Channel
 		const std::vector<std::string>	&getListUser() const;
 		const std::vector<std::string>	&getListChef() const;
 		const std::vector<std::string>	&getListInvitation() const;
-		void							remote(std::string name);
-		void							demote(std::string name);
-		void							adduser(std::string name);
-		void							addinvitation(std::string name);
+		void							remote(std::string nickname);
+		void							demote(std::string nickname);
+		void							adduser(std::string nickname);
+		void							kickuser(std::string nickname);
+		void							addinvitation(std::string nickname);
 };

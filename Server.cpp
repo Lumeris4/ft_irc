@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/06 13:55:25 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/07 09:09:02 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,8 @@ Server::~Server() {}
 
 Server::Server(): _port(-1) {}
 
-void	Server::addChannel(std::string name, Channel &channel)
+void	Server::addChannel(std::string name, User &proprio)
 {
-	this->_list_channel["name"] = channel;	
+	Channel channel = Channel(name, proprio.getUsername());
+	this->_list_channel.insert(std::pair<std::string, Channel>(name, channel));
 }
