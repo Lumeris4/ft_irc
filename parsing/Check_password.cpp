@@ -6,17 +6,16 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 13:11:00 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/07 10:45:38 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/07 12:54:27 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Parsing.hpp"
+#include "../Server.hpp"
 
-int Parsing::check_password(std::string password)
+int Server::check_password(std::string password, std::string real_password)
 {
-	if (password.compare(_serverPassword) != 0)
+	if (password.compare(real_password) != 0)
 		return (-1);
-	setConnected(true);
 	std::cout << "Client has entered password. Accessing server" << std::endl;
 	return (0);
 }
