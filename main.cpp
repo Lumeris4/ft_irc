@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:10:27 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/07 12:52:41 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/07 13:42:38 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,6 @@ int main(int argc, char **argv)
 	}
 	Server server = Server(argv[2], atoi(argv[1]));
 	server.init_server();
-	return 0;
+	return 1;
 }
 
