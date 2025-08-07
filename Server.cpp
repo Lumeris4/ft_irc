@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/07 10:09:48 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/07 10:27:22 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,4 +28,14 @@ void	Server::addUser(std::string name, std::string nickname)
 {
 	User user = User(name, nickname);
 	this->_list_user.insert(std::pair<std::string, User>(nickname, user));
+}
+
+const std::map<std::string, User>	&Server::getListUser() const
+{
+	return this->_list_user;
+}
+
+const std::map<std::string, Channel>	&Server::getListChannel() const
+{
+	return this->_list_channel;
 }

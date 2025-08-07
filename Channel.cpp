@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 09:08:11 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/07 09:29:57 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/07 11:07:31 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,10 @@ const std::vector<std::string> &Channel::getListInvitation() const
 
 void	Channel::remote(std::string nickname)
 {
-	this->_chef_usernames.push_back(nickname);
+	std::vector<std::string>::iterator it;
+	it = find(_list_user.begin(), _list_user.end(), nickname);
+	if (it != _list_user.end())
+		this->_chef_usernames.push_back(nickname);
 }
 
 void	Channel::demote(std::string nickname)

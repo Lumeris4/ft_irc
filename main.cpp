@@ -3,20 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:10:27 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/06 13:15:17 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/07 11:12:44 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
 #include "Server.hpp"
+#include "User.hpp"
+#include "Channel.hpp"
 #include "parsing/parsing.hpp"
 
-// ssize_t send(int socket, const void *buf, size_t len, int flags);
-// int bind(int socket, const struct sockaddr *address,
-//        socklen_t address_len);
+ssize_t send(int socket, const void *buf, size_t len, int flags);
+int bind(int socket, const struct sockaddr *address,
+       socklen_t address_len);
 
 
 int main(int argc, char **argv)
@@ -96,3 +98,4 @@ int main(int argc, char **argv)
 	close(socketfd);
 	close(socket2);
 }
+

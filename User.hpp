@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 14:33:16 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/07 09:28:26 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/07 10:44:02 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ class User
 	
 	public:
 		User();
+		User &operator=(User &other);
 		User(std::string username, std::string nickname);
 		~User();
 		const std::string getUsername() const;

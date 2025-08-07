@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:22:10 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/07 09:41:18 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/07 10:27:05 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,4 +33,6 @@ class Server
 	~Server();
 	void	addUser(std::string name, std::string nickname);
 	void	addChannel(std::string name, User &proprio);
+	const std::map<std::string, User>		&getListUser() const;
+	const std::map<std::string, Channel>	&getListChannel() const;
 };
