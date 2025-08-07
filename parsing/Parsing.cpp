@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 13:10:28 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/07 13:25:00 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/07 13:32:28 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,9 @@ int Server::parsing (char *buf, std::string password)
 					break;
 				case 1:
 				{
-					if (check_password(argument, password) == -1)
+					if (connected == true)
+						std::cout << "Client has already entered the password" << std::endl;
+					else if (check_password(argument, password) == -1)
 						return (-1);
 					connected = true;
 					break;
