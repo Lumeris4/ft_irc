@@ -6,19 +6,20 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:10:27 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/06 13:29:27 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/07 10:46:26 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
 #include "Server.hpp"
-#include "parsing/parsing.hpp"
+#include "parsing/Parsing.hpp"
 
 int main(int argc, char **argv)
 {
 	int socketfd;
 	char buffer[1024];
 	int socket2 = 0;
+	Parsing parser;
 	
 	if (argc != 3)
 	{
@@ -73,7 +74,7 @@ int main(int argc, char **argv)
 				{
         			buffer[n] = '\0';
 					std::cout << buffer << std::endl;
-        			if (parsing(buffer, password) == -1)
+        			if (parser.parsing(buffer, password) == -1)
 					{
 						std::cout << "invalid password detected : disconnecting user" << std::endl;
 						return (-1);
@@ -81,6 +82,7 @@ int main(int argc, char **argv)
     			}
 				else if (n == 0)
 				{
+					parser.setConnected(false);
         			std::cout << "Client déconnecté proprement." << std::endl;
 					break;
 				}
