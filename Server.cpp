@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/11 10:18:18 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/11 10:57:11 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,5 +171,15 @@ void Server::permTopic(std::string channel, bool perm)
 	if (ito != _list_channel.end())
 	{
 		ito->second.setAccessTopic(perm);
+	}
+}
+
+void Server::kick(std::string channel, std::string nickname)
+{
+	//check user right
+	std::map<std::string, Channel>::iterator ito = this->_list_channel.find(channel);
+	if (ito != _list_channel.end())
+	{
+			ito->second.kickuser(nickname);
 	}
 }

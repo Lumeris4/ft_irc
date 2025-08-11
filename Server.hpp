@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:22:10 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/11 10:10:16 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/11 10:55:24 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,4 +44,5 @@ class Server
 	void	givePerm(std::string channel, std::string name, bool give);
 	void	changeLimit(std::string channel, int limit);
 	void	permTopic(std::string channel, bool perm);
+	void	kick(std::string channel, std::string nickname);
 };
