@@ -6,19 +6,50 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/07 13:19:55 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/11 10:53:07 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
+#include "User.hpp"
+
+int Server::createUser()
+{
+	std::cout << "User created" << std::endl;
+	return (0);
+}
+
+int Server::setNickname(std::string nick)
+{
+	if (nick.length() > 9)
+	{
+		std::cout << "nick length has too long" << std::endl;
+		return (-1);
+	}
+	std::map<std::string, User>::iterator it = _list_user.find(nick);
+	{
+        if (it != _list_user.end())
+		{
+			std::cout << "Nick already taken, please choose another one" << std::endl;
+			return (-1);
+		}
+	}
+	_hasNickname = true;
+	return (0);
+}
+
+int Server::setUser()
+{
+	_hasUser = true;
+	return (0);
+}
 
 int Server::init_server()
 {
 	int socketfd;
 	char buffer[1024];
 	int socket2 = 0;
-	
-	
+	int i = -1;
 
 	socketfd = socket(AF_INET, SOCK_STREAM, 0);
 	if (socketfd < 0)
@@ -66,8 +97,32 @@ int Server::init_server()
     			if (n > 0)
 				{
         			buffer[n] = '\0';
-        			if (parsing(buffer, this->_password) == -1)
-						std::cout << "Invalid password detected" << std::endl;
+					std::string input = buffer;
+					std::stringstream ss(input);
+					std::string cmd;
+					while (std::getline(ss, cmd, '\n'))
+					{
+						_argument= "";
+        				i = parsing(cmd);
+						switch (i)
+						{
+							case 0:
+								break;
+							case 1:
+							{
+								setNickname(_argument);
+							}
+							case 2:
+							{
+								setUser();
+							}
+							default:
+								break;
+						}
+						i = -1;
+						if (_hasNickname && _hasUser)
+							createUser();
+					}
     			}
 				else if (n == 0)
 				{
@@ -84,7 +139,11 @@ int Server::init_server()
 	return (0);
 }
 
-Server::Server(std::string password, int port): _password(password), _port(port) {}
+Server::Server(std::string password, int port): _password(password), _port(port)
+{
+	_hasNickname = false;
+	_hasUser = false;
+}
 
 Server::~Server() {}
 
