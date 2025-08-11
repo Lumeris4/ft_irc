@@ -6,13 +6,15 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 13:10:28 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/11 13:52:05 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/11 14:15:07 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../Server.hpp"
 
-int Server::parsing (std::string input, bool connected)
+bool connected = false;
+
+int Server::parsing (std::string input)
 {
 	std::string argument;
 	std::string array[] = {"CAP", "PASS", "NICK", "USER"};
@@ -48,7 +50,10 @@ int Server::parsing (std::string input, bool connected)
 				if (connected == true)
 					std::cout << "Client has already entered the password" << std::endl;
 				else if (check_password(_argument) == -1)
+				{
+					std::cout << "client has entered wrong password" << std::endl;
 					return (-1);
+				}
 				connected = true;
 				return (0);
 			}

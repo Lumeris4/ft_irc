@@ -6,14 +6,12 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/11 14:04:58 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/11 14:15:02 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 #include "User.hpp"
-
-bool connected[MAX_CLIENTS];
 
 int Server::createUser()
 {
@@ -57,8 +55,7 @@ int Server::init_server()
 	int j = -1;
 
 	servsocket = socket(AF_INET, SOCK_STREAM, 0);
-	for (int i = 0; i < MAX_CLIENTS; i++)
-		connected[i] = false;
+	
 	if (servsocket < 0)
 	{
         std::cerr << strerror(errno) << std::endl;
@@ -130,7 +127,7 @@ int Server::init_server()
 						while (std::getline(ss, cmd, '\n'))
 						{
 							_argument= "";
-    		 				j = parsing(cmd, connected[i]);
+    		 						j = parsing(cmd);
 							switch (j)
 							{
 								case 0:
@@ -170,6 +167,7 @@ int Server::init_server()
 						std::cerr << strerror(errno) << std::endl;
 					}
     			}
+				
 			}		
         }
 	}

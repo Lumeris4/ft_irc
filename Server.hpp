@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:22:10 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/11 14:06:18 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/11 14:14:25 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ class Server
 	const std::map<std::string, Channel>	&getListChannel() const;
 	int 	init_server();
 	int 	check_password(std::string password);
-	int 	parsing (std::string input, bool connected);
+	int 	parsing (std::string input);
 	int 	setNickname(std::string nick);
 	int 	setUser();
 	int 	createUser();
