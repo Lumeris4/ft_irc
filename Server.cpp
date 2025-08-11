@@ -6,12 +6,14 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/11 12:50:00 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/11 14:04:58 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 #include "User.hpp"
+
+bool connected[MAX_CLIENTS];
 
 int Server::createUser()
 {
@@ -23,6 +25,7 @@ int Server::createUser()
 
 int Server::setNickname(std::string nick)
 {
+	std::cout << nick << std::endl;
 	if (nick.length() > 9)
 	{
 		std::cout << "nick length has too long" << std::endl;
@@ -54,7 +57,8 @@ int Server::init_server()
 	int j = -1;
 
 	servsocket = socket(AF_INET, SOCK_STREAM, 0);
-	
+	for (int i = 0; i < MAX_CLIENTS; i++)
+		connected[i] = false;
 	if (servsocket < 0)
 	{
         std::cerr << strerror(errno) << std::endl;
@@ -111,58 +115,63 @@ int Server::init_server()
             	}
 				
 			}
-			else
-				std::cerr << strerror(errno) << std::endl;
-        }
-    }
-	for (int i = 1; i < nfds; i++)
-	{
-		if (fds[i].revents & POLLIN)
-		{
-         	ssize_t n = recv(fds[i].fd, buffer, sizeof(buffer) - 1, 0);
-    		if (n > 0)
+			for (int i = 1; i < nfds; i++)
 			{
-     			buffer[n] = '\0';
-				std::cout << buffer << std::endl;
-				std::string input = buffer;
-				std::stringstream ss(input);
-				std::string cmd;
-				while (std::getline(ss, cmd, '\n'))
+				if (fds[i].revents & POLLIN)
 				{
-					_argument= "";
-     						j = parsing(cmd);
-					switch (i)
+    		     	ssize_t n = recv(fds[i].fd, buffer, sizeof(buffer) - 1, 0);
+    				if (n > 0)
 					{
-						case 0:
-							break;
-						case 1:
+    		 			buffer[n] = '\0';
+						std::cout << buffer << std::endl;
+						std::string input = buffer;
+						std::stringstream ss(input);
+						std::string cmd;
+						while (std::getline(ss, cmd, '\n'))
 						{
-							setNickname(_argument);
-							break;
+							_argument= "";
+    		 				j = parsing(cmd, connected[i]);
+							switch (j)
+							{
+								case 0:
+									break;
+								case 1:
+								{
+									setNickname(_argument);
+									break;
+								}
+								case 2:
+								{
+									setUser();
+									break;
+								}
+								default:
+									break;
+							}
+							j = -1;
+							if (_hasNickname && _hasUser)
+								createUser();
 						}
-						case 2:
-						{
-							setUser();
-							break;
-						}
-						default:
-							break;
 					}
-					i = -1;
-					if (_hasNickname && _hasUser)
-						createUser();
-				}
-			}
-			else if (n == 0)
-			{
-     					std::cout << "Client déconnecté proprement." << std::endl;
-				close(fds[i].fd);
-				fds[i] = fds[nfds - 1];
-				nfds--;
-				i--;
-			}
-    	}
-		
+					else if (n == 0)
+					{
+    		 			std::cout << "Client déconnecté proprement." << std::endl;
+						close(fds[i].fd);
+						fds[i] = fds[nfds - 1];
+						nfds--;
+						i--;
+					}
+					else
+					{
+						close(fds[i].fd);
+						fds[i] = fds[nfds - 1];
+						nfds--;
+						i--;
+						std::cerr << strerror(errno) << std::endl;
+					}
+    			}
+			}		
+        }
 	}
 	close(servsocket);
 	for (int i = 1; i < nfds; i++)

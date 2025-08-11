@@ -6,15 +6,13 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 13:10:28 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/11 11:04:52 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/11 13:52:05 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../Server.hpp"
 
-bool connected = false;
-
-int Server::parsing (std::string input)
+int Server::parsing (std::string input, bool connected)
 {
 	std::string argument;
 	std::string array[] = {"CAP", "PASS", "NICK", "USER"};

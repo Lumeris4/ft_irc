@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:22:10 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/11 12:21:47 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/11 13:58:53 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,6 @@ class Server
 	std::map<std::string ,User>		_list_user;
 	std::map<std::string, Channel>	_list_channel;
 	std::string						_argument;
-	bool							_hasNickname;
-	bool							_hasUser;
 
 	public:
 	Server();
@@ -41,11 +39,11 @@ class Server
 	const std::map<std::string, User>		&getListUser() const;
 	const std::map<std::string, Channel>	&getListChannel() const;
 	int 	init_server();
-	int check_password(std::string password);
-	int parsing (std::string input);
-	int setNickname(std::string nick);
-	int setUser();
-	int createUser();
+	int 	check_password(std::string password);
+	int 	parsing (std::string input, bool connected);
+	int 	setNickname(std::string nick);
+	int 	setUser();
+	int 	createUser();
 	void	changeTopic(std::string channel, std::string topic);
 	void	changePerm(std::string channel, bool perm);
 	void	changePassword(std::string channel, std::string password);
