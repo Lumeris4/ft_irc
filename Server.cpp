@@ -6,18 +6,17 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/11 14:15:02 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/11 14:45:10 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 #include "User.hpp"
 
-int Server::createUser()
+int Server::createUser(int socketfd)
 {
-	std::cout << "User created" << std::endl;
-	_hasNickname = false;
-	_hasUser = false;
+	addUser(socketfd, _nickname, _user);
+	std::cout << "User created" << socketfd << std::endl;
 	return (0);
 }
 
@@ -37,13 +36,13 @@ int Server::setNickname(std::string nick)
 			return (-1);
 		}
 	}
-	_hasNickname = true;
+	_nickname = nick;
 	return (0);
 }
 
-int Server::setUser()
+int Server::setUser(std::string nick)
 {
-	_hasUser = true;
+	_user = nick;
 	return (0);
 }
 
@@ -75,8 +74,7 @@ int Server::init_server()
        	std::cerr << strerror(errno) << std::endl;
        	close(servsocket);
        	exit(1);
-    }
-	
+    }	
 	struct pollfd fds[1 + MAX_CLIENTS];
 	int nfds = 1;
     fds[0].fd = servsocket;
@@ -139,15 +137,15 @@ int Server::init_server()
 								}
 								case 2:
 								{
-									setUser();
+									setUser(_argument);
 									break;
 								}
 								default:
 									break;
 							}
 							j = -1;
-							if (_hasNickname && _hasUser)
-								createUser();
+							if (_nickname.compare("") && _user.compare(""))
+								createUser(fds[i].fd);
 						}
 					}
 					else if (n == 0)
@@ -179,8 +177,8 @@ int Server::init_server()
 
 Server::Server(std::string password, int port): _password(password), _port(port)
 {
-	_hasNickname = false;
-	_hasUser = false;
+	_nickname = "";
+	_user = "";
 }
 
 Server::~Server() {}
@@ -193,9 +191,9 @@ void	Server::addChannel(std::string name, User &proprio)
 	this->_list_channel.insert(std::pair<std::string, Channel>(name, channel));
 }
 
-void	Server::addUser(std::string name, std::string nickname)
+void	Server::addUser(int socketfd, std::string name, std::string nickname)
 {
-	User user = User(name, nickname);
+	User user = User(socketfd, name, nickname);
 	this->_list_user.insert(std::pair<std::string, User>(nickname, user));
 }
 

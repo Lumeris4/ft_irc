@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 14:33:16 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/11 14:04:32 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/11 14:33:30 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ class User
 		User(int socket);
 		User();
 		User &operator=(User &other);
-		User(std::string username, std::string nickname);
+		User(int socketfd, std::string username, std::string nickname);
 		~User();
 		const std::string getUsername() const;
 		const std::string getNickname() const;

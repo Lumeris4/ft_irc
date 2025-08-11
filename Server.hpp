@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:22:10 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/11 14:14:25 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/11 14:40:33 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,14 +29,14 @@ class Server
 	std::map<std::string ,User>		_list_user;
 	std::map<std::string, Channel>	_list_channel;
 	std::string						_argument;
-	bool							_hasNickname;
-	bool							_hasUser;
+	std::string						_nickname;
+	std::string						_user;
 
 	public:
 	Server();
 	Server(std::string password, int port);
 	~Server();
-	void	addUser(std::string name, std::string nickname);
+	void	addUser(int socketfd, std::string name, std::string nickname);
 	void	addChannel(std::string name, User &proprio);
 	const std::map<std::string, User>		&getListUser() const;
 	const std::map<std::string, Channel>	&getListChannel() const;
@@ -44,8 +44,8 @@ class Server
 	int 	check_password(std::string password);
 	int 	parsing (std::string input);
 	int 	setNickname(std::string nick);
-	int 	setUser();
-	int 	createUser();
+	int 	setUser(std::string nick);
+	int 	createUser(int socketfd);
 	void	changeTopic(std::string channel, std::string topic);
 	void	changePerm(std::string channel, bool perm);
 	void	changePassword(std::string channel, std::string password);
