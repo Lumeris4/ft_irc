@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/11 14:49:21 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/11 15:55:24 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,6 +147,7 @@ int Server::init_server()
 							if (_nickname.compare("") && _user.compare(""))
 								createUser(fds[i].fd);
 						}
+						//ici
 					}
 					else if (n == 0)
 					{
@@ -195,6 +196,7 @@ void	Server::addUser(int socketfd, std::string name, std::string nickname)
 {
 	User user = User(socketfd, name, nickname);
 	this->_list_user.insert(std::pair<std::string, User>(nickname, user));
+	this->_list_socket_user.insert(std::pair<int, User>(socketfd, user));
 }
 
 const std::map<std::string, User>	&Server::getListUser() const
@@ -237,16 +239,33 @@ void	Server::changePassword(std::string channel, std::string password)
 	}
 }
 
-void	Server::givePerm(std::string channel, std::string name, bool give)
+void	Server::givePerm(std::string channel, std::string name, bool give, int socketfd)
 {
-	//check user right
+	std::string nickname;
+	std::map<int, User>::iterator it;
+	for (it = _list_socket_user.begin(); it != _list_socket_user.end(); it++)
+	{
+		if (it->first == socketfd)
+		{
+			nickname = it->second.getNickname();
+		}
+	}
+	if (nickname.empty())
+		return;
 	std::map<std::string, Channel>::iterator ito = this->_list_channel.find(channel);
 	if (ito != _list_channel.end())
 	{
-		if (give)
-			ito->second.remote(name);
+		std::vector<std::string> list = ito->second.getListChef();
+		std::vector<std::string>::iterator itt = find(list.begin(), list.end(), nickname);
+		if (itt != list.end())
+		{
+			if (give)
+				ito->second.remote(name);
+			else
+				ito->second.demote(name);
+		}
 		else
-			ito->second.demote(name);
+			std::cout << nickname << "have not the permission right\n";
 	}
 }
 

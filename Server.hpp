@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:22:10 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/11 14:47:55 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/11 15:36:33 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ class Server
 	protected:
 	std::string						_password;
 	int								_port;
+	std::map<int, User>				_list_socket_user;
 	std::map<std::string ,User>		_list_user;
 	std::map<std::string, Channel>	_list_channel;
 	std::string						_argument;
@@ -49,7 +50,7 @@ class Server
 	void	changeTopic(std::string channel, std::string topic);
 	void	changePerm(std::string channel, bool perm);
 	void	changePassword(std::string channel, std::string password);
-	void	givePerm(std::string channel, std::string name, bool give);
+	void	givePerm(std::string channel, std::string name, bool give, int socketfd);
 	void	changeLimit(std::string channel, int limit);
 	void	permTopic(std::string channel, bool perm);
 	void	kick(std::string channel, std::string nickname);
