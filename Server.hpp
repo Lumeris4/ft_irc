@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:22:10 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/11 11:05:27 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/11 12:21:47 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 #include "include.hpp"
 #include "Channel.hpp"
 #include "User.hpp"
+
+#define MAX_CLIENTS 10
 
 class Server;
 class User;
