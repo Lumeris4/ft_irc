@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 14:46:43 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/07 09:29:29 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/11 10:11:57 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ class Channel
 		int							_limit;
 		std::string					_topic;
 		bool						_access;
+		bool						_access_topic;
 		std::vector<std::string>	_chef_usernames;
 		std::vector<std::string>	_list_user;
 		std::vector<std::string>	_invitate;
@@ -47,4 +48,6 @@ class Channel
 		void							adduser(std::string nickname);
 		void							kickuser(std::string nickname);
 		void							addinvitation(std::string nickname);
+		void							setAccessTopic(bool perm);
+		bool							getAccessTopic() const;
 };
