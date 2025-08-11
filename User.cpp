@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 12:49:13 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/07 10:44:57 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/11 10:03:05 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,4 +32,9 @@ const std::string User::getUsername() const
 const std::string User::getNickname() const
 {
 	return this->_nickname;
+}
+
+const std::string User::getSocket() const
+{
+	return this->_socket;
 }

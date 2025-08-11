@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/11 11:01:17 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/11 11:05:32 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,6 +139,7 @@ int Server::init_server()
             }
         }
     }
+
 	close(socketfd);
 	close(socket2);
 	return (0);
@@ -174,4 +175,75 @@ const std::map<std::string, User>	&Server::getListUser() const
 const std::map<std::string, Channel>	&Server::getListChannel() const
 {
 	return this->_list_channel;
+}
+
+void	Server::changeTopic(std::string channel, std::string topic)
+{
+	//check user have right
+	std::map<std::string, Channel>::iterator ito = this->_list_channel.find(channel);
+	if (ito != _list_channel.end())
+	{
+		ito->second.setTopic(topic);
+	}
+}
+
+void	Server::changePerm(std::string channel, bool perm)
+{
+	//check user right
+	std::map<std::string, Channel>::iterator ito = this->_list_channel.find(channel);
+	if (ito != _list_channel.end())
+	{
+		ito->second.setAccess(perm);
+	}
+}
+
+void	Server::changePassword(std::string channel, std::string password)
+{
+	//check user right
+	std::map<std::string, Channel>::iterator ito = this->_list_channel.find(channel);
+	if (ito != _list_channel.end())
+	{
+		ito->second.setPassword(password);
+	}
+}
+
+void	Server::givePerm(std::string channel, std::string name, bool give)
+{
+	//check user right
+	std::map<std::string, Channel>::iterator ito = this->_list_channel.find(channel);
+	if (ito != _list_channel.end())
+	{
+		if (give)
+			ito->second.remote(name);
+		else
+			ito->second.demote(name);
+	}
+}
+
+void Server::changeLimit(std::string channel, int limit)
+{
+	std::map<std::string, Channel>::iterator ito = this->_list_channel.find(channel);
+	if (ito != _list_channel.end())
+	{
+		ito->second.setLimit(limit);
+	}
+}
+
+void Server::permTopic(std::string channel, bool perm)
+{
+	std::map<std::string, Channel>::iterator ito = this->_list_channel.find(channel);
+	if (ito != _list_channel.end())
+	{
+		ito->second.setAccessTopic(perm);
+	}
+}
+
+void Server::kick(std::string channel, std::string nickname)
+{
+	//check user right
+	std::map<std::string, Channel>::iterator ito = this->_list_channel.find(channel);
+	if (ito != _list_channel.end())
+	{
+			ito->second.kickuser(nickname);
+	}
 }

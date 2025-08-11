@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:22:10 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/11 10:52:57 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/11 11:05:27 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,4 +44,11 @@ class Server
 	int setNickname(std::string nick);
 	int setUser();
 	int createUser();
+	void	changeTopic(std::string channel, std::string topic);
+	void	changePerm(std::string channel, bool perm);
+	void	changePassword(std::string channel, std::string password);
+	void	givePerm(std::string channel, std::string name, bool give);
+	void	changeLimit(std::string channel, int limit);
+	void	permTopic(std::string channel, bool perm);
+	void	kick(std::string channel, std::string nickname);
 };

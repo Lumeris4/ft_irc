@@ -6,14 +6,14 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 09:08:11 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/07 11:07:31 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/11 10:15:21 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "include.hpp"
 #include "Channel.hpp"
 
-Channel::Channel(std::string name, std::string creator): _name(name), _limit(-1), _access(false)
+Channel::Channel(std::string name, std::string creator): _name(name), _limit(-1), _access(false), _access_topic(false)
 {
 	this->_chef_usernames.push_back(creator);
 	this->_list_user.push_back(creator);
@@ -108,4 +108,14 @@ void Channel::kickuser(std::string nickname)
 void Channel::addinvitation(std::string nickname)
 {
 	this->_invitate.push_back(nickname);
+}
+
+void	Channel::setAccessTopic(bool perm)
+{
+	this->_access_topic = perm;
+}
+
+bool Channel::getAccessTopic() const
+{
+	return this->_access_topic;
 }
