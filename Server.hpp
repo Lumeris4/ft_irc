@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:22:10 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/11 13:58:53 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/11 14:06:18 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@ class Server
 	std::map<std::string ,User>		_list_user;
 	std::map<std::string, Channel>	_list_channel;
 	std::string						_argument;
+	bool							_hasNickname;
+	bool							_hasUser;
 
 	public:
 	Server();
