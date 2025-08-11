@@ -6,23 +6,23 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/11 14:32:21 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/11 14:49:21 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 #include "User.hpp"
 
-int Server::createUser()
+int Server::createUser(int socketfd)
 {
-	std::cout << "User created" << std::endl;
-	_hasNickname = false;
-	_hasUser = false;
+	addUser(socketfd, _nickname, _user);
+	std::cout << "User created" << socketfd << std::endl;
 	return (0);
 }
 
 int Server::setNickname(std::string nick)
 {
+	std::cout << nick << std::endl;
 	if (nick.length() > 9)
 	{
 		std::cout << "nick length has too long" << std::endl;
@@ -36,25 +36,26 @@ int Server::setNickname(std::string nick)
 			return (-1);
 		}
 	}
-	_hasNickname = true;
+	_nickname = nick;
 	return (0);
 }
 
-int Server::setUser()
+int Server::setUser(std::string nick)
 {
-	_hasUser = true;
+	_user = nick;
 	return (0);
 }
 
 int Server::init_server()
 {
-	int socketfd;
+	int servsocket;
+	int new_socket;
 	char buffer[1024];
-	int socket2 = 0;
-	int i = -1;
+	int j = -1;
 
-	socketfd = socket(AF_INET, SOCK_STREAM, 0);
-	if (socketfd < 0)
+	servsocket = socket(AF_INET, SOCK_STREAM, 0);
+	
+	if (servsocket < 0)
 	{
         std::cerr << strerror(errno) << std::endl;
         exit(1);
@@ -63,92 +64,121 @@ int Server::init_server()
 	serv_addr.sin_family = AF_INET;
 	serv_addr.sin_addr.s_addr = INADDR_ANY;    // toutes les interfaces locales	
 	serv_addr.sin_port = htons(this->_port);          // port 8080	
-	if (bind(socketfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) != 0)
+	if (bind(servsocket, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) != 0)
 	{
 	    std::cerr << strerror(errno) << std::endl;
 		exit (1);
 	}
-	if (listen(socketfd, 10) < 0)
+	if (listen(servsocket, MAX_CLIENTS) < 0)
 	{
        	std::cerr << strerror(errno) << std::endl;
-       	close(socketfd);
+       	close(servsocket);
        	exit(1);
-    }
-	socklen_t clilen = sizeof(cli_addr);
-	socket2 = accept(socketfd, (struct sockaddr *)&cli_addr, &clilen);
-	if (socket2 < 0)
-	{
-       	std::cerr << strerror(errno) << std::endl;
-       	close(socketfd);
-       	exit(1);
-    }
-	std::cout << "Client connected to the server" << std::endl;
+    }	
+	struct pollfd fds[1 + MAX_CLIENTS];
+	int nfds = 1;
+    fds[0].fd = servsocket;
+    fds[0].events = POLLIN;
 	while (1)
 	{
-		struct pollfd fds[1];
-    	fds[0].fd = socket2;
-    	fds[0].events = POLLIN;     // on veut savoir si on peut lire
-		int ret = poll(fds, 1, -1); // attend indefiniment
+		int ret = poll(fds, nfds, -1); // attend indefiniment
     	if (ret == -1)
 			std::cerr << strerror(errno) << std::endl;
     	else
 		{
         	if (fds[0].revents & POLLIN)
 			{
-            	ssize_t n = recv(socket2, buffer, sizeof(buffer) - 1, 0);
-    			if (n > 0)
+				socklen_t clilen = sizeof(cli_addr);
+				new_socket = accept(servsocket, (struct sockaddr *)&cli_addr, &clilen);
+				if (new_socket < 0)
 				{
-        			buffer[n] = '\0';
-					std::cout << buffer << std::endl;
-					std::string input = buffer;
-					std::stringstream ss(input);
-					std::string cmd;
-					while (std::getline(ss, cmd, '\n'))
+    			   	std::cerr << strerror(errno) << std::endl;
+    			   	close(servsocket);
+    			   	exit(1);
+				}
+				if (nfds - 1 < MAX_CLIENTS)
+				{
+            	    fds[nfds].fd = new_socket;
+            	    fds[nfds].events = POLLIN;
+            	    nfds++;
+            	    std::cout << "Client connected to the server" << std::endl;
+            	} 
+				else
+				{
+                	std::cout << "Too many clients connected." << std::endl;
+                	close(new_socket);
+            	}
+				
+			}
+			for (int i = 1; i < nfds; i++)
+			{
+				if (fds[i].revents & POLLIN)
+				{
+    		     	ssize_t n = recv(fds[i].fd, buffer, sizeof(buffer) - 1, 0);
+    				if (n > 0)
 					{
-						_argument= "";
-        				i = parsing(cmd);
-						switch (i)
+    		 			buffer[n] = '\0';
+						std::cout << buffer << std::endl;
+						std::string input = buffer;
+						std::stringstream ss(input);
+						std::string cmd;
+						while (std::getline(ss, cmd, '\n'))
 						{
-							case 0:
-								break;
-							case 1:
+							_argument= "";
+    		 						j = parsing(cmd);
+							switch (j)
 							{
-								setNickname(_argument);
-								break;
+								case 0:
+									break;
+								case 1:
+								{
+									setNickname(_argument);
+									break;
+								}
+								case 2:
+								{
+									setUser(_argument);
+									break;
+								}
+								default:
+									break;
 							}
-							case 2:
-							{
-								setUser();
-								break;
-							}
-							default:
-								break;
+							j = -1;
+							if (_nickname.compare("") && _user.compare(""))
+								createUser(fds[i].fd);
 						}
-						i = -1;
-						if (_hasNickname && _hasUser)
-							createUser();
+					}
+					else if (n == 0)
+					{
+    		 			std::cout << "Client déconnecté proprement." << std::endl;
+						close(fds[i].fd);
+						fds[i] = fds[nfds - 1];
+						nfds--;
+						i--;
+					}
+					else
+					{
+						close(fds[i].fd);
+						fds[i] = fds[nfds - 1];
+						nfds--;
+						i--;
+						std::cerr << strerror(errno) << std::endl;
 					}
     			}
-				else if (n == 0)
-				{
-        			std::cout << "Client déconnecté proprement." << std::endl;
-					close(socket2);
-				}
-				else
-				std::cerr << strerror(errno) << std::endl;
-            }
+				
+			}		
         }
-    }
-
-	close(socketfd);
-	close(socket2);
+	}
+	close(servsocket);
+	for (int i = 1; i < nfds; i++)
+		close(fds[i].fd);
 	return (0);
 }
 
 Server::Server(std::string password, int port): _password(password), _port(port)
 {
-	_hasNickname = false;
-	_hasUser = false;
+	_nickname = "";
+	_user = "";
 }
 
 Server::~Server() {}
@@ -161,9 +191,9 @@ void	Server::addChannel(std::string name, User &proprio)
 	this->_list_channel.insert(std::pair<std::string, Channel>(name, channel));
 }
 
-void	Server::addUser(std::string name, std::string nickname)
+void	Server::addUser(int socketfd, std::string name, std::string nickname)
 {
-	User user = User(name, nickname);
+	User user = User(socketfd, name, nickname);
 	this->_list_user.insert(std::pair<std::string, User>(nickname, user));
 }
 
@@ -260,10 +290,14 @@ void Server::invite(std::string channel, std::string user)
 
 void	Server::joinCanal(std::string canal, std::string password)
 {
+	(void)canal;
+	(void)password;
 	//j ai besoin de savoir qui est le user
 }
 
 void Server::sendMessage(std::string destination, std::string content)
 {
 	//plus tard
+	(void)destination;
+	(void)content;
 }

@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 13:10:28 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/11 11:08:01 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/11 14:48:06 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,10 @@ int Server::parsing (std::string input)
 		if (!raw_cmd.compare(array[i]))
 			level = i;
 	}
-	if (level > 1 && connected == false)
-		std::cout << "you have to enter the password first" << std::endl;
+	if (connected == true)
+		;
+	// if (level > 1 && connected == false)
+	// 	std::cout << "you have to enter the password first" << std::endl;
 	else
 	{
 		switch (level)
@@ -50,8 +52,11 @@ int Server::parsing (std::string input)
 				if (connected == true)
 					std::cout << "Client has already entered the password" << std::endl;
 				else if (check_password(_argument) == -1)
+				{
+					std::cout << "client has entered wrong password" << std::endl;
 					return (-1);
-				connected = true;
+				}
+				//connected = true;
 				return (0);
 			}
 			case 2:
