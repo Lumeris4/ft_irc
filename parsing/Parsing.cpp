@@ -6,15 +6,15 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 13:10:28 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/11 14:43:32 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/11 15:21:49 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../Server.hpp"
 
-bool connected = false;
+bool connected[MAX_CLIENTS] = {false, false, false, false, false, false, false, false, false, false};
 
-int Server::parsing (std::string input)
+int Server::parsing (std::string input, int j)
 {
 	std::string argument;
 	std::string array[] = {"CAP", "PASS", "NICK", "USER"};
@@ -37,10 +37,8 @@ int Server::parsing (std::string input)
 		if (!raw_cmd.compare(array[i]))
 			level = i;
 	}
-	if (connected == true)
-		;
-	// if (level > 1 && connected == false)
-	// 	std::cout << "you have to enter the password first" << std::endl;
+	if (level > 1 && connected[j] == false)
+		std::cout << "you have to enter the password first" << std::endl;
 	else
 	{
 		switch (level)
@@ -49,14 +47,14 @@ int Server::parsing (std::string input)
 				break;
 			case 1:
 			{
-				if (connected == true)
+				if (connected[j] == true)
 					std::cout << "Client has already entered the password" << std::endl;
 				else if (check_password(_argument) == -1)
 				{
-					std::cout << "client has entered wrong password" << std::endl;
+					std::cout << "Client has entered wrong password" << std::endl;
 					return (-1);
 				}
-				//connected = true;
+				connected[j] = true;
 				return (0);
 			}
 			case 2:

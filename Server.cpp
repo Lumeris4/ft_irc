@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/11 14:45:10 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/11 15:22:07 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +125,7 @@ int Server::init_server()
 						while (std::getline(ss, cmd, '\n'))
 						{
 							_argument= "";
-    		 						j = parsing(cmd);
+    		 						j = parsing(cmd, i);
 							switch (j)
 							{
 								case 0:
