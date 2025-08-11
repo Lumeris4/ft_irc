@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/11 10:53:07 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/11 11:01:17 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 int Server::createUser()
 {
 	std::cout << "User created" << std::endl;
+	_hasNickname = false;
+	_hasUser = false;
 	return (0);
 }
 
@@ -97,6 +99,7 @@ int Server::init_server()
     			if (n > 0)
 				{
         			buffer[n] = '\0';
+					std::cout << buffer << std::endl;
 					std::string input = buffer;
 					std::stringstream ss(input);
 					std::string cmd;
@@ -111,10 +114,12 @@ int Server::init_server()
 							case 1:
 							{
 								setNickname(_argument);
+								break;
 							}
 							case 2:
 							{
 								setUser();
+								break;
 							}
 							default:
 								break;
