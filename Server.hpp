@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:22:10 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/11 11:07:36 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/11 12:45:30 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,8 @@ class Server
 	void	changeLimit(std::string channel, int limit);
 	void	permTopic(std::string channel, bool perm);
 	void	kick(std::string channel, std::string nickname);
+	void	invite(std::string channel, std::string user);
+	void	joinCanal(std::string channel, std::string password);
 	int check_password(std::string password);
 	int parsing (std::string input);
 	int setNickname(std::string nick);

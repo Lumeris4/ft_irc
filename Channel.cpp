@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 09:08:11 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/11 10:15:21 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/11 12:34:42 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,10 @@ void	Channel::demote(std::string nickname)
 
 void Channel::adduser(std::string nickname)
 {
-	this->_list_user.push_back(nickname);
+	std::vector<std::string>::iterator it;
+	it = find(_list_user.begin(), _list_user.end(), nickname);
+	if (it == _list_user.end())
+		this->_list_user.push_back(nickname);
 }
 
 void Channel::kickuser(std::string nickname)
@@ -107,7 +110,10 @@ void Channel::kickuser(std::string nickname)
 
 void Channel::addinvitation(std::string nickname)
 {
-	this->_invitate.push_back(nickname);
+	std::vector<std::string>::iterator it;
+	it = find(_invitate.begin(), _invitate.end(), nickname);
+	if (it == _invitate.end())
+		this->_invitate.push_back(nickname);
 }
 
 void	Channel::setAccessTopic(bool perm)
