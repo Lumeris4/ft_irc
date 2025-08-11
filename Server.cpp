@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/11 12:47:26 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/11 14:26:03 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -261,4 +261,9 @@ void Server::invite(std::string channel, std::string user)
 void	Server::joinCanal(std::string canal, std::string password)
 {
 	//j ai besoin de savoir qui est le user
+}
+
+void Server::sendMessage(std::string destination, std::string content)
+{
+	//plus tard
 }
