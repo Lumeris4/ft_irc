@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 10:38:15 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/12 11:30:31 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/12 12:02:52 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,11 @@ void handle_mode(std::string argument, bool is_user)
 		return ;
 	std::cout << argument << std::endl;
 	size_t pos = argument.find('#');
+	if (pos == std::string::npos)
+	{
+		std::cout << "invalid format" << std::endl;
+		return;
+	}
 	std::string channel = argument.substr(0, pos);
 	std::string arg;
 	bool		set_mode;
