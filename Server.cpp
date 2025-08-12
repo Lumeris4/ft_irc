@@ -6,17 +6,22 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/12 12:42:29 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/12 12:43:34 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 #include "User.hpp"
 
-int Server::createUser(int socketfd)
+bool is_user[MAX_CLIENTS];
+
+int Server::createUser(int socketfd, int i)
 {
+	if (is_user[i])
+		return (0);
 	addUser(socketfd, _nickname, _user);
-	std::cout << "User created" << socketfd << std::endl;
+	is_user[i] = true;
+	std::cout << "User created " << socketfd << std::endl;
 	return (0);
 }
 
@@ -118,14 +123,16 @@ int Server::init_server()
     				if (n > 0)
 					{
     		 			buffer[n] = '\0';
-						std::cout << buffer << std::endl;
+						std::cout << buffer;
 						std::string input = buffer;
 						std::stringstream ss(input);
 						std::string cmd;
 						while (std::getline(ss, cmd, '\n'))
 						{
 							_argument= "";
-    		 						j = parsing(cmd);
+    		 				j = parsing(cmd, i);
+							if (is_user[i] == false && j > 2)
+								j = 10;
 							switch (j)
 							{
 								case 0:
@@ -140,12 +147,26 @@ int Server::init_server()
 									setUser(_argument);
 									break;
 								}
+								case 3:
+								{
+									handle_mode(_argument);
+									break;
+								}
+								case 4:
+								{
+									handle_topic(_argument);
+									break;
+								}
+								case 10:
+								{
+									std::cout << "Cannot execute command if clients is not a user" << std::endl;
+								}
 								default:
 									break;
 							}
 							j = -1;
 							if (_nickname.compare("") && _user.compare(""))
-								createUser(fds[i].fd);
+								createUser(fds[i].fd, i);
 						}
 					}
 					else if (n == 0)

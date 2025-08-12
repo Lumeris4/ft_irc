@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:22:10 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/12 12:16:16 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/12 12:43:44 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,10 +43,10 @@ class Server
 	const std::map<std::string, Channel>	&getListChannel() const;
 	int 	init_server();
 	int 	check_password(std::string password);
-	int 	parsing (std::string input);
+	int 	parsing (std::string input, int i);
 	int 	setNickname(std::string nick);
 	int 	setUser(std::string nick);
-	int 	createUser(int socketfd);
+	int 	createUser(int socketfd, int i);
 	void	changeTopic(std::string channel, std::string topic);
 	void	changePerm(std::string channel, bool perm, int socketfd);
 	void	changePassword(std::string channel, std::string password, int socketfd);
@@ -60,3 +60,6 @@ class Server
 	std::string	whatUser(int socketfd);
 	bool		haveright(int socketfd, std::string channel);
 };
+
+void handle_mode(std::string argument);
+void handle_topic(std::string argument);
