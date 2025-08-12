@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/12 11:58:22 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/12 12:39:25 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,7 +123,7 @@ int Server::init_server()
     				if (n > 0)
 					{
     		 			buffer[n] = '\0';
-						std::cout << buffer << std::endl;
+						std::cout << buffer;
 						std::string input = buffer;
 						std::stringstream ss(input);
 						std::string cmd;
@@ -149,12 +149,13 @@ int Server::init_server()
 								}
 								case 3:
 								{
-									handle_mode(_argument, is_user[i]);
+									handle_mode(_argument);
 									break;
 								}
 								case 4:
 								{
-									
+									handle_topic(_argument);
+									break;
 								}
 								case 10:
 								{

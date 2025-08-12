@@ -6,28 +6,25 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 10:38:15 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/12 12:02:52 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/12 12:39:06 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 #include "User.hpp"
 
-void handle_mode(std::string argument, bool is_user)
+void handle_mode(std::string argument)
 {
-	if (is_user == false)
-		return ;
-	std::cout << argument << std::endl;
 	size_t pos = argument.find('#');
 	if (pos == std::string::npos)
 	{
 		std::cout << "invalid format" << std::endl;
 		return;
 	}
-	std::string channel = argument.substr(0, pos);
+	size_t space = argument.find(' ');
+	std::string channel = argument.substr(pos + 1, space);
 	std::string arg;
 	bool		set_mode;
-	size_t space = argument.find(' ');
 	char mode_char = argument[space + 1];
 	char mode_option = argument[space + 2];
 	if (mode_char == '-')
@@ -58,32 +55,32 @@ void handle_mode(std::string argument, bool is_user)
 	{
 		case 0:
 		{
-			std::cout << "case 1" << arg << std::endl;
+			std::cout << channel << "case 1" << arg << std::endl;
 			break;
 		}
 		case 1:
 		{
-			std::cout << "case 2" << arg << std::endl;
+			std::cout << channel << "case 2" << arg << std::endl;
 			break;
 		}
 		case 2:
 		{
-			std::cout << "case 3" << arg << std::endl;
+			std::cout << channel << "case 3" << arg << std::endl;
 			break;
 		}
 		case 3:
 		{
-			std::cout << "case 4" << arg << std::endl;
+			std::cout << channel << "case 4" << arg << std::endl;
 			break;
 		}
 		case 4:
 		{
-			std::cout << "case 5" << arg << std::endl;
+			std::cout << channel << "case 5" << arg << std::endl;
 			break;
 		}
 		default:
 		{
-			std::cout << "is not a valid argument" << std::endl;
+			std::cout << channel << "is not a valid argument" << std::endl;
 			break;
 		}	
 	}

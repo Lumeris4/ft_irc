@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:22:10 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/12 11:59:19 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/12 12:21:09 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,4 +61,5 @@ class Server
 	bool		haveright(int socketfd, std::string channel);
 };
 
-void handle_mode(std::string argument, bool is_user);
+void handle_mode(std::string argument);
+void handle_topic(std::string argument);
