@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:22:10 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/12 13:04:28 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/12 14:48:39 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,31 +37,31 @@ class Server
 	Server();
 	Server(std::string password, int port);
 	~Server();
-	void	addUser(int socketfd, std::string name, std::string nickname);
-	void	addChannel(std::string name, std::string proprio);
+	void									addUser(int socketfd, std::string name, std::string nickname);
+	void									addChannel(std::string name, std::string proprio);
 	const std::map<std::string, User>		&getListUser() const;
 	const std::map<std::string, Channel>	&getListChannel() const;
-	int 	init_server();
-	int 	check_password(std::string password);
-	int 	parsing (std::string input, int i);
-	int 	setNickname(std::string nick);
-	int 	setUser(std::string nick);
-	int 	createUser(int socketfd, int i);
-	void	changeTopic(std::string channel, std::string topic);
-	void	changePerm(std::string channel, bool perm, int socketfd);
-	void	changePassword(std::string channel, std::string password, int socketfd);
-	void	givePerm(std::string channel, std::string name, bool give, int socketfd);
-	void	changeLimit(std::string channel, int limit, int socketfd);
-	void	permTopic(std::string channel, bool perm, int socketfd);
-	void	kick(std::string channel, std::string nickname, int socketfd);
-	void	invite(std::string channel, std::string user);
-	void	joinCanal(std::string channel, std::string password, int socketfd);
-	void	sendMessage(std::string destination, std::string content, int socketfd);
-	std::string	whatUser(int socketfd);
-	bool		haveright(int socketfd, std::string channel);
+	int 									init_server();
+	int 									check_password(std::string password);
+	int 									parsing (std::string input, int i);
+	int 									setNickname(std::string nick);
+	int 									setUser(std::string nick);
+	int 									createUser(int socketfd, int i);
+	void									changeTopic(std::string channel, std::string topic);
+	void									changePerm(std::string channel, bool perm, int socketfd);
+	void									changePassword(std::string channel, std::string password, int socketfd);
+	void									givePerm(std::string channel, std::string name, bool give, int socketfd);
+	void									changeLimit(std::string channel, int limit, int socketfd);
+	void									permTopic(std::string channel, bool perm, int socketfd);
+	void									kick(std::string channel, std::string nickname, int socketfd);
+	void									invite(std::string channel, std::string user);
+	void									joinCanal(std::string channel, std::string password, int socketfd);
+	void									sendMessage(std::string destination, std::string content, int socketfd);
+	std::string								whatUser(int socketfd);
+	bool									haveright(int socketfd, std::string channel);
+	void 									handle_join(std::string argument, int socketfd);
+	void									handle_mode(std::string argument, int socketfd);
+	void									handle_topic(std::string argument, int socketfd);
+	void									handle_invite(std::string argument, int socketfd);
+	void									handle_kick(std::string argument, int socketfd);
 };
-
-void handle_mode(std::string argument);
-void handle_topic(std::string argument);
-void handle_invite(std::string argument);
-void handle_kick(std::string argument);

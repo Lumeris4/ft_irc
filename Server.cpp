@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/12 12:56:06 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/12 14:49:19 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,11 @@ int Server::createUser(int socketfd, int i)
 
 int Server::setNickname(std::string nick)
 {
-	std::cout << nick << std::endl;
+	if (nick.empty())
+	{
+		std::cout << "Nickname cannot be empty";
+		return (-1);
+	}
 	if (nick.length() > 9)
 	{
 		std::cout << "nick length has too long" << std::endl;
@@ -47,6 +51,11 @@ int Server::setNickname(std::string nick)
 
 int Server::setUser(std::string nick)
 {
+	if (nick.empty())
+	{
+		std::cout << "Username cannot be empty";
+		return (-1);
+	}
 	_user = nick;
 	return (0);
 }
@@ -149,22 +158,27 @@ int Server::init_server()
 								}
 								case 3:
 								{
-									handle_mode(_argument);
+									handle_mode(_argument, fds[i].fd);
 									break;
 								}
 								case 4:
 								{
-									handle_topic(_argument);
+									handle_topic(_argument, fds[i].fd);
 									break;
 								}
 								case 5:
 								{
-									handle_invite(_argument);
+									handle_invite(_argument, fds[i].fd);
 									break;
 								}
 								case 6:
 								{
-									handle_kick(_argument);
+									handle_kick(_argument, fds[i].fd);
+									break;
+								}
+								case 7:
+								{
+									handle_join(_argument, fds[i].fd);
 									break;
 								}
 								case 10:

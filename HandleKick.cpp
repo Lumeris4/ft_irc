@@ -6,15 +6,17 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 12:44:06 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/12 13:26:54 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/12 14:50:53 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 #include "User.hpp"
 
-void handle_kick(std::string argument)
+void Server::handle_kick(std::string argument, int socketfd)
 {
+	int nsm = socketfd;
+	nsm = 0;
 	std::string reason;
 	size_t first_space = argument.find(' ');
 	if (first_space == std::string::npos)

@@ -6,15 +6,17 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 12:50:42 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/12 13:22:45 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/12 14:50:55 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 #include "User.hpp"
 
-void handle_invite(std::string argument)
+void Server::handle_invite(std::string argument, int socketfd)
 {
+	int nsm = socketfd;
+	nsm = 0;
 	size_t index = argument.find('#');
 	if (index == std::string::npos)
 	{
