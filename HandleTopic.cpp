@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   HandleTopic.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 12:21:36 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/12 13:23:04 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/12 13:41:47 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "User.hpp"
 
 
-void handle_topic(std::string argument)
+void Server::handle_topic(std::string argument)
 {
 	size_t index = argument.find('#');
 	if (index == std::string::npos)

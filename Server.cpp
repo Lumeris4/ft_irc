@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/12 13:36:55 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/12 13:47:50 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,7 +164,7 @@ int Server::init_server()
 								}
 								case 6:
 								{
-									handle_kick(_argument);
+									handle_kick(_argument, fds[i].fd);
 									break;
 								}
 								case 10:

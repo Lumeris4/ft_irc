@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:22:10 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/12 13:35:49 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/12 13:48:23 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,9 +59,9 @@ class Server
 	void	sendMessage(std::string destination, std::string content, int socketfd);
 	std::string	whatUser(int socketfd);
 	bool		haveright(int socketfd, std::string channel);
+	void handle_kick(std::string argument);
+	void handle_mode(std::string argument);
+	void handle_topic(std::string argument);
+	void handle_invite(std::string argument);
+	void handle_kick(std::string argument, int socket);
 };
-
-void handle_mode(std::string argument);
-void handle_topic(std::string argument);
-void handle_invite(std::string argument);
-void handle_kick(std::string argument);
