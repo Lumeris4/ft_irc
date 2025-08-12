@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 13:10:28 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/11 15:21:49 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/12 11:34:39 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ bool connected[MAX_CLIENTS] = {false, false, false, false, false, false, false, 
 int Server::parsing (std::string input, int j)
 {
 	std::string argument;
-	std::string array[] = {"CAP", "PASS", "NICK", "USER"};
+	std::string array[] = {"CAP", "PASS", "NICK", "USER", "MODE"};
 	int			size = sizeof(array) / sizeof(array[0]);
 	int			last_upper;
 	int			level = -1;
@@ -58,15 +58,11 @@ int Server::parsing (std::string input, int j)
 				return (0);
 			}
 			case 2:
-			{
-				std::cout << "command NICK found" << std::endl;
 				return (1);
-			}
 			case 3:
-			{
-				std::cout << "command USER found" << std::endl;
 				return (2);
-			}
+			case 4:
+				return (3);
 			default:
 				std::cout << input << " is not a valid command" <<std::endl;
 				return (0);

@@ -6,17 +6,22 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/11 15:22:07 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/12 10:50:33 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 #include "User.hpp"
 
-int Server::createUser(int socketfd)
+bool is_user[MAX_CLIENTS];
+
+int Server::createUser(int socketfd, int i)
 {
+	if (is_user[i])
+		return (0);
 	addUser(socketfd, _nickname, _user);
-	std::cout << "User created" << socketfd << std::endl;
+	is_user[i] = true;
+	std::cout << "User created " << socketfd << std::endl;
 	return (0);
 }
 
@@ -125,7 +130,9 @@ int Server::init_server()
 						while (std::getline(ss, cmd, '\n'))
 						{
 							_argument= "";
-    		 						j = parsing(cmd, i);
+    		 				j = parsing(cmd, i);
+							if (is_user[i] == false && j > 2)
+								j = 10;
 							switch (j)
 							{
 								case 0:
@@ -140,12 +147,25 @@ int Server::init_server()
 									setUser(_argument);
 									break;
 								}
+								case 3:
+								{
+									handle_mode(_argument, is_user[i]);
+									break;
+								}
+								case 4:
+								{
+									
+								}
+								case 10:
+								{
+									std::cout << "Cannot execute command if clients is not a user" << std::endl;
+								}
 								default:
 									break;
 							}
 							j = -1;
 							if (_nickname.compare("") && _user.compare(""))
-								createUser(fds[i].fd);
+								createUser(fds[i].fd, i);
 						}
 					}
 					else if (n == 0)

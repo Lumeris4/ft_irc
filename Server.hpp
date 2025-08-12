@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:22:10 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/11 15:21:12 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/12 10:50:11 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ class Server
 	int 	parsing (std::string input, int i);
 	int 	setNickname(std::string nick);
 	int 	setUser(std::string nick);
-	int 	createUser(int socketfd);
+	int 	createUser(int socketfd, int i);
 	void	changeTopic(std::string channel, std::string topic);
 	void	changePerm(std::string channel, bool perm);
 	void	changePassword(std::string channel, std::string password);
@@ -54,3 +54,5 @@ class Server
 	void	permTopic(std::string channel, bool perm);
 	void	kick(std::string channel, std::string nickname);
 };
+
+void handle_mode(std::string argument, bool is_user);
