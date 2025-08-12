@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/12 11:30:12 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/12 12:42:29 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -219,6 +219,13 @@ bool Server::haveright(int socketfd, std::string channel)
 		std::vector<std::string>::iterator itp = find(copy.begin(), copy.end(), nickname);
 		if (itp != copy.end())
 			return true;
+		std::string response = "482 " + nickname + " #" + channel + " :You're not the channel operator";
+		send(socketfd, response.c_str(), response.size(), 0);
+	}
+	else
+	{
+		std::string response = "403 " + nickname + " #" + channel + " :No such Channel";
+		send(socketfd, response.c_str(), response.size(), 0);
 	}
 	return false;
 }
@@ -248,7 +255,6 @@ const std::map<std::string, Channel>	&Server::getListChannel() const
 
 void	Server::changeTopic(std::string channel, std::string topic)
 {
-	//check user have right
 	std::map<std::string, Channel>::iterator ito = this->_list_channel.find(channel);
 	if (ito != _list_channel.end())
 	{
@@ -333,8 +339,10 @@ void Server::kick(std::string channel, std::string nickname, int socketfd)
 	}
 }
 
-void Server::invite(std::string channel, std::string user)
+void Server::invite(std::string channel, std::string user, int socketfd)
 {
+	if (!haveright(socketfd, channel))
+		return;
 	std::map<std::string, Channel>::iterator ito = this->_list_channel.find(channel);
 	std::vector<std::string>::iterator it;
 	if (ito != _list_channel.end())
@@ -358,9 +366,19 @@ void	Server::joinCanal(std::string canal, std::string password, int socketfd)
 				std::vector<std::string>::iterator itp = find(copy.begin(), copy.end(), nickname);
 				if (itp != copy.end())
 					it->second.adduser(nickname);
+				else
+				{
+					std::string response = "473 " + nickname + " #" + canal + " :Cannot join channel (+i)"; 
+					send(socketfd, response.c_str(), response.size(), 0);
+				}
 			}
 			else
 					it->second.adduser(nickname);
+		}
+		else
+		{
+			std::string response = "475 " + nickname + " #" + canal + " :Cannot join channel (+k)";
+			send(socketfd, response.c_str(), response.size(), 0);
 		}
 	}
 	else
