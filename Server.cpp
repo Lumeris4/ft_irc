@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/12 12:43:34 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/12 13:12:13 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -349,14 +349,23 @@ void Server::permTopic(std::string channel, bool perm, int socketfd)
 	}
 }
 
-void Server::kick(std::string channel, std::string nickname, int socketfd)
+void Server::kick(std::string channel, std::string nickname, std::string reason, int socketfd)
 {
 	if (!haveright(socketfd, channel))
 		return;
+	std::string whoami = whatUser(socketfd);
 	std::map<std::string, Channel>::iterator ito = this->_list_channel.find(channel);
-	if (ito != _list_channel.end())
+	ito->second.kickuser(nickname);
+	std::vector<std::string> copy = ito->second.getListUser();
+	std::vector<std::string>::iterator ivector;
+	std::map<std::string, User>::iterator imap;
+	int socketmember;
+	std::string message = nickname + " was banned by " + whoami + " (" + reason + ")";
+	for (ivector = copy.begin(); ivector != copy.end(); ++ivector)
 	{
-			ito->second.kickuser(nickname);
+		imap = _list_user.find(*ivector);
+		socketmember = imap->second.getSocket();
+		send(socketmember, message.c_str(), message.size(), 0);
 	}
 }
 
@@ -379,7 +388,7 @@ void	Server::joinCanal(std::string canal, std::string password, int socketfd)
 	if (it != _list_channel.end())
 	{
 		bool a = it->second.getAccess();
-		if (password.compare(it->second.getPassword()))
+		if (password.compare(it->second.getPassword()) == 0)
 		{
 			if (a)
 			{	
