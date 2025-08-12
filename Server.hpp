@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:22:10 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/12 08:58:51 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/12 11:06:49 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ class Server
 	Server(std::string password, int port);
 	~Server();
 	void	addUser(int socketfd, std::string name, std::string nickname);
-	void	addChannel(std::string name, User &proprio);
+	void	addChannel(std::string name, std::string proprio);
 	const std::map<std::string, User>		&getListUser() const;
 	const std::map<std::string, Channel>	&getListChannel() const;
 	int 	init_server();
@@ -55,6 +55,7 @@ class Server
 	void	permTopic(std::string channel, bool perm);
 	void	kick(std::string channel, std::string nickname);
 	void	invite(std::string channel, std::string user);
-	void	joinCanal(std::string channel, std::string password);
+	void	joinCanal(std::string channel, std::string password, int socketfd);
 	void	sendMessage(std::string destination, std::string content, int socketfd);
+	std::string	whatUser(int socketfd);
 };

@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 09:08:11 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/11 12:34:42 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/12 10:58:30 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 Channel::Channel(std::string name, std::string creator): _name(name), _limit(-1), _access(false), _access_topic(false)
 {
+	this->_password = "";
 	this->_chef_usernames.push_back(creator);
 	this->_list_user.push_back(creator);
 }
@@ -98,6 +99,11 @@ void Channel::adduser(std::string nickname)
 	it = find(_list_user.begin(), _list_user.end(), nickname);
 	if (it == _list_user.end())
 		this->_list_user.push_back(nickname);
+	if (this->_access)
+	{
+		it = find(_invitate.begin(), _invitate.end(), nickname);
+		this->_invitate.erase(it);
+	}
 }
 
 void Channel::kickuser(std::string nickname)

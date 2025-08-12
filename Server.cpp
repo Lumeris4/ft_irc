@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/12 09:30:31 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/12 11:06:29 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,9 +185,25 @@ Server::~Server() {}
 
 Server::Server(): _port(-1) {}
 
-void	Server::addChannel(std::string name, User &proprio)
+std::string Server::whatUser(int socketfd)
 {
-	Channel channel = Channel(name, proprio.getNickname());
+	std::string nickname;
+	std::map<int, User>::iterator it;
+	for (it = _list_socket_user.begin(); it != _list_socket_user.end(); it++)
+	{
+		if (it->first == socketfd)
+		{
+			nickname = it->second.getNickname();
+		}
+	}
+	if (nickname.empty())
+		return NULL;
+	return nickname;
+}
+
+void	Server::addChannel(std::string name, std::string proprio)
+{
+	Channel channel = Channel(name, proprio);
 	this->_list_channel.insert(std::pair<std::string, Channel>(name, channel));
 }
 
@@ -240,15 +256,7 @@ void	Server::changePassword(std::string channel, std::string password)
 
 void	Server::givePerm(std::string channel, std::string name, bool give, int socketfd)
 {
-	std::string nickname;
-	std::map<int, User>::iterator it;
-	for (it = _list_socket_user.begin(); it != _list_socket_user.end(); it++)
-	{
-		if (it->first == socketfd)
-		{
-			nickname = it->second.getNickname();
-		}
-	}
+	std::string nickname = whatUser(socketfd);
 	if (nickname.empty())
 		return;
 	std::map<std::string, Channel>::iterator ito = this->_list_channel.find(channel);
@@ -306,11 +314,29 @@ void Server::invite(std::string channel, std::string user)
 	}
 }
 
-void	Server::joinCanal(std::string canal, std::string password)
+void	Server::joinCanal(std::string canal, std::string password, int socketfd)
 {
-	(void)canal;
-	(void)password;
-	//j ai besoin de savoir qui est le user
+	std::string nickname = whatUser(socketfd);
+	std::map<std::string, Channel>::iterator it = _list_channel.find(canal);
+	if (it != _list_channel.end())
+	{
+		bool a = it->second.getAccess();
+		if (password.compare(it->second.getPassword()))
+		{
+			if (a)
+			{	
+				std::vector<std::string> copy = it->second.getListInvitation();
+				std::vector<std::string>::iterator itp = find(copy.begin(), copy.end(), nickname);
+				if (itp != copy.end())
+					it->second.adduser(nickname);
+			}
+			else
+					it->second.adduser(nickname);
+		}
+	}
+	else
+		this->addChannel(canal, nickname);
+	
 }
 
 void Server::sendMessage(std::string destination, std::string content, int socketfd)
