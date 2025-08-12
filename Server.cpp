@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/12 13:47:50 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/12 14:44:15 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,17 +149,17 @@ int Server::init_server()
 								}
 								case 3:
 								{
-									handle_mode(_argument);
+									handle_mode(_argument, fds[i].fd);
 									break;
 								}
 								case 4:
 								{
-									handle_topic(_argument);
+									handle_topic(_argument, fds[i].fd);
 									break;
 								}
 								case 5:
 								{
-									handle_invite(_argument);
+									handle_invite(_argument, fds[i].fd);
 									break;
 								}
 								case 6:
@@ -284,12 +284,15 @@ const std::map<std::string, Channel>	&Server::getListChannel() const
 	return this->_list_channel;
 }
 
-void	Server::changeTopic(std::string channel, std::string topic)
+void	Server::changeTopic(std::string channel, std::string topic, int socketfd)
 {
 	std::map<std::string, Channel>::iterator ito = this->_list_channel.find(channel);
 	if (ito != _list_channel.end())
 	{
-		ito->second.setTopic(topic);
+		if (topic == "")
+			send(socketfd, ito->second.getTopic().c_str(), ito->second.getTopic().size(), 0);
+		else
+			ito->second.setTopic(topic);
 	}
 }
 

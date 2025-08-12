@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 12:21:36 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/12 13:41:47 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/12 14:40:24 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "User.hpp"
 
 
-void Server::handle_topic(std::string argument)
+void Server::handle_topic(std::string argument, int socketfd)
 {
 	size_t index = argument.find('#');
 	if (index == std::string::npos)
@@ -32,9 +32,11 @@ void Server::handle_topic(std::string argument)
 	if (pos == std::string::npos)
 	{
 		std::cout << "Ceci est le topic du channel" << std::endl;
+		this->changeTopic(channel, "");
 		return;
 	}
 	std::string newTopic = argument.substr(pos + 1);
 	//setTopic(newTopic);
 	std::cout << "new topic : " << newTopic << std::endl;
+	this->changeTopic(channel, newTopic);
 }

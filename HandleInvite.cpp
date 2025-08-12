@@ -6,14 +6,14 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 12:50:42 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/12 13:41:02 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/12 14:38:17 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 #include "User.hpp"
 
-void Server::handle_invite(std::string argument)
+void Server::handle_invite(std::string argument, int socketfd)
 {
 	size_t index = argument.find('#');
 	if (index == std::string::npos)
@@ -36,4 +36,5 @@ void Server::handle_invite(std::string argument)
 	}
 	//setTopic(newTopic);
 	std::cout << "user " << user << " got invited in " << channel << "]" << std::endl;
+	this->invite(channel ,user, socketfd);
 }

@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:22:10 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/12 13:48:23 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/12 14:41:13 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ class Server
 	int 	setNickname(std::string nick);
 	int 	setUser(std::string nick);
 	int 	createUser(int socketfd, int i);
-	void	changeTopic(std::string channel, std::string topic);
+	void	changeTopic(std::string channel, std::string topic, int socketfd);
 	void	changePerm(std::string channel, bool perm, int socketfd);
 	void	changePassword(std::string channel, std::string password, int socketfd);
 	void	givePerm(std::string channel, std::string name, bool give, int socketfd);
@@ -59,9 +59,8 @@ class Server
 	void	sendMessage(std::string destination, std::string content, int socketfd);
 	std::string	whatUser(int socketfd);
 	bool		haveright(int socketfd, std::string channel);
-	void handle_kick(std::string argument);
-	void handle_mode(std::string argument);
-	void handle_topic(std::string argument);
-	void handle_invite(std::string argument);
+	void handle_mode(std::string argument, int socketfd);
+	void handle_topic(std::string argument, int socketfd);
+	void handle_invite(std::string argument, int socketfd);
 	void handle_kick(std::string argument, int socket);
 };
