@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:22:10 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/11 15:36:33 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/12 08:58:51 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,5 +56,5 @@ class Server
 	void	kick(std::string channel, std::string nickname);
 	void	invite(std::string channel, std::string user);
 	void	joinCanal(std::string channel, std::string password);
-	void	sendMessage(std::string destination, std::string content);
+	void	sendMessage(std::string destination, std::string content, int socketfd);
 };

@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/11 15:55:24 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/12 09:30:31 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,7 +147,6 @@ int Server::init_server()
 							if (_nickname.compare("") && _user.compare(""))
 								createUser(fds[i].fd);
 						}
-						//ici
 					}
 					else if (n == 0)
 					{
@@ -314,9 +313,22 @@ void	Server::joinCanal(std::string canal, std::string password)
 	//j ai besoin de savoir qui est le user
 }
 
-void Server::sendMessage(std::string destination, std::string content)
+void Server::sendMessage(std::string destination, std::string content, int socketfd)
 {
-	//plus tard
-	(void)destination;
-	(void)content;
+	std::string nickname;
+	int socket_destinate;
+	std::map<int, User>::iterator it;
+	for (it = _list_socket_user.begin(); it != _list_socket_user.end(); it++)
+	{
+		if (it->first == socketfd)
+		{
+			nickname = it->second.getNickname();
+		}
+	}
+	if (nickname.empty())
+		return;
+	std::map<std::string, User>::iterator itt;
+	itt = _list_user.find(destination);
+	socket_destinate = itt->second.getSocket();
+	send(socket_destinate, content.c_str(), content.size(),0);
 }
