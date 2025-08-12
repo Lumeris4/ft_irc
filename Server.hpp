@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:22:10 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/12 12:46:43 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/12 13:35:49 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,3 +63,5 @@ class Server
 
 void handle_mode(std::string argument);
 void handle_topic(std::string argument);
+void handle_invite(std::string argument);
+void handle_kick(std::string argument);

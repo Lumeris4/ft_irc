@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/12 13:12:13 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/12 13:36:55 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,6 +155,16 @@ int Server::init_server()
 								case 4:
 								{
 									handle_topic(_argument);
+									break;
+								}
+								case 5:
+								{
+									handle_invite(_argument);
+									break;
+								}
+								case 6:
+								{
+									handle_kick(_argument);
 									break;
 								}
 								case 10:
@@ -323,7 +333,10 @@ void	Server::givePerm(std::string channel, std::string name, bool give, int sock
 				ito->second.demote(name);
 		}
 		else
-			std::cout << nickname << "have not the permission right\n";
+		{
+			std::string response = "482 " + nickname + " #" + channel + " :You're not the channel operator";
+			send(socketfd, response.c_str(), response.size(), 0);
+		}
 	}
 }
 

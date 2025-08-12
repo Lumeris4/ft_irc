@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 10:38:15 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/12 12:39:06 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/12 13:23:13 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,11 @@ void handle_mode(std::string argument)
 	}
 	size_t space = argument.find(' ');
 	std::string channel = argument.substr(pos + 1, space);
+	if (channel.empty())
+	{
+		std::cout << "Invalid format (bad channel)\n";
+		return;
+	}
 	std::string arg;
 	bool		set_mode;
 	char mode_char = argument[space + 1];
