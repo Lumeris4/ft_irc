@@ -1,20 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   HandleTopic.cpp                                    :+:      :+:    :+:   */
+/*   HandleInvite.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/12 12:21:36 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/12 13:23:04 by bfiquet          ###   ########.fr       */
+/*   Created: 2025/08/12 12:50:42 by bfiquet           #+#    #+#             */
+/*   Updated: 2025/08/12 13:22:45 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 #include "User.hpp"
 
-
-void handle_topic(std::string argument)
+void handle_invite(std::string argument)
 {
 	size_t index = argument.find('#');
 	if (index == std::string::npos)
@@ -23,18 +22,18 @@ void handle_topic(std::string argument)
 		return;
 	}
 	size_t pos = argument.find(' ');
-	std::string channel = argument.substr(1, pos);
+	std::string user = argument.substr(0, pos);
+	if (pos == std::string::npos)
+	{
+		std::cout << "Invalid format" << std::endl;
+		return;
+	}
+	std::string channel = argument.substr(index + 1);
 	if (channel.empty())
 	{
 		std::cout << "Invalid format (bad channel)\n";
 		return;
 	}
-	if (pos == std::string::npos)
-	{
-		std::cout << "Ceci est le topic du channel" << std::endl;
-		return;
-	}
-	std::string newTopic = argument.substr(pos + 1);
 	//setTopic(newTopic);
-	std::cout << "new topic : " << newTopic << std::endl;
+	std::cout << "user " << user << " got invited in " << channel << "]" << std::endl;
 }

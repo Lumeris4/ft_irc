@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/12 12:39:25 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/12 12:56:06 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,6 +155,16 @@ int Server::init_server()
 								case 4:
 								{
 									handle_topic(_argument);
+									break;
+								}
+								case 5:
+								{
+									handle_invite(_argument);
+									break;
+								}
+								case 6:
+								{
+									handle_kick(_argument);
 									break;
 								}
 								case 10:
