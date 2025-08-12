@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/12 11:06:29 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/12 11:30:12 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -201,6 +201,28 @@ std::string Server::whatUser(int socketfd)
 	return nickname;
 }
 
+bool Server::haveright(int socketfd, std::string channel)
+{
+	std::string nickname;
+	std::map<int, User>::iterator it;
+	for (it = _list_socket_user.begin(); it != _list_socket_user.end(); it++)
+	{
+		if (it->first == socketfd)
+		{
+			nickname = it->second.getNickname();
+		}
+	}
+	std::map<std::string, Channel>::iterator itt = _list_channel.find(channel);
+	if (itt != _list_channel.end())
+	{
+		std::vector<std::string> copy = itt->second.getListChef();
+		std::vector<std::string>::iterator itp = find(copy.begin(), copy.end(), nickname);
+		if (itp != copy.end())
+			return true;
+	}
+	return false;
+}
+
 void	Server::addChannel(std::string name, std::string proprio)
 {
 	Channel channel = Channel(name, proprio);
@@ -234,9 +256,10 @@ void	Server::changeTopic(std::string channel, std::string topic)
 	}
 }
 
-void	Server::changePerm(std::string channel, bool perm)
+void	Server::changePerm(std::string channel, bool perm, int socketfd)
 {
-	//check user right
+	if (!haveright(socketfd, channel))
+		return;
 	std::map<std::string, Channel>::iterator ito = this->_list_channel.find(channel);
 	if (ito != _list_channel.end())
 	{
@@ -244,9 +267,10 @@ void	Server::changePerm(std::string channel, bool perm)
 	}
 }
 
-void	Server::changePassword(std::string channel, std::string password)
+void	Server::changePassword(std::string channel, std::string password, int socketfd)
 {
-	//check user right
+	if (!haveright(socketfd, channel))
+		return;
 	std::map<std::string, Channel>::iterator ito = this->_list_channel.find(channel);
 	if (ito != _list_channel.end())
 	{
@@ -276,8 +300,10 @@ void	Server::givePerm(std::string channel, std::string name, bool give, int sock
 	}
 }
 
-void Server::changeLimit(std::string channel, int limit)
+void Server::changeLimit(std::string channel, int limit, int socketfd)
 {
+	if (!haveright(socketfd, channel))
+		return;
 	std::map<std::string, Channel>::iterator ito = this->_list_channel.find(channel);
 	if (ito != _list_channel.end())
 	{
@@ -285,8 +311,10 @@ void Server::changeLimit(std::string channel, int limit)
 	}
 }
 
-void Server::permTopic(std::string channel, bool perm)
+void Server::permTopic(std::string channel, bool perm, int socketfd)
 {
+	if (!haveright(socketfd, channel))
+		return;
 	std::map<std::string, Channel>::iterator ito = this->_list_channel.find(channel);
 	if (ito != _list_channel.end())
 	{
@@ -294,9 +322,10 @@ void Server::permTopic(std::string channel, bool perm)
 	}
 }
 
-void Server::kick(std::string channel, std::string nickname)
+void Server::kick(std::string channel, std::string nickname, int socketfd)
 {
-	//check user right
+	if (!haveright(socketfd, channel))
+		return;
 	std::map<std::string, Channel>::iterator ito = this->_list_channel.find(channel);
 	if (ito != _list_channel.end())
 	{

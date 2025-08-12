@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:22:10 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/12 11:06:49 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/12 11:28:44 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,14 +48,15 @@ class Server
 	int 	setUser(std::string nick);
 	int 	createUser(int socketfd);
 	void	changeTopic(std::string channel, std::string topic);
-	void	changePerm(std::string channel, bool perm);
-	void	changePassword(std::string channel, std::string password);
+	void	changePerm(std::string channel, bool perm, int socketfd);
+	void	changePassword(std::string channel, std::string password, int socketfd);
 	void	givePerm(std::string channel, std::string name, bool give, int socketfd);
-	void	changeLimit(std::string channel, int limit);
-	void	permTopic(std::string channel, bool perm);
-	void	kick(std::string channel, std::string nickname);
+	void	changeLimit(std::string channel, int limit, int socketfd);
+	void	permTopic(std::string channel, bool perm, int socketfd);
+	void	kick(std::string channel, std::string nickname, int socketfd);
 	void	invite(std::string channel, std::string user);
 	void	joinCanal(std::string channel, std::string password, int socketfd);
 	void	sendMessage(std::string destination, std::string content, int socketfd);
 	std::string	whatUser(int socketfd);
+	bool		haveright(int socketfd, std::string channel);
 };
