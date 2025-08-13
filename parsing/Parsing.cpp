@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 13:10:28 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/12 14:52:16 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/13 12:33:08 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 
 bool connected[MAX_CLIENTS] = {false, false, false, false, false, false, false, false, false, false};
 
-int Server::parsing (std::string input, int j)
+int Server::parsing (std::string input, int j, int socketfd)
 {
 	std::string argument;
-	std::string array[] = {"CAP", "PASS", "NICK", "USER", "MODE", "TOPIC", "INVITE", "KICK", "JOIN", "MSG"};
+	std::string array[] = {"CAP", "PASS", "NICK", "USER", "MODE", "TOPIC", "INVITE", "KICK", "JOIN", "MSG", "PING", "WHOIS"};
 	int			size = sizeof(array) / sizeof(array[0]);
 	int			last_upper;
 	int			level = -1;
@@ -49,7 +49,7 @@ int Server::parsing (std::string input, int j)
 			{
 				if (connected[j] == true)
 					std::cout << "Client has already entered the password" << std::endl;
-				else if (check_password(_argument) == -1)
+				else if (check_password(_argument, socketfd) == -1)
 				{
 					std::cout << "Client has entered wrong password" << std::endl;
 					return (-1);
@@ -71,6 +71,12 @@ int Server::parsing (std::string input, int j)
 				return (6);
 			case 8:
 				return (7);
+			case 9:
+				return (8);
+			case 10:
+				return (9);
+			case 11:
+				return (10);
 			default:
 				std::cout << input << " is not a valid command" <<std::endl;
 				return (0);

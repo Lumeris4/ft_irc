@@ -1,24 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Check_password.cpp                                 :+:      :+:    :+:   */
+/*   HandleWhois.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/06 13:11:00 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/13 10:39:40 by bfiquet          ###   ########.fr       */
+/*   Created: 2025/08/13 11:26:42 by bfiquet           #+#    #+#             */
+/*   Updated: 2025/08/13 12:31:54 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../Server.hpp"
+#include "User.hpp"
+#include "Server.hpp"
 
-int Server::check_password(std::string password, int socketfd)
+void	Server::handle_whois(std::string argument, int socketfd)
 {
-	if (password.compare(_password) != 0)
-		return (-1);
-	std::string servername = "ircserv";
-	std::string message = ":" + servername + " 001 " + _nickname + " :Welcome to the IRC Network " + _nickname + "!* @lelanglo&@bfiquet\r\n";
+	std::string message;
+	if (argument.empty())
+		message = ":" + _servername + "requester" + _user + "user host * :" + _user + "Real Name";
+	else 
+		message = ":" + _servername + "requester" + _user;
 	send(socketfd, message.c_str(), message.length(), 0);
-	std::cout << "Client has entered password. Accessing server" << std::endl;
-	return (0);
 }
