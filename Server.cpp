@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/13 11:27:56 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/13 12:33:23 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -433,7 +433,10 @@ void	Server::joinCanal(std::string canal, std::string password, int socketfd)
 				}
 			}
 			else
+			{
 					it->second.adduser(nickname);
+					std::cout << nickname << "add to " << it->first  << "\n";
+			}
 		}
 		else
 		{
@@ -442,7 +445,10 @@ void	Server::joinCanal(std::string canal, std::string password, int socketfd)
 		}
 	}
 	else
+	{
 		this->addChannel(canal, nickname);
+		std::cout << canal << " add\n";
+	}
 	
 }
 
