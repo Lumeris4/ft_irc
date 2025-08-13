@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:22:10 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/12 14:59:59 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/13 11:29:40 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ class Server
 {
 	protected:
 	std::string						_password;
+	std::string						_servername;
 	int								_port;
 	std::map<int, User>				_list_socket_user;
 	std::map<std::string ,User>		_list_user;
@@ -42,8 +43,8 @@ class Server
 	const std::map<std::string, User>		&getListUser() const;
 	const std::map<std::string, Channel>	&getListChannel() const;
 	int 									init_server();
-	int 									check_password(std::string password);
-	int 									parsing (std::string input, int i);
+	int 									check_password(std::string password, int socketfd);
+	int 									parsing (std::string input, int i, int socketfd);
 	int 									setNickname(std::string nick);
 	int 									setUser(std::string nick);
 	int 									createUser(int socketfd, int i);
@@ -64,4 +65,6 @@ class Server
 	void									handle_topic(std::string argument, int socketfd);
 	void									handle_invite(std::string argument, int socketfd);
 	void									handle_kick(std::string argument, int socketfd);
+	void 									handle_ping( std::string argument, int socketfd);
+	void									handle_whois(std::string argument, int socketfd);
 };

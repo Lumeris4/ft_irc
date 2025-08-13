@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/12 14:58:48 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/13 12:35:33 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@ int Server::createUser(int socketfd, int i)
 	addUser(socketfd, _nickname, _user);
 	is_user[i] = true;
 	std::cout << "User created " << socketfd << std::endl;
+	_user = "";
+	_nickname = "";
 	return (0);
 }
 
@@ -66,7 +68,7 @@ int Server::init_server()
 	int new_socket;
 	char buffer[1024];
 	int j = -1;
-
+	_servername = "ircserv";
 	servsocket = socket(AF_INET, SOCK_STREAM, 0);
 	
 	if (servsocket < 0)
@@ -139,9 +141,9 @@ int Server::init_server()
 						while (std::getline(ss, cmd, '\n'))
 						{
 							_argument= "";
-    		 				j = parsing(cmd, i);
+    		 				j = parsing(cmd, i, fds[i].fd);
 							if (is_user[i] == false && j > 2)
-								j = 10;
+								j = 20;
 							switch (j)
 							{
 								case 0:
@@ -181,7 +183,21 @@ int Server::init_server()
 									handle_join(_argument, fds[i].fd);
 									break;
 								}
-								case 10:
+								case 8:
+								{
+									//msg ici
+									break;
+								}
+								case 9:
+								{
+									handle_ping(_argument, fds[i].fd);
+									break;
+								}
+								case 10: 
+								{
+									handle_whois(_argument, fds[i].fd);
+								}
+								case 20:
 								{
 									std::cout << "Cannot execute command if clients is not a user" << std::endl;
 								}

@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 12:21:36 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/13 10:11:36 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/13 10:17:35 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ void Server::handle_topic(std::string argument, int socketfd)
 		return;
 	}
 	std::string newTopic = argument.substr(pos + 1);
-	//setTopic(newTopic);
 	std::cout << "new topic : " << newTopic << std::endl;
 	this->changeTopic(channel, newTopic, socketfd);
 }
