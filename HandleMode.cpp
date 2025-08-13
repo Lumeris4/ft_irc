@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 10:38:15 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/13 10:10:39 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/13 10:11:21 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,26 +61,31 @@ void Server::handle_mode(std::string argument, int socketfd)
 		case 0:
 		{
 			std::cout << channel << "case 1" << arg << std::endl;
+			this->changePerm(channel, set_mode, socketfd);
 			break;
 		}
 		case 1:
 		{
 			std::cout << channel << "case 2" << arg << std::endl;
+			this->permTopic(channel, set_mode, socketfd);
 			break;
 		}
 		case 2:
 		{
 			std::cout << channel << "case 3" << arg << std::endl;
+			this->changePassword(channel, arg, socketfd);
 			break;
 		}
 		case 3:
 		{
 			std::cout << channel << "case 4" << arg << std::endl;
+			this->givePerm(channel, arg, set_mode, socketfd);
 			break;
 		}
 		case 4:
 		{
 			std::cout << channel << "case 5" << arg << std::endl;
+			this->changeLimit(channel, atoi(arg.c_str()), socketfd);
 			break;
 		}
 		default:

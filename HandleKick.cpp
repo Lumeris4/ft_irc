@@ -6,14 +6,14 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 12:44:06 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/13 10:10:34 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/13 10:11:24 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 #include "User.hpp"
 
-void Server::handle_kick(std::string argument, int socketfd)
+void Server::handle_kick(std::string argument, int socket)
 {
 	std::string reason;
 	size_t first_space = argument.find(' ');
@@ -44,5 +44,6 @@ void Server::handle_kick(std::string argument, int socketfd)
 	if (!reason.empty() && reason[0] == ':')
 		reason = reason.substr(1);
 	std::cout << "User " << user << " got kicked from " << channel << " because: " << reason << std::endl;
+	kick(channel, user, reason, socket);
 }
 
