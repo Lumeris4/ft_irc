@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 10:38:15 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/13 10:11:21 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/13 13:00:31 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void Server::handle_mode(std::string argument, int socketfd)
 		return;
 	}
 	size_t space = argument.find(' ');
-	std::string channel = argument.substr(pos + 1, space);
+	std::string channel = argument.substr(pos, space);
 	if (channel.empty())
 	{
 		std::cout << "Invalid format (bad channel)\n";

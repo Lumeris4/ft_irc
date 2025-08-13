@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/13 12:37:12 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/13 12:54:29 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ int Server::init_server()
 	int servsocket;
 	int new_socket;
 	char buffer[1024];
+	int cap = 0;
 	int j = -1;
 	_servername = "ircserv";
 	servsocket = socket(AF_INET, SOCK_STREAM, 0);
@@ -141,13 +142,16 @@ int Server::init_server()
 						while (std::getline(ss, cmd, '\n'))
 						{
 							_argument= "";
-    		 				j = parsing(cmd, i, fds[i].fd);
-							if (is_user[i] == false && j > 2)
+    		 				j = parsing(cmd, i);
+							if (is_user[i] == false && (j > 2 && j < 9))
 								j = 20;
 							switch (j)
 							{
 								case 0:
+								{
+									cap = 1;
 									break;
+								}		
 								case 1:
 								{
 									setNickname(_argument);
@@ -199,6 +203,7 @@ int Server::init_server()
 								}
 								case 20:
 								{
+									std::cout << i << std::endl;
 									std::cout << "Cannot execute command if clients is not a user" << std::endl;
 								}
 								default:
@@ -207,6 +212,13 @@ int Server::init_server()
 							j = -1;
 							if (_nickname.compare("") && _user.compare(""))
 								createUser(fds[i].fd, i);
+							if (cap == 1 && (_nickname.compare("") && _user.compare("")))
+							{
+								std::string servername = "ircserv";
+								std::string message = ":" + servername + " 001 " + _nickname + " :Welcome to the IRC Network " + _nickname + "!* @lelanglo&@bfiquet\r\n";
+								send(fds[i].fd, message.c_str(), message.length(), 0);
+								break;
+							}
 						}
 					}
 					else if (n == 0)
