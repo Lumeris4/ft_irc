@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:22:10 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/13 13:01:33 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/13 13:08:10 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,15 @@
 class Server;
 class User;
 
+struct Client {
+	std::string nickname;
+	std::string username;
+	bool capDone = false;
+	bool registered = false;
+
+	Client();
+};
+
 class Server
 {
 	protected:
@@ -31,8 +40,7 @@ class Server
 	std::map<std::string ,User>		_list_user;
 	std::map<std::string, Channel>	_list_channel;
 	std::string						_argument;
-	std::string						_nickname;
-	std::string						_user;
+	std::map<int, Client>			clients;
 
 	public:
 	Server();
