@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   HandleInvite.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 12:50:42 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/13 10:11:26 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/13 13:14:09 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,13 +28,12 @@ void Server::handle_invite(std::string argument, int socketfd)
 		std::cout << "Invalid format" << std::endl;
 		return;
 	}
-	std::string channel = argument.substr(index + 1);
+	std::string channel = argument.substr(index);
 	if (channel.empty())
 	{
 		std::cout << "Invalid format (bad channel)\n";
 		return;
 	}
 	//setTopic(newTopic);
-	std::cout << "user " << user << " got invited in " << channel << "]" << std::endl;
 	this->invite(channel ,user, socketfd);
 }

@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/13 13:00:37 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/13 13:24:39 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int Server::createUser(int socketfd, int i)
 {
 	if (is_user[i])
 		return (0);
-	addUser(socketfd, _nickname, _user);
+	addUser(socketfd, _user, _nickname);
 	is_user[i] = true;
 	std::cout << "User created " << socketfd << std::endl;
 	_user = "";
@@ -253,9 +253,7 @@ std::string Server::whatUser(int socketfd)
 	for (it = _list_socket_user.begin(); it != _list_socket_user.end(); it++)
 	{
 		if (it->first == socketfd)
-		{
 			nickname = it->second.getNickname();
-		}
 	}
 	if (nickname.empty())
 		return NULL;
