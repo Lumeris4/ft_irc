@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/13 11:23:02 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/13 11:27:56 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -480,10 +480,13 @@ void Server::sendMessage(std::string destination, std::string content, bool user
 				operato = "@";
 			for (it = copy.begin(); it != copy.end(); ++it)
 			{
-				itp = _list_user.find(*it);
-				socket_destinate = itp->second.getSocket();
-				std::string message = operato + nickname + ": " + content + "\n";
-				send(socket_destinate, message.c_str(), message.size(),0);
+				if (*it != nickname)
+				{
+					itp = _list_user.find(*it);
+					socket_destinate = itp->second.getSocket();
+					std::string message = operato + nickname + ": " + content + "\n";
+					send(socket_destinate, message.c_str(), message.size(),0);
+				}
 			}
 		}
 		else
