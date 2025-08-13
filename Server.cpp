@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/12 14:58:48 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/13 11:23:02 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -446,22 +446,50 @@ void	Server::joinCanal(std::string canal, std::string password, int socketfd)
 	
 }
 
-void Server::sendMessage(std::string destination, std::string content, int socketfd)
+void Server::sendMessage(std::string destination, std::string content, bool user, int socketfd)
 {
-	std::string nickname;
+	std::string nickname = whatUser(socketfd);
 	int socket_destinate;
-	std::map<int, User>::iterator it;
-	for (it = _list_socket_user.begin(); it != _list_socket_user.end(); it++)
+	if (user)
 	{
-		if (it->first == socketfd)
+		std::map<std::string, User>::iterator itt;
+		itt = _list_user.find(destination);
+		socket_destinate = itt->second.getSocket();
+		std::string message = nickname + ": " + content + "\n";
+		send(socket_destinate, message.c_str(), message.size(),0);
+	}
+	else
+	{
+		std::string operato = "";
+		std::vector<std::string>::iterator it;
+		std::map<std::string, User>::iterator itp;
+		std::map<std::string, Channel>::iterator itt = _list_channel.find(destination);
+		if (itt != _list_channel.end())
 		{
-			nickname = it->second.getNickname();
+			std::vector<std::string> copy = itt->second.getListUser();
+			it = find(copy.begin(), copy.end(), nickname);
+			if (it == copy.end())
+			{
+				std::string message = "404 " + nickname + " " + destination  + " :Cannot send to channel\n";
+				send(socketfd, message.c_str(), message.size(),0);
+				return; //gestion erreur;
+			}
+			std::vector<std::string> copy2 = itt->second.getListChef();
+			it = find(copy2.begin(), copy2.end(), nickname);
+			if (it != copy2.end())
+				operato = "@";
+			for (it = copy.begin(); it != copy.end(); ++it)
+			{
+				itp = _list_user.find(*it);
+				socket_destinate = itp->second.getSocket();
+				std::string message = operato + nickname + ": " + content + "\n";
+				send(socket_destinate, message.c_str(), message.size(),0);
+			}
+		}
+		else
+		{
+			std::string response = "403 " + nickname + " #" + destination + " :No such Channel\n";
+			send(socketfd, response.c_str(), response.size(), 0);
 		}
 	}
-	if (nickname.empty())
-		return;
-	std::map<std::string, User>::iterator itt;
-	itt = _list_user.find(destination);
-	socket_destinate = itt->second.getSocket();
-	send(socket_destinate, content.c_str(), content.size(),0);
 }
