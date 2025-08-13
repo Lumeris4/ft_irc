@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/13 13:24:39 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/13 14:03:38 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -289,7 +289,7 @@ bool Server::haveright(int socketfd, std::string channel)
 	return false;
 }
 
-void	Server::addChannel(std::string name, std::string proprio)
+void	Server::addChannel(std::string name, std::string proprio, std::string password)
 {
 	Channel channel = Channel(name, proprio);
 	this->_list_channel.insert(std::pair<std::string, Channel>(name, channel));
@@ -398,6 +398,7 @@ void Server::permTopic(std::string channel, bool perm, int socketfd)
 
 void Server::kick(std::string channel, std::string nickname, std::string reason, int socketfd)
 {
+	//:kicker!user@host KICK #canal victim :Raison
 	if (!haveright(socketfd, channel))
 		return;
 	std::string whoami = whatUser(socketfd);
