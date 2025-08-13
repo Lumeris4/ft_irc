@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 13:48:24 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/12 14:51:16 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/13 10:09:22 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void Server::handle_join(std::string argument, int socketfd)
 	}
 	size_t space_pos = argument.find(' ');
 	std::string channels_str = argument;
-	std::string keys_str;
+	std::string keys_str = "";
 	if (space_pos != std::string::npos)
 	{
 		channels_str = argument.substr(0, space_pos);
@@ -42,7 +42,7 @@ void Server::handle_join(std::string argument, int socketfd)
 	}
 	std::vector<std::string> channels = split(channels_str, ',');
 	std::vector<std::string> keys = split(keys_str, ',');
-	if (keys.size() == 0)
+	if (keys.size() != 0)
 	{
 		for (size_t i = 0; i < channels.size(); i++)
 			joinCanal(channels[i], keys[i], socketfd);

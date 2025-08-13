@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 12:21:36 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/12 14:50:49 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/13 10:10:37 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,6 @@
 
 void Server::handle_topic(std::string argument, int socketfd)
 {
-	int nsm = socketfd;
-	nsm = 0;
 	size_t index = argument.find('#');
 	if (index == std::string::npos)
 	{
