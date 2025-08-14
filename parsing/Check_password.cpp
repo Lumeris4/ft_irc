@@ -3,22 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   Check_password.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 13:11:00 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/13 10:39:40 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/14 10:43:34 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../Server.hpp"
 
-int Server::check_password(std::string password, int socketfd)
+int Server::check_password(std::string password)
 {
 	if (password.compare(_password) != 0)
 		return (-1);
-	std::string servername = "ircserv";
-	std::string message = ":" + servername + " 001 " + _nickname + " :Welcome to the IRC Network " + _nickname + "!* @lelanglo&@bfiquet\r\n";
-	send(socketfd, message.c_str(), message.length(), 0);
 	std::cout << "Client has entered password. Accessing server" << std::endl;
 	return (0);
 }

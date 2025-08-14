@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Parsing.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 13:10:28 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/13 12:33:08 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/14 10:52:31 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 
 bool connected[MAX_CLIENTS] = {false, false, false, false, false, false, false, false, false, false};
 
-int Server::parsing (std::string input, int j, int socketfd)
+int Server::parsing (std::string input, int j)
 {
 	std::string argument;
-	std::string array[] = {"CAP", "PASS", "NICK", "USER", "MODE", "TOPIC", "INVITE", "KICK", "JOIN", "MSG", "PING", "WHOIS"};
+	std::string array[] = {"CAP", "PASS", "NICK", "USER", "MODE", "TOPIC", "INVITE", "KICK", "JOIN", "PRIVMSG", "PING", "WHOIS"};
 	int			size = sizeof(array) / sizeof(array[0]);
 	int			last_upper;
 	int			level = -1;
@@ -49,7 +49,7 @@ int Server::parsing (std::string input, int j, int socketfd)
 			{
 				if (connected[j] == true)
 					std::cout << "Client has already entered the password" << std::endl;
-				else if (check_password(_argument, socketfd) == -1)
+				else if (check_password(_argument) == -1)
 				{
 					std::cout << "Client has entered wrong password" << std::endl;
 					return (-1);

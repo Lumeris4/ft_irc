@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:22:10 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/13 14:03:55 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/14 10:49:01 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,10 +43,10 @@ class Server
 	const std::map<std::string, User>		&getListUser() const;
 	const std::map<std::string, Channel>	&getListChannel() const;
 	int 									init_server();
-	int 									check_password(std::string password, int socketfd);
-	int 									parsing (std::string input, int i, int socketfd);
-	int 									setNickname(std::string nick);
-	int 									setUser(std::string nick);
+	int 									check_password(std::string password);
+	int 									parsing (std::string input, int i);
+	int 									setNickname(std::string nick, int socket);
+	int 									setUser(std::string nick, int socket);
 	int 									createUser(int socketfd, int i);
 	void									changeTopic(std::string channel, std::string topic, int socketfd);
 	void									changePerm(std::string channel, bool perm, int socketfd);
@@ -67,4 +67,5 @@ class Server
 	void									handle_kick(std::string argument, int socketfd);
 	void 									handle_ping( std::string argument, int socketfd);
 	void									handle_whois(std::string argument, int socketfd);
+	void									handle_privmsg(std::string argument, int socketfd);
 };

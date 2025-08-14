@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/14 09:45:09 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/14 11:10:54 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int Server::createUser(int socketfd, int i)
 	return (0);
 }
 
-int Server::setNickname(std::string nick)
+int Server::setNickname(std::string nick, int socket)
 {
 	if (nick.empty())
 	{
@@ -47,11 +47,14 @@ int Server::setNickname(std::string nick)
 			return (-1);
 		}
 	}
+	(void)socket;
+	std::string message = ":" + _nickname + "!ident@host NICK :" + nick + "\r\n";
+	send(socket, message.c_str(), message.size(), 0);
 	_nickname = nick;
 	return (0);
 }
 
-int Server::setUser(std::string nick)
+int Server::setUser(std::string nick, int socket)
 {
 	if (nick.empty())
 	{
@@ -59,6 +62,9 @@ int Server::setUser(std::string nick)
 		return (-1);
 	}
 	_user = nick;
+	std::string servername = "ircserv";
+	std::string message = ":" + servername + " 001 " + _nickname + " :Welcome to the Internet Relay Network " + _nickname + "!" + _user + "@lelanglo&@bfiquet\r\n";
+	send(socket, message.c_str(), message.length(), 0);
 	return (0);
 }
 
@@ -141,7 +147,7 @@ int Server::init_server()
 						while (std::getline(ss, cmd, '\n'))
 						{
 							_argument= "";
-    		 				j = parsing(cmd, i, fds[i].fd);
+    		 				j = parsing(cmd, i);
 							if (is_user[i] == false && j > 2)
 								j = 20;
 							switch (j)
@@ -150,12 +156,12 @@ int Server::init_server()
 									break;
 								case 1:
 								{
-									setNickname(_argument);
+									setNickname(_argument, fds[i].fd);
 									break;
 								}
 								case 2:
 								{
-									setUser(_argument);
+									setUser(_argument, fds[i].fd);
 									break;
 								}
 								case 3:
@@ -185,7 +191,7 @@ int Server::init_server()
 								}
 								case 8:
 								{
-									//msg ici
+									handle_privmsg(_argument, fds[i].fd);
 									break;
 								}
 								case 9:
@@ -448,7 +454,11 @@ void	Server::joinCanal(std::string canal, std::string password, int socketfd)
 				std::vector<std::string> copy = it->second.getListInvitation();
 				std::vector<std::string>::iterator itp = find(copy.begin(), copy.end(), nickname);
 				if (itp != copy.end())
+				{
+					std::string message = ":" + nickname + "!ident@host JOIN :" + canal + "\r\n";
+					send(socketfd, message.c_str(), message.size(), 0);
 					it->second.adduser(nickname);
+				}
 				else
 				{
 					std::string response = "473 " + nickname + " " + canal + " :Cannot join channel (+i)\r\n"; 
@@ -458,7 +468,8 @@ void	Server::joinCanal(std::string canal, std::string password, int socketfd)
 			else
 			{
 					it->second.adduser(nickname);
-					std::cout << nickname << "add to " << it->first  << "\n";
+					std::string message = ":" + nickname + "!ident@host JOIN :" + canal + "\r\n";
+					send(socketfd, message.c_str(), message.size(), 0);
 			}
 		}
 		else
@@ -484,7 +495,7 @@ void Server::sendMessage(std::string destination, std::string content, bool user
 		std::map<std::string, User>::iterator itt;
 		itt = _list_user.find(destination);
 		socket_destinate = itt->second.getSocket();
-		std::string message = nickname + ": " + content + "\n";
+		std::string message = ":" + nickname + "!ident@host PRIVMSG " + destination + " :" + content + "\r\n";
 		send(socket_destinate, message.c_str(), message.size(),0);
 	}
 	else
@@ -513,7 +524,7 @@ void Server::sendMessage(std::string destination, std::string content, bool user
 				{
 					itp = _list_user.find(*it);
 					socket_destinate = itp->second.getSocket();
-					std::string message = operato + nickname + ": " + content + "\n";
+					std::string message = ":" + nickname + "!ident@host PRIVMSG " + destination + " :" + content + "\r\n";
 					send(socket_destinate, message.c_str(), message.size(),0);
 				}
 			}
