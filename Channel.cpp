@@ -6,14 +6,14 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 09:08:11 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/12 10:58:30 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/14 14:18:49 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "include.hpp"
 #include "Channel.hpp"
 
-Channel::Channel(std::string name, std::string creator): _name(name), _limit(-1), _access(false), _access_topic(false)
+Channel::Channel(std::string name, std::string creator): _name(name), _limit(-1), _access(false), _access_topic(false), _members(0)
 {
 	this->_password = "";
 	this->_chef_usernames.push_back(creator);
@@ -50,6 +50,11 @@ void	Channel::setLimit(int limit)
 int Channel::getLimit() const
 {
 	return this->_limit;
+}
+
+int Channel::getMembers() const
+{
+	return this->_members;
 }
 
 void	Channel::setAccess(bool n)
@@ -98,7 +103,10 @@ void Channel::adduser(std::string nickname)
 	std::vector<std::string>::iterator it;
 	it = find(_list_user.begin(), _list_user.end(), nickname);
 	if (it == _list_user.end())
+	{
 		this->_list_user.push_back(nickname);
+		_members++;
+	}
 	if (this->_access)
 	{
 		it = find(_invitate.begin(), _invitate.end(), nickname);

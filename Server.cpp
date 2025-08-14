@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/14 12:08:40 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/14 14:21:53 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,12 +43,14 @@ int Server::setNickname(std::string nick, int socket)
 	{
         if (it != _list_user.end())
 		{
-			std::cout << "Nick already taken, please choose another one" << std::endl;
+			std::string message = ":irc.example.net 433 * " + nick + " :Nickname is already in use\r\n";
+			_nickname = "";
+			send(socket, message.c_str(), message.size(), 0);
 			return (-1);
 		}
 	}
-	(void)socket;
-	std::string message = ":" + _nickname + "!ident@host NICK :" + nick + "\r\n";
+	std::string message = ":*!ident@host NICK :" + nick + "\r\n";
+	//a regler
 	send(socket, message.c_str(), message.size(), 0);
 	_nickname = nick;
 	return (0);
@@ -62,8 +64,9 @@ int Server::setUser(std::string nick, int socket)
 		return (-1);
 	}
 	_user = nick;
+	std::string message;
 	std::string servername = "ircserv";
-	std::string message = ":" + servername + " 001 " + _nickname + " :Welcome to the Internet Relay Network " + _nickname + "!" + _user + "@lelanglo&@bfiquet\r\n";
+	message = ":" + servername + " 001 " + _nickname + " :Welcome to the Internet Relay Network " + _nickname + "!" + _user + "@lelanglo&@bfiquet\r\n";
 	send(socket, message.c_str(), message.length(), 0);
 	return (0);
 }
@@ -284,12 +287,12 @@ bool Server::haveright(int socketfd, std::string channel)
 		std::vector<std::string>::iterator itp = find(copy.begin(), copy.end(), nickname);
 		if (itp != copy.end())
 			return true;
-		std::string response = "482 " + nickname + " " + channel + " :You're not the channel operator\r\n";
+		std::string response = ":" + _servername + "482 " + nickname + " " + channel + " :You're not the channel operator\r\n";
 		send(socketfd, response.c_str(), response.size(), 0);
 	}
 	else
 	{
-		std::string response = "403 " + nickname + " " + channel + " :No such Channel\r\n";
+		std::string response = ":" + _servername + " 403 " + nickname + " " + channel + " :No such Channel\r\n";
 		send(socketfd, response.c_str(), response.size(), 0);
 	}
 	return false;
@@ -378,7 +381,7 @@ void	Server::givePerm(std::string channel, std::string name, bool give, int sock
 		}
 		else
 		{
-			std::string response = "482 " + nickname + " " + channel + " :You're not the channel operator\r\n";
+			std::string response = ":" + _servername +  "482 " + nickname + " " + channel + " :You're not the channel operator\r\n";
 			send(socketfd, response.c_str(), response.size(), 0);
 		}
 	}
@@ -449,19 +452,25 @@ void	Server::joinCanal(std::string canal, std::string password, int socketfd)
 		bool a = it->second.getAccess();
 		if (password.compare(it->second.getPassword()) == 0)
 		{
+			if (it->second.getLimit() == it->second.getMembers())
+			{
+				std::string message = ":" + _servername +  "471 " + nickname + " " + canal + " :Cannot join channel (+l)\r\n";
+				send(socketfd, message.c_str(), message.size(), 0);
+				return;
+			}
 			if (a)
 			{	
 				std::vector<std::string> copy = it->second.getListInvitation();
 				std::vector<std::string>::iterator itp = find(copy.begin(), copy.end(), nickname);
 				if (itp != copy.end())
 				{
-					std::string message = ":" + nickname + "!ident@host JOIN :" + canal + "\r\n";
+					std::string message = ":" + _servername +  ":" + nickname + "!ident@host JOIN :" + canal + "\r\n";
 					send(socketfd, message.c_str(), message.size(), 0);
 					it->second.adduser(nickname);
 				}
 				else
 				{
-					std::string response = "473 " + nickname + " " + canal + " :Cannot join channel (+i)\r\n"; 
+					std::string response = ":" + _servername +  "473 " + nickname + " " + canal + " :Cannot join channel (+i)\r\n"; 
 					send(socketfd, response.c_str(), response.size(), 0);
 				}
 			}
@@ -474,7 +483,7 @@ void	Server::joinCanal(std::string canal, std::string password, int socketfd)
 		}
 		else
 		{
-			std::string response = "475 " + nickname + " " + canal + " :Cannot join channel (+k)\r\n";
+			std::string response = ":" + _servername +  "475 " + nickname + " " + canal + " :Cannot join channel (+k)\r\n";
 			send(socketfd, response.c_str(), response.size(), 0);
 		}
 	}
@@ -531,7 +540,7 @@ void Server::sendMessage(std::string destination, std::string content, bool user
 		}
 		else
 		{
-			std::string response = "403 " + nickname + " " + destination + " :No such Channel\r\n";
+			std::string response = ":" + _servername +  "403 " + nickname + " " + destination + " :No such Channel\r\n";
 			send(socketfd, response.c_str(), response.size(), 0);
 		}
 	}
