@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/14 11:10:54 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/14 12:08:40 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -490,7 +490,7 @@ void Server::sendMessage(std::string destination, std::string content, bool user
 {
 	std::string nickname = whatUser(socketfd);
 	int socket_destinate;
-	if (user)
+	if (!user)
 	{
 		std::map<std::string, User>::iterator itt;
 		itt = _list_user.find(destination);
