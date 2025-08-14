@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   HandleTopic.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 12:21:36 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/13 10:17:35 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/14 15:21:57 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void Server::handle_topic(std::string argument, int socketfd)
 		return;
 	}
 	size_t pos = argument.find(' ');
-	std::string channel = argument.substr(1, pos);
+	std::string channel = argument.substr(0, pos);
 	if (channel.empty())
 	{
 		std::cout << "Invalid format (bad channel)\n";
@@ -36,6 +36,5 @@ void Server::handle_topic(std::string argument, int socketfd)
 		return;
 	}
 	std::string newTopic = argument.substr(pos + 1);
-	std::cout << "new topic : " << newTopic << std::endl;
 	this->changeTopic(channel, newTopic, socketfd);
 }

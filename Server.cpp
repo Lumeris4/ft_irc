@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/14 14:21:53 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/14 15:27:54 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -327,16 +327,35 @@ const std::map<std::string, Channel>	&Server::getListChannel() const
 
 void	Server::changeTopic(std::string channel, std::string topic, int socketfd)
 {
+	std::string user = whatUser(socketfd);
 	std::map<std::string, Channel>::iterator ito = this->_list_channel.find(channel);
+	std::vector<std::string>::iterator it;
 	if (ito != _list_channel.end())
 	{
 		if (topic == "")
 		{
 			send(socketfd, ito->second.getTopic().c_str(), ito->second.getTopic().size(), 0);
 			std::cout << ito->second.getTopic() + "\n";
+			return;
 		}
-		else
+		std::vector<std::string> copy = ito->second.getListChef();
+		std::vector<std::string> copy2 = ito->second.getListUser();
+		it = find(copy.begin(), copy.end(), user);
+		if (it != copy.end() && ito->second.getAccessTopic() == false)
+		{
+			std::string message = ":" + user + "!user@host TOPIC " + channel + " :" + topic + "\r\n";
 			ito->second.setTopic(topic);
+			for (it = copy2.begin(); it != copy2.end(); it++)
+			{
+				std::map<std::string, User>::iterator itp = _list_user.find(*it);
+				send(itp->second.getSocket(), message.c_str(), message.size(), 0);
+			}
+		}
+	}
+	else
+	{
+		std::string response = ":" + _servername + " 403 " + user + " " + channel + " :No such Channel\r\n";
+		send(socketfd, response.c_str(), response.size(), 0);
 	}
 }
 
