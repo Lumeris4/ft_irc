@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 10:38:15 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/13 13:10:18 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/15 16:15:36 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,8 @@ void Server::handle_mode(std::string argument, int socketfd)
 		std::cout << "invalid format" << std::endl;
 		return ;
 	}
-	if (space + 3 < argument.length())
-		arg = argument.substr(space + 3);
+	if (space + 4 < argument.length())
+		arg = argument.substr(space + 4);
 	else
 		arg = "";
 	int level = -1;
@@ -72,8 +72,11 @@ void Server::handle_mode(std::string argument, int socketfd)
 		}
 		case 2:
 		{
-			std::cout << channel << "case 3" << arg << std::endl;
-			this->changePassword(channel, arg, socketfd);
+			std::cout << channel << "case 3 (" << arg + ")" << std::endl;
+			if (set_mode == true)
+				this->changePassword(channel, arg, socketfd);
+			else
+				this->changePassword(channel, "", socketfd);
 			break;
 		}
 		case 3:

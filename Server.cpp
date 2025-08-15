@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/14 15:27:54 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/15 17:25:15 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,11 +34,11 @@ int Server::setNickname(std::string nick, int socket)
 		std::cout << "Nickname cannot be empty";
 		return (-1);
 	}
-	if (nick.length() > 9)
-	{
-		std::cout << "nick length has too long" << std::endl;
-		return (-1);
-	}
+	// if (nick.length() > 9)
+	// {
+	// 	std::cout << "nick length has too long" << std::endl;
+	// 	return (-1);
+	// }
 	std::map<std::string, User>::iterator it = _list_user.find(nick);
 	{
         if (it != _list_user.end())
@@ -205,6 +205,12 @@ int Server::init_server()
 								case 10: 
 								{
 									handle_whois(_argument, fds[i].fd);
+									break;
+								}
+								case 11:
+								{
+									close(fds[i].fd);
+									break;
 								}
 								case 20:
 								{
@@ -328,10 +334,14 @@ const std::map<std::string, Channel>	&Server::getListChannel() const
 void	Server::changeTopic(std::string channel, std::string topic, int socketfd)
 {
 	std::string user = whatUser(socketfd);
-	std::map<std::string, Channel>::iterator ito = this->_list_channel.find(channel);
 	std::vector<std::string>::iterator it;
+	std::map<std::string, Channel>::iterator ito = this->_list_channel.find(channel);
 	if (ito != _list_channel.end())
 	{
+		std::vector<std::string> copy2 = ito->second.getListUser();
+		it = find(copy2.begin(), copy2.end(), user);
+		if (it == copy2.end())
+			return; //verif if user is in the channel;
 		if (topic == "")
 		{
 			send(socketfd, ito->second.getTopic().c_str(), ito->second.getTopic().size(), 0);
@@ -339,9 +349,8 @@ void	Server::changeTopic(std::string channel, std::string topic, int socketfd)
 			return;
 		}
 		std::vector<std::string> copy = ito->second.getListChef();
-		std::vector<std::string> copy2 = ito->second.getListUser();
 		it = find(copy.begin(), copy.end(), user);
-		if (it != copy.end() && ito->second.getAccessTopic() == false)
+		if (it != copy.end() && ito->second.getAccessTopic() == true)
 		{
 			std::string message = ":" + user + "!user@host TOPIC " + channel + " :" + topic + "\r\n";
 			ito->second.setTopic(topic);
@@ -350,6 +359,21 @@ void	Server::changeTopic(std::string channel, std::string topic, int socketfd)
 				std::map<std::string, User>::iterator itp = _list_user.find(*it);
 				send(itp->second.getSocket(), message.c_str(), message.size(), 0);
 			}
+		}
+		else if (ito->second.getAccessTopic() == false)
+		{
+			std::string message = ":" + user + "!user@host TOPIC " + channel + " :" + topic + "\r\n";
+			ito->second.setTopic(topic);
+			for (it = copy2.begin(); it != copy2.end(); it++)
+			{
+				std::map<std::string, User>::iterator itp = _list_user.find(*it);
+				send(itp->second.getSocket(), message.c_str(), message.size(), 0);
+			}
+		}
+		else
+		{
+			std::string response = ":" + _servername + "482 " + user + " " + channel + " :You're not the channel operator\r\n";
+			send(socketfd, response.c_str(), response.size(), 0);
 		}
 	}
 	else
@@ -413,7 +437,9 @@ void Server::changeLimit(std::string channel, int limit, int socketfd)
 	std::map<std::string, Channel>::iterator ito = this->_list_channel.find(channel);
 	if (ito != _list_channel.end())
 	{
-		ito->second.setLimit(limit);
+		if (ito->second.getMembers() < limit)
+			ito->second.setLimit(limit);
+		//gestion erreur
 	}
 }
 
@@ -552,7 +578,7 @@ void Server::sendMessage(std::string destination, std::string content, bool user
 				{
 					itp = _list_user.find(*it);
 					socket_destinate = itp->second.getSocket();
-					std::string message = ":" + nickname + "!ident@host PRIVMSG " + destination + " :" + content + "\r\n";
+					std::string message = ":" + operato + nickname + "!ident@host PRIVMSG " + destination + " :" + content + "\r\n";
 					send(socket_destinate, message.c_str(), message.size(),0);
 				}
 			}

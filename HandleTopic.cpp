@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 12:21:36 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/14 15:21:57 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/15 15:29:49 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,6 @@ void Server::handle_topic(std::string argument, int socketfd)
 		this->changeTopic(channel, "", socketfd);
 		return;
 	}
-	std::string newTopic = argument.substr(pos + 1);
+	std::string newTopic = argument.substr(pos + 2);
 	this->changeTopic(channel, newTopic, socketfd);
 }

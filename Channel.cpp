@@ -6,14 +6,14 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 09:08:11 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/14 14:18:49 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/15 17:14:12 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "include.hpp"
 #include "Channel.hpp"
 
-Channel::Channel(std::string name, std::string creator): _name(name), _limit(-1), _access(false), _access_topic(false), _members(0)
+Channel::Channel(std::string name, std::string creator): _name(name), _limit(-1), _access(false), _access_topic(true), _members(0)
 {
 	this->_password = "";
 	this->_chef_usernames.push_back(creator);
@@ -119,7 +119,13 @@ void Channel::kickuser(std::string nickname)
 	std::vector<std::string>::iterator it;
 	it = find(_list_user.begin(), _list_user.end(), nickname);
 	if(it != _list_user.end())
+	{
 		this->_list_user.erase(it);
+		this->_members--;
+	}
+	it = find(_chef_usernames.begin(), _chef_usernames.end(), nickname);
+	if (it != _chef_usernames.end())
+		this->_chef_usernames.erase(it);
 }
 
 void Channel::addinvitation(std::string nickname)

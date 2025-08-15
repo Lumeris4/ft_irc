@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 13:10:28 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/14 10:52:31 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/15 15:02:53 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ bool connected[MAX_CLIENTS] = {false, false, false, false, false, false, false, 
 int Server::parsing (std::string input, int j)
 {
 	std::string argument;
-	std::string array[] = {"CAP", "PASS", "NICK", "USER", "MODE", "TOPIC", "INVITE", "KICK", "JOIN", "PRIVMSG", "PING", "WHOIS"};
+	std::string array[] = {"CAP", "PASS", "NICK", "USER", "MODE", "TOPIC", "INVITE", "KICK", "JOIN", "PRIVMSG", "PING", "WHOIS", "QUIT"};
 	int			size = sizeof(array) / sizeof(array[0]);
 	int			last_upper;
 	int			level = -1;
@@ -77,6 +77,8 @@ int Server::parsing (std::string input, int j)
 				return (9);
 			case 11:
 				return (10);
+			case 12:
+				return(11);
 			default:
 				std::cout << input << " is not a valid command" <<std::endl;
 				return (0);
