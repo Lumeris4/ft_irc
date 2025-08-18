@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/18 15:54:09 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/18 15:57:21 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -497,6 +497,7 @@ void	Server::changePassword(std::string channel, std::string password, bool perm
 	{
 		ito->second.setPassword(password);
 		std::string message = ":" + nickname + "!ident@host MODE " + channel + " " + mode + " " + password + "\r\n";
+		sendToChannel(channel, message);
 	}
 }
 
