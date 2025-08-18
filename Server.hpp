@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:22:10 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/18 11:33:20 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/18 12:23:55 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,19 +43,20 @@ class Server
 	int 									init_server();
 	int 									check_password(std::string password);
 	int 									parsing (std::string input, User &user);
-	int 									setNickname(std::string nick, int socket, User user);
-	int 									setUser(std::string nick, int socket, User user);
-	int 									createUser(int socketfd, int i, User user);
+	int 									setNickname(std::string nick, int socket, User &user);
+	int 									setUser(std::string nick, int socket, User &user);
+	int 									createUser(int socketfd, int i, User &user);
 	void									changeTopic(std::string channel, std::string topic, int socketfd);
 	void									changePerm(std::string channel, bool perm, int socketfd);
 	void									changePassword(std::string channel, std::string password, int socketfd);
 	void									givePerm(std::string channel, std::string name, bool give, int socketfd);
-	void									changeLimit(std::string channel, int limit, int socketfd);
+	void									changeLimit(std::string channel, std::string limit, int perm, int socketfd);
 	void									permTopic(std::string channel, bool perm, int socketfd);
 	void									kick(std::string channel, std::string nickname, std::string reason, int socketfd);
 	void									invite(std::string channel, std::string user, int socketfd);
 	void									joinCanal(std::string channel, std::string password, int socketfd);
 	void									sendMessage(std::string destination, std::string content, bool user, int socketfd);
+	void									sendToChannel(std::string channel, std::string message);
 	std::string								whatUser(int socketfd);
 	bool									haveright(int socketfd, std::string channel);
 	void 									handle_join(std::string argument, int socketfd);
