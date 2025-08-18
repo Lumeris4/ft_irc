@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/18 14:15:47 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/18 15:26:32 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -470,14 +470,21 @@ void	Server::changePerm(std::string channel, bool perm, int socketfd)
 	}
 }
 
-void	Server::changePassword(std::string channel, std::string password, int socketfd)
+void	Server::changePassword(std::string channel, std::string password, bool perm, int socketfd)
 {
 	if (!haveright(socketfd, channel))
 		return;
+	std::string nickname = whatUser(socketfd);
+	std::string mode;
+	if (perm)
+		mode = "+k";
+	else
+		mode = "-k";
 	std::map<std::string, Channel>::iterator ito = this->_list_channel.find(channel);
 	if (ito != _list_channel.end())
 	{
 		ito->second.setPassword(password);
+		std::string message = ":" + nickname + "!ident@host MODE " + channel + " " + mode + " " + password + "\r\n";
 	}
 }
 
@@ -589,11 +596,15 @@ void Server::invite(std::string channel, std::string user, int socketfd)
 {
 	if (!haveright(socketfd, channel) || !exist(user, socketfd))
 		return;
+	std::string whoami = whatUser(socketfd);
 	std::map<std::string, Channel>::iterator ito = this->_list_channel.find(channel);
 	std::vector<std::string>::iterator it;
 	if (ito != _list_channel.end())
 	{
+		std::map<std::string, User>::iterator itp = this->_list_user.find(user);
+		std::string message = ":" + whoami + "!ident@host INVITE " + user + " :" + channel + "\r\n";
 		ito->second.addinvitation(user);
+		send(itp->second.getSocket(), message.c_str(), message.size(), 0);
 	}
 }
 

@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:22:10 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/18 14:07:37 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/18 14:40:41 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ class Server
 	int 									createUser(int socketfd, int i, User &user);
 	void									changeTopic(std::string channel, std::string topic, int socketfd);
 	void									changePerm(std::string channel, bool perm, int socketfd);
-	void									changePassword(std::string channel, std::string password, int socketfd);
+	void									changePassword(std::string channel, std::string password, bool perm, int socketfd);
 	void									givePerm(std::string channel, std::string name, bool give, int socketfd);
 	void									changeLimit(std::string channel, std::string limit, int perm, int socketfd);
 	void									permTopic(std::string channel, bool perm, int socketfd);

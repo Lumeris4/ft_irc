@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   HandleMode.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 10:38:15 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/18 12:18:30 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/18 14:41:50 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,9 +74,9 @@ void Server::handle_mode(std::string argument, int socketfd)
 		{
 			std::cout << channel << "case 3 (" << arg + ")" << std::endl;
 			if (set_mode == true)
-				this->changePassword(channel, arg, socketfd);
+				this->changePassword(channel, arg, set_mode ,socketfd);
 			else
-				this->changePassword(channel, "", socketfd);
+				this->changePassword(channel, "", set_mode, socketfd);
 			break;
 		}
 		case 3:
