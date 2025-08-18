@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:22:10 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/18 14:07:37 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/18 15:49:28 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ class Server
 	bool									exist(std::string nickname, int socketfd);
 	bool									haveright(int socketfd, std::string channel);
 	void 									handle_join(std::string argument, int socketfd);
-	void									handle_mode(std::string argument, int socketfd);
+	void									handle_mode(std::string argument, int socketfd, User user);
 	void									handle_topic(std::string argument, int socketfd);
 	void									handle_invite(std::string argument, int socketfd);
 	void									handle_kick(std::string argument, int socketfd);

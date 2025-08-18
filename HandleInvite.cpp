@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 12:50:42 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/18 10:17:51 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/18 15:44:08 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,5 @@ void Server::handle_invite(std::string argument, int socketfd)
 		std::cout << "Invalid format (bad channel)\n";
 		return;
 	}
-	//setTopic(newTopic);
 	this->invite(channel ,user, socketfd);
 }
