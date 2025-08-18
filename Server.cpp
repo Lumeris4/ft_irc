@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/18 13:04:18 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/18 14:03:17 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,32 @@ int Server::setNickname(std::string nick, int socket, User &user)
 		if (it2 != _list_user.end())
 			_list_user.erase(it2);
 		_list_user.insert(std::make_pair(nick, user));
+	}
+	std::map<std::string, Channel>::iterator ito;
+	for (ito = _list_channel.begin(); ito != _list_channel.end() ; ito++)
+	{
+		std::vector<std::string> copy2 = ito->second.getListChef();
+		std::vector<std::string>::iterator ito2 = std::find(copy2.begin(), copy2.end(), former_nick);
+		if (ito2 != copy2.end())
+		{
+			ito->second.kickuser(former_nick);
+			ito->second.adduser(user.getNickname());
+			ito->second.remote(user.getNickname());
+		}
+		std::vector<std::string> copy = ito->second.getListUser();
+		std::vector<std::string>::iterator ito1 = std::find(copy.begin(), copy.end(), former_nick);
+		if (ito1 != copy.end())
+		{
+			ito->second.kickuser(former_nick);
+			ito->second.adduser(user.getNickname());
+		}
+		std::vector<std::string> copy3 = ito->second.getListInvitation();
+		std::vector<std::string>::iterator ito3 = std::find(copy3.begin(), copy3.end(), former_nick);
+		if (ito3 != copy.end())
+		{
+			ito->second.baninvitation(former_nick);
+			ito->second.addinvitation(user.getNickname());
+		}
 	}
 	std::string message = ":" + former_nick + "!ident@host NICK :" + nick + "\r\n";
 	send(socket, message.c_str(), message.size(), 0);
