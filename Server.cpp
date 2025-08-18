@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/18 15:57:21 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/18 15:58:46 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -657,7 +657,7 @@ void	Server::joinCanal(std::string canal, std::string password, int socketfd)
 			{
 					it->second.adduser(nickname);
 					std::string message = ":" + nickname + "!ident@host JOIN :" + canal + "\r\n";
-					send(socketfd, message.c_str(), message.size(), 0);
+					sendToChannel(canal, message);
 			}
 		}
 		else
