@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 13:10:28 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/18 11:33:13 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/18 14:25:21 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,8 @@ int Server::parsing(std::string input, User &user)
 	if (level > 1 && !user.getConnected())
 	{
 		level = 0;
-		std::cout << "you have to enter the password first" << std::endl;
+		std::string message = "You have to enter the password first\n";
+		send(user.getSocket(), message.c_str(), message.length(), 0);
 	}
 	else
 	{
@@ -49,10 +50,14 @@ int Server::parsing(std::string input, User &user)
 			case 1:
 			{
 				if (user.getConnected())
-					std::cout << "Client has already entered the password" << std::endl;
+				{
+					std::string message = "Client has already entered the password\n";
+					send(user.getSocket(), message.c_str(), message.length(), 0);
+				}
 				else if (check_password(_argument) == -1)
 				{
-					std::cout << "Client has entered wrong password" << std::endl;
+					std::string message = "Client has entered wrong password\n";
+					send(user.getSocket(), message.c_str(), message.length(), 0);
 					return (-1);
 				}
 				user.setConnected(true);
@@ -81,8 +86,11 @@ int Server::parsing(std::string input, User &user)
 			case 12:
 				return(11);
 			default:
-				std::cout << input << " is not a valid command" <<std::endl;
+			{
+				std::string message = input + " is not a valid command\n";
+				send(user.getSocket(), message.c_str(), message.length(), 0);
 				return (-1);
+			}
 		}
 	}
 	return (0);

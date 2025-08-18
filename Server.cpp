@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/18 15:26:32 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/18 15:54:09 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ int Server::createUser(int socketfd, int i, User &user)
 		return (0);
 	addUser(socketfd, user.getUsername(), user.getNickname());
 	is_registered[i] = true;
-	std::cout << "User created " << socketfd << std::endl;
 	return (0);
 }
 
@@ -33,12 +32,12 @@ int Server::setNickname(std::string nick, int socket, User &user)
 		send(socket, message.c_str(), message.size(), 0);
 		return (-1);
 	}
-	// if (nick.length() > 9)
-	// {	
-	// 	std::string message = ":irc.example.net 432 * " + nick + " :Erroneous nickname\r\n";
-	// 	send(socket, message.c_str(), message.size(), 0);
-	// 	return (-1);
-	// }
+	if (nick.length() > 9)
+	{	
+		std::string message = ":irc.example.net 432 * " + nick + " :Erroneous nickname\r\n";
+		send(socket, message.c_str(), message.size(), 0);
+		return (-1);
+	}
 	std::map<std::string, User>::iterator it = _list_user.find(nick);
 	if (it != _list_user.end())
 	{
@@ -84,6 +83,15 @@ int Server::setNickname(std::string nick, int socket, User &user)
 	std::string message = ":" + former_nick + "!ident@host NICK :" + nick + "\r\n";
 	send(socket, message.c_str(), message.size(), 0);
 	return (0);
+}
+
+int stop = 0;
+
+void handler(int sig)
+{
+	(void) sig;
+	std::cout << "\nClosing server" << std::endl;
+    stop = 1;
 }
 
 int Server::setUser(std::string nick, int socket, User &user)
@@ -134,8 +142,10 @@ int Server::init_server()
 	int nfds = 1;
     fds[0].fd = servsocket;
     fds[0].events = POLLIN;
-	while (1)
+	fds[0].revents = POLLIN;
+	while (1 && !stop)
 	{
+		signal(SIGINT, handler);
 		int ret = poll(fds, nfds, -1); // attend indefiniment
     	if (ret == -1)
 			std::cerr << strerror(errno) << std::endl;
@@ -149,22 +159,25 @@ int Server::init_server()
 				{
     			   	std::cerr << strerror(errno) << std::endl;
     			   	close(servsocket);
-    			   	exit(1);
+    			   	return(1);
 				}
 				if (nfds - 1 < MAX_CLIENTS)
 				{
             	    fds[nfds].fd = new_socket;
             	    fds[nfds].events = POLLIN;
+					fds[nfds].revents = POLLIN;
             	    nfds++;
 					_list_socket_user.insert(std::make_pair(new_socket, User(new_socket)));
-            	    std::cout << "Client connected to the server" << std::endl;
+					std::string message = "You are now connected to server.\n";
+					send(new_socket, message.c_str(), message.length(), 0);
+					std::cout << "client connected to server" << std::endl;
             	} 
 				else
 				{
-                	std::cout << "Too many clients connected." << std::endl;
+					std::string message = "Too many clients connected.\n";
+					send(new_socket, message.c_str(), message.length(), 0);
                 	close(new_socket);
             	}
-				
 			}
 			for (int i = 1; i < nfds; i++)
 			{
@@ -174,7 +187,6 @@ int Server::init_server()
     				if (n > 0)
 					{
     		 			buffer[n] = '\0';
-						std::cout << buffer;
 						std::string input = buffer;
 						std::stringstream ss(input);
 						std::string cmd;
@@ -204,7 +216,7 @@ int Server::init_server()
 								}
 								case 3:
 								{
-									handle_mode(_argument, fds[i].fd);
+									handle_mode(_argument, fds[i].fd, user);
 									break;
 								}
 								case 4:
@@ -249,8 +261,8 @@ int Server::init_server()
 								}
 								case 20:
 								{
-									std::cout << i << std::endl;
-									std::cout << "Cannot execute command if clients is not a user" << std::endl;
+									std::string message = "Cannot execute command if client is not a user.\n";
+									send(fds[i].fd, message.c_str(), message.length(), 0);
 								}
 								default:
 									break;

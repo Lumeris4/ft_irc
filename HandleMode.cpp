@@ -6,26 +6,30 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 10:38:15 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/18 14:41:50 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/18 15:54:19 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 #include "User.hpp"
 
-void Server::handle_mode(std::string argument, int socketfd)
+void Server::handle_mode(std::string argument, int socketfd, User user)
 {
 	size_t pos = argument.find('#');
-	if (pos == std::string::npos)
-	{
-		std::cout << "invalid format" << std::endl;
-		return;
-	}
 	size_t space = argument.find(' ');
 	std::string channel = argument.substr(pos, space);
+	if (pos == std::string::npos)
+	{
+		std::string message = ":irc.example.net 403 " + user.getNickname() + channel + " :No such channel";
+		send(socketfd, message.c_str(), message.length(), 0);
+		return;
+	}
+	// size_t space = argument.find(' ');
+	// std::string channel = argument.substr(pos, space);
 	if (channel.empty())
 	{
-		std::cout << "Invalid format (bad channel)\n";
+		std::string message = ":irc.example.net 461 " +  user.getNickname() + argument + " :Not enough parameters";
+		send(socketfd, message.c_str(), message.length(), 0);
 		return;
 	}
 	std::string arg;
@@ -60,19 +64,16 @@ void Server::handle_mode(std::string argument, int socketfd)
 	{
 		case 0:
 		{
-			std::cout << channel << "case 1" << arg << std::endl;
 			this->changePerm(channel, set_mode, socketfd);
 			break;
 		}
 		case 1:
 		{
-			std::cout << channel << "case 2" << arg << std::endl;
 			this->permTopic(channel, set_mode, socketfd);
 			break;
 		}
 		case 2:
 		{
-			std::cout << channel << "case 3 (" << arg + ")" << std::endl;
 			if (set_mode == true)
 				this->changePassword(channel, arg, set_mode ,socketfd);
 			else
@@ -81,19 +82,18 @@ void Server::handle_mode(std::string argument, int socketfd)
 		}
 		case 3:
 		{
-			std::cout << channel << "case 4" << arg << std::endl;
 			this->givePerm(channel, arg, set_mode, socketfd);
 			break;
 		}
 		case 4:
 		{
-			std::cout << channel << "case 5" << arg << std::endl;
 			this->changeLimit(channel, arg , set_mode ,socketfd);
 			break;
 		}
 		default:
 		{
-			std::cout << channel << "is not a valid argument" << std::endl;
+			std::string message = "Invalid arguments\n";
+			send(socketfd, message.c_str(), message.length(), 0);
 			break;
 		}	
 	}
