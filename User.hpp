@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 14:33:16 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/11 14:48:26 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/18 11:18:53 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@ class User
 		std::string _username;
 		std::string _nickname;
 		int			_socket;
-		std::string	_hasNickname;
-		std::string	_hasUser;
+		bool connected;
+		bool capDone;
 	
 	public:
 		User(int socket);
@@ -33,7 +33,13 @@ class User
 		User &operator=(User &other);
 		User(int socketfd, std::string username, std::string nickname);
 		~User();
-		const std::string getUsername() const;
-		const std::string getNickname() const;
+		const std::string	getUsername() const;
+		const std::string	getNickname() const;
+		void				setNickname(std::string nickname);
+		void				setUsername(std::string username);
+		void				setCap(bool cap);
+		bool				getCap();
+		void				setConnected(bool cap);
+		bool				getConnected();
 		int 				getSocket() const;
 };

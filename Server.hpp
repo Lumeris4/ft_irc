@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:22:10 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/18 13:43:27 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/18 14:07:37 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,6 @@ class Server
 	std::map<std::string ,User>		_list_user;
 	std::map<std::string, Channel>	_list_channel;
 	std::string						_argument;
-	std::string						_nickname;
-	std::string						_user;
 
 	public:
 	Server();
@@ -44,10 +42,10 @@ class Server
 	const std::map<std::string, Channel>	&getListChannel() const;
 	int 									init_server();
 	int 									check_password(std::string password);
-	int 									parsing (std::string input, int i);
-	int 									setNickname(std::string nick, int socket);
-	int 									setUser(std::string nick, int socket);
-	int 									createUser(int socketfd, int i);
+	int 									parsing (std::string input, User &user);
+	int 									setNickname(std::string nick, int socket, User &user);
+	int 									setUser(std::string nick, int socket, User &user);
+	int 									createUser(int socketfd, int i, User &user);
 	void									changeTopic(std::string channel, std::string topic, int socketfd);
 	void									changePerm(std::string channel, bool perm, int socketfd);
 	void									changePassword(std::string channel, std::string password, int socketfd);
@@ -68,6 +66,7 @@ class Server
 	void									handle_invite(std::string argument, int socketfd);
 	void									handle_kick(std::string argument, int socketfd);
 	void 									handle_ping( std::string argument, int socketfd);
-	void									handle_whois(std::string argument, int socketfd);
+	void									handle_whois(std::string argument, int socketfd, User user);
 	void									handle_privmsg(std::string argument, int socketfd);
+	void									handle_cap(const std::string& arg, User& user, int socketfd);
 };

@@ -6,16 +6,28 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 12:49:13 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/11 14:44:00 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/18 11:22:50 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "User.hpp"
 
-User::User(int socket): _socket(socket) {}
-User::User(): _socket(-1) {}
+User::User(int socket): _socket(socket)
+{
+	capDone = false;
+	connected = false;
+}
+User::User(): _socket(-1)
+{
+	connected = false;
+	capDone = false;
+}
 
-User::User(int socketfd, std::string username, std::string nickname):_username(username), _nickname(nickname), _socket(socketfd) {}
+User::User(int socketfd, std::string username, std::string nickname):_username(username), _nickname(nickname), _socket(socketfd)
+{
+	connected = false;
+	capDone = false;
+}
 
 User::~User() {}
 
@@ -33,6 +45,36 @@ const std::string User::getUsername() const
 const std::string User::getNickname() const
 {
 	return this->_nickname;
+}
+
+void User::setNickname(std::string nickname)
+{
+	this->_nickname = nickname;
+}
+
+void User::setUsername(std::string username)
+{
+	this->_username = username;
+}
+
+void User::setCap(bool cap)
+{
+	this->capDone = cap;
+}
+
+bool User::getCap()
+{
+	return this->capDone;
+}
+
+void User::setConnected(bool connected)
+{
+	this->connected = connected;
+}
+
+bool User::getConnected()
+{
+	return this->connected;
 }
 
 int User::getSocket() const

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 09:08:11 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/15 17:14:12 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/18 13:38:26 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,6 +134,14 @@ void Channel::addinvitation(std::string nickname)
 	it = find(_invitate.begin(), _invitate.end(), nickname);
 	if (it == _invitate.end())
 		this->_invitate.push_back(nickname);
+}
+
+void Channel::baninvitation(std::string nickname)
+{
+	std::vector<std::string>::iterator it;
+	it = find(_invitate.begin(), _invitate.end(), nickname);
+	if (it != _invitate.end())
+		this->_invitate.erase(it);
 }
 
 void	Channel::setAccessTopic(bool perm)

@@ -6,67 +6,97 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/18 13:58:29 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/18 14:15:47 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 #include "User.hpp"
 
-bool is_user[MAX_CLIENTS];
+bool is_registered[MAX_CLIENTS];
 
-int Server::createUser(int socketfd, int i)
+int Server::createUser(int socketfd, int i, User &user)
 {
-	if (is_user[i])
+	if (is_registered[i])
 		return (0);
-	addUser(socketfd, _user, _nickname);
-	is_user[i] = true;
+	addUser(socketfd, user.getUsername(), user.getNickname());
+	is_registered[i] = true;
 	std::cout << "User created " << socketfd << std::endl;
-	_user = "";
-	_nickname = "";
 	return (0);
 }
 
-int Server::setNickname(std::string nick, int socket)
+int Server::setNickname(std::string nick, int socket, User &user)
 {
 	if (nick.empty())
 	{
-		std::cout << "Nickname cannot be empty";
+		std::string message = ":irc.example.net 431 * :No nickname given\r\n";
+		send(socket, message.c_str(), message.size(), 0);
 		return (-1);
 	}
 	// if (nick.length() > 9)
-	// {
-	// 	std::cout << "nick length has too long" << std::endl;
+	// {	
+	// 	std::string message = ":irc.example.net 432 * " + nick + " :Erroneous nickname\r\n";
+	// 	send(socket, message.c_str(), message.size(), 0);
 	// 	return (-1);
 	// }
 	std::map<std::string, User>::iterator it = _list_user.find(nick);
+	if (it != _list_user.end())
 	{
-        if (it != _list_user.end())
+		std::string message = ":irc.example.net 433 * " + nick + " :Nickname is already in use\r\n";
+		send(socket, message.c_str(), message.size(), 0);
+		return (-1);
+	}
+	std::string former_nick = user.getNickname();
+	user.setNickname(nick);
+	if (!former_nick.empty())
+	{
+		std::map<std::string, User>::iterator it2 = _list_user.find(former_nick);
+		if (it2 != _list_user.end())
+			_list_user.erase(it2);
+		_list_user.insert(std::make_pair(nick, user));
+	}
+	std::map<std::string, Channel>::iterator ito;
+	for (ito = _list_channel.begin(); ito != _list_channel.end() ; ito++)
+	{
+		std::vector<std::string> copy2 = ito->second.getListChef();
+		std::vector<std::string>::iterator ito2 = std::find(copy2.begin(), copy2.end(), former_nick);
+		if (ito2 != copy2.end())
 		{
-			std::string message = ":irc.example.net 433 * " + nick + " :Nickname is already in use\r\n";
-			_nickname = "";
-			send(socket, message.c_str(), message.size(), 0);
-			return (-1);
+			ito->second.kickuser(former_nick);
+			ito->second.adduser(user.getNickname());
+			ito->second.remote(user.getNickname());
+		}
+		std::vector<std::string> copy = ito->second.getListUser();
+		std::vector<std::string>::iterator ito1 = std::find(copy.begin(), copy.end(), former_nick);
+		if (ito1 != copy.end())
+		{
+			ito->second.kickuser(former_nick);
+			ito->second.adduser(user.getNickname());
+		}
+		std::vector<std::string> copy3 = ito->second.getListInvitation();
+		std::vector<std::string>::iterator ito3 = std::find(copy3.begin(), copy3.end(), former_nick);
+		if (ito3 != copy.end())
+		{
+			ito->second.baninvitation(former_nick);
+			ito->second.addinvitation(user.getNickname());
 		}
 	}
-	std::string message = ":*!ident@host NICK :" + nick + "\r\n";
-	//a regler
+	std::string message = ":" + former_nick + "!ident@host NICK :" + nick + "\r\n";
 	send(socket, message.c_str(), message.size(), 0);
-	_nickname = nick;
 	return (0);
 }
 
-int Server::setUser(std::string nick, int socket)
+int Server::setUser(std::string nick, int socket, User &user)
 {
 	if (nick.empty())
 	{
 		std::cout << "Username cannot be empty";
 		return (-1);
 	}
-	_user = nick;
+	user.setUsername(nick);
 	std::string message;
 	std::string servername = "ircserv";
-	message = ":" + servername + " 001 " + _nickname + " :Welcome to the Internet Relay Network " + _nickname + "!" + _user + "@lelanglo&@bfiquet\r\n";
+	message = ":" + servername + " 001 " + user.getNickname() + " :Welcome to the Internet Relay Network " + user.getNickname() + "!" + user.getUsername() + "@lelanglo&@bfiquet\r\n";
 	send(socket, message.c_str(), message.length(), 0);
 	return (0);
 }
@@ -126,6 +156,7 @@ int Server::init_server()
             	    fds[nfds].fd = new_socket;
             	    fds[nfds].events = POLLIN;
             	    nfds++;
+					_list_socket_user.insert(std::make_pair(new_socket, User(new_socket)));
             	    std::cout << "Client connected to the server" << std::endl;
             	} 
 				else
@@ -149,22 +180,26 @@ int Server::init_server()
 						std::string cmd;
 						while (std::getline(ss, cmd, '\n'))
 						{
+							User &user = _list_socket_user[fds[i].fd];
 							_argument= "";
-    		 				j = parsing(cmd, i);
-							if (is_user[i] == false && j > 2)
+    		 				j = parsing(cmd, user);
+							if (is_registered[i] == false && (j > 2 && j < 9))
 								j = 20;
 							switch (j)
 							{
 								case 0:
+								{
+									handle_cap(_argument, user, fds[i].fd);
 									break;
+								}		
 								case 1:
 								{
-									setNickname(_argument, fds[i].fd);
+									setNickname(_argument, fds[i].fd, user);
 									break;
 								}
 								case 2:
 								{
-									setUser(_argument, fds[i].fd);
+									setUser(_argument, fds[i].fd, user);
 									break;
 								}
 								case 3:
@@ -204,7 +239,7 @@ int Server::init_server()
 								}
 								case 10: 
 								{
-									handle_whois(_argument, fds[i].fd);
+									handle_whois(_argument, fds[i].fd, user);
 									break;
 								}
 								case 11:
@@ -214,14 +249,22 @@ int Server::init_server()
 								}
 								case 20:
 								{
+									std::cout << i << std::endl;
 									std::cout << "Cannot execute command if clients is not a user" << std::endl;
 								}
 								default:
 									break;
 							}
 							j = -1;
-							if (_nickname.compare("") && _user.compare(""))
-								createUser(fds[i].fd, i);
+							if (!user.getNickname().empty() && !user.getUsername().empty() && !is_registered[i])
+								createUser(fds[i].fd, i, user);
+							if (user.getCap() && (!user.getNickname().empty() && !user.getUsername().empty() && !is_registered[i]))
+							{
+								std::string servername = "ircserv";
+								std::string message = ":" + servername + " 001 " + user.getNickname() + " :Welcome to the IRC Network " + user.getNickname() + "!* @lelanglo&@bfiquet\r\n";
+								send(fds[i].fd, message.c_str(), message.length(), 0);
+								break;
+							}
 						}
 					}
 					else if (n == 0)
@@ -229,6 +272,7 @@ int Server::init_server()
     		 			std::cout << "Client déconnecté proprement." << std::endl;
 						close(fds[i].fd);
 						fds[i] = fds[nfds - 1];
+						_list_socket_user.erase(fds[i].fd);
 						nfds--;
 						i--;
 					}
@@ -236,6 +280,7 @@ int Server::init_server()
 					{
 						close(fds[i].fd);
 						fds[i] = fds[nfds - 1];
+						_list_socket_user.erase(fds[i].fd);
 						nfds--;
 						i--;
 						std::cerr << strerror(errno) << std::endl;
@@ -251,11 +296,7 @@ int Server::init_server()
 	return (0);
 }
 
-Server::Server(std::string password, int port): _password(password), _port(port)
-{
-	_nickname = "";
-	_user = "";
-}
+Server::Server(std::string password, int port): _password(password), _port(port) {}
 
 Server::~Server() {}
 
@@ -327,6 +368,8 @@ bool	Server::exist(std::string nickname, int socketfd)
 	if (it != _list_user.end())
 		return true;
 	std::string message = ":" + _servername + " 401 " + whoami + " " + nickname + " :No such Nick/Channel\r\n";
+	send(socketfd, message.c_str(), message.size(), 0);
+	return true;
 }
 
 void	Server::addChannel(std::string name, std::string proprio, std::string password)
@@ -534,7 +577,6 @@ void Server::kick(std::string channel, std::string nickname, std::string reason,
 	int socketmember;
 	std::string message = ":" + whoami + "!user@host KICK " + channel + " " + nickname + " :" + reason + "\r\n";
 	std::cout << message + "\n";
-	send(socketfd, message.c_str(), message.size(), 0);
 	for (ivector = copy.begin(); ivector != copy.end(); ++ivector)
 	{
 		imap = _list_user.find(*ivector);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 14:46:43 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/15 16:40:49 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/18 13:37:24 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ class Channel
 		void							adduser(std::string nickname);
 		void							kickuser(std::string nickname);
 		void							addinvitation(std::string nickname);
+		void							baninvitation(std::string nickname);
 		void							setAccessTopic(bool perm);
 		bool							getAccessTopic() const;
 		int								getMembers() const;
