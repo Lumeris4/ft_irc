@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:22:10 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/18 12:23:55 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/18 14:07:37 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ class Server
 	void									sendMessage(std::string destination, std::string content, bool user, int socketfd);
 	void									sendToChannel(std::string channel, std::string message);
 	std::string								whatUser(int socketfd);
+	bool									exist(std::string nickname, int socketfd);
 	bool									haveright(int socketfd, std::string channel);
 	void 									handle_join(std::string argument, int socketfd);
 	void									handle_mode(std::string argument, int socketfd);

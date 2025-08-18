@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/18 14:26:28 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/18 14:38:09 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -361,6 +361,17 @@ void	Server::sendToChannel(std::string channel, std::string message)
 	}
 }
 
+bool	Server::exist(std::string nickname, int socketfd)
+{
+	std::string whoami = whatUser(socketfd);
+	std::map<std::string, User>::iterator it = _list_user.find(nickname);
+	if (it != _list_user.end())
+		return true;
+	std::string message = ":" + _servername + " 401 " + whoami + " " + nickname + " :No such Nick/Channel\r\n";
+	send(socketfd, message.c_str(), message.size(), 0);
+	return true;
+}
+
 void	Server::addChannel(std::string name, std::string proprio, std::string password)
 {
 	Channel channel = Channel(name, proprio);
@@ -485,6 +496,8 @@ void	Server::givePerm(std::string channel, std::string name, bool give, int sock
 		std::vector<std::string>::iterator itt = find(list.begin(), list.end(), nickname);
 		if (itt != list.end())
 		{
+			if (!exist(nickname, socketfd))
+				return;
 			std::string message =  ":" + nickname + "!ident@host MODE " + channel + " " + mode + " " + name + "\r\n";
 			if (give)
 				ito->second.remote(name);
@@ -514,7 +527,7 @@ void Server::changeLimit(std::string channel, std::string limit, int perm ,int s
 	std::map<std::string, Channel>::iterator ito = this->_list_channel.find(channel);
 	if (ito != _list_channel.end())
 	{
-		if (ito->second.getMembers() < new_limit)
+		if (new_limit != -1 || ito->second.getMembers() < new_limit)
 		{
 			std::string message =  ":" + whoami + "!ident@host MODE " + channel + " " + mode + " " + limit + "\r\n";
 			if (perm)
@@ -523,7 +536,11 @@ void Server::changeLimit(std::string channel, std::string limit, int perm ,int s
 				ito->second.setLimit(-1);
 			sendToChannel(channel, message);
 		}
-		//gestion erreur
+		else
+		{
+			std::string response = ":" + _servername +  "471 " + whoami + " " + channel + " :Cannot set channel limit\r\n";
+			send(socketfd, response.c_str(), response.size(), 0);
+		}
 	}
 }
 
@@ -549,7 +566,7 @@ void Server::permTopic(std::string channel, bool perm, int socketfd)
 
 void Server::kick(std::string channel, std::string nickname, std::string reason, int socketfd)
 {
-	if (!haveright(socketfd, channel))
+	if (!haveright(socketfd, channel) || !exist(nickname, socketfd))
 		return;
 	std::string whoami = whatUser(socketfd);
 	std::map<std::string, Channel>::iterator ito = this->_list_channel.find(channel);
@@ -560,7 +577,6 @@ void Server::kick(std::string channel, std::string nickname, std::string reason,
 	int socketmember;
 	std::string message = ":" + whoami + "!user@host KICK " + channel + " " + nickname + " :" + reason + "\r\n";
 	std::cout << message + "\n";
-	send(socketfd, message.c_str(), message.size(), 0);
 	for (ivector = copy.begin(); ivector != copy.end(); ++ivector)
 	{
 		imap = _list_user.find(*ivector);
@@ -571,7 +587,7 @@ void Server::kick(std::string channel, std::string nickname, std::string reason,
 
 void Server::invite(std::string channel, std::string user, int socketfd)
 {
-	if (!haveright(socketfd, channel))
+	if (!haveright(socketfd, channel) || !exist(user, socketfd))
 		return;
 	std::map<std::string, Channel>::iterator ito = this->_list_channel.find(channel);
 	std::vector<std::string>::iterator it;
@@ -640,6 +656,8 @@ void Server::sendMessage(std::string destination, std::string content, bool user
 	int socket_destinate;
 	if (!user)
 	{
+		if (!exist(destination, socketfd))
+			return;
 		std::map<std::string, User>::iterator itt;
 		itt = _list_user.find(destination);
 		socket_destinate = itt->second.getSocket();
