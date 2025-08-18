@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:22:10 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/14 10:49:01 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/18 11:22:25 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,12 +52,13 @@ class Server
 	void									changePerm(std::string channel, bool perm, int socketfd);
 	void									changePassword(std::string channel, std::string password, int socketfd);
 	void									givePerm(std::string channel, std::string name, bool give, int socketfd);
-	void									changeLimit(std::string channel, int limit, int socketfd);
+	void									changeLimit(std::string channel, std::string limit, int perm, int socketfd);
 	void									permTopic(std::string channel, bool perm, int socketfd);
 	void									kick(std::string channel, std::string nickname, std::string reason, int socketfd);
 	void									invite(std::string channel, std::string user, int socketfd);
 	void									joinCanal(std::string channel, std::string password, int socketfd);
 	void									sendMessage(std::string destination, std::string content, bool user, int socketfd);
+	void									sendToChannel(std::string channel, std::string message);
 	std::string								whatUser(int socketfd);
 	bool									haveright(int socketfd, std::string channel);
 	void 									handle_join(std::string argument, int socketfd);

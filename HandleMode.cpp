@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 10:38:15 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/15 16:15:36 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/18 11:22:06 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ void Server::handle_mode(std::string argument, int socketfd)
 		case 4:
 		{
 			std::cout << channel << "case 5" << arg << std::endl;
-			this->changeLimit(channel, atoi(arg.c_str()), socketfd);
+			this->changeLimit(channel, arg , set_mode ,socketfd);
 			break;
 		}
 		default:
