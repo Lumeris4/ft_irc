@@ -8,7 +8,7 @@ CFLAGS = -Wall -Wextra -Werror -g3 -std=c++98
 OBJDIR = obj
 
 SRCS = 	main.cpp parsing/Parsing.cpp parsing/Check_password.cpp Server.cpp Channel.cpp User.cpp HandleMode.cpp HandleTopic.cpp HandleInvite.cpp HandleKick.cpp HandleJoin.cpp\
-		HandlePing.cpp HandleWhois.cpp
+		HandlePing.cpp HandleWhois.cpp HandlePrivmsg.cpp HandleCap.cpp
 OBJS = $(SRCS:%.cpp=$(OBJDIR)/%.o)
 
 all: $(NAME)

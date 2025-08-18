@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 12:44:06 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/13 13:00:23 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/18 10:17:54 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,6 @@ void Server::handle_kick(std::string argument, int socket)
 	std::string user = rest.substr(0, second_space);
 	if (!reason.empty() && reason[0] == ':')
 		reason = reason.substr(1);
-	std::cout << "User " << user << " got kicked from " << channel << " because: " << reason << std::endl;
 	kick(channel, user, reason, socket);
 }
 

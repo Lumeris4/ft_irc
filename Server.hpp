@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:22:10 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/13 13:08:10 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/18 11:33:20 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,15 +21,6 @@
 class Server;
 class User;
 
-struct Client {
-	std::string nickname;
-	std::string username;
-	bool capDone = false;
-	bool registered = false;
-
-	Client();
-};
-
 class Server
 {
 	protected:
@@ -40,22 +31,21 @@ class Server
 	std::map<std::string ,User>		_list_user;
 	std::map<std::string, Channel>	_list_channel;
 	std::string						_argument;
-	std::map<int, Client>			clients;
 
 	public:
 	Server();
 	Server(std::string password, int port);
 	~Server();
 	void									addUser(int socketfd, std::string name, std::string nickname);
-	void									addChannel(std::string name, std::string proprio);
+	void									addChannel(std::string name, std::string proprio, std::string password);
 	const std::map<std::string, User>		&getListUser() const;
 	const std::map<std::string, Channel>	&getListChannel() const;
 	int 									init_server();
 	int 									check_password(std::string password);
-	int 									parsing (std::string input, int i);
-	int 									setNickname(std::string nick);
-	int 									setUser(std::string nick);
-	int 									createUser(int socketfd, int i);
+	int 									parsing (std::string input, User &user);
+	int 									setNickname(std::string nick, int socket, User user);
+	int 									setUser(std::string nick, int socket, User user);
+	int 									createUser(int socketfd, int i, User user);
 	void									changeTopic(std::string channel, std::string topic, int socketfd);
 	void									changePerm(std::string channel, bool perm, int socketfd);
 	void									changePassword(std::string channel, std::string password, int socketfd);
@@ -74,5 +64,7 @@ class Server
 	void									handle_invite(std::string argument, int socketfd);
 	void									handle_kick(std::string argument, int socketfd);
 	void 									handle_ping( std::string argument, int socketfd);
-	void									handle_whois(std::string argument, int socketfd);
+	void									handle_whois(std::string argument, int socketfd, User user);
+	void									handle_privmsg(std::string argument, int socketfd);
+	void									handle_cap(const std::string& arg, User& user, int socketfd);
 };

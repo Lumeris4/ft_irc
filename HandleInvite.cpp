@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 12:50:42 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/13 13:00:06 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/18 10:17:51 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,5 @@ void Server::handle_invite(std::string argument, int socketfd)
 		return;
 	}
 	//setTopic(newTopic);
-	std::cout << "user " << user << " got invited in " << channel << "]" << std::endl;
 	this->invite(channel ,user, socketfd);
 }

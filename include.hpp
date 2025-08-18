@@ -21,3 +21,4 @@
 #include <vector>
 #include <map>
 #include <algorithm>
+#include <signal.h>

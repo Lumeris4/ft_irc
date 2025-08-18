@@ -6,18 +6,16 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 13:10:28 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/13 12:45:30 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/18 11:33:13 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../Server.hpp"
 
-bool connected[MAX_CLIENTS] = {false, false, false, false, false, false, false, false, false, false};
-
-int Server::parsing (std::string input, int j)
+int Server::parsing(std::string input, User &user)
 {
 	std::string argument;
-	std::string array[] = {"CAP", "PASS", "NICK", "USER", "MODE", "TOPIC", "INVITE", "KICK", "JOIN", "MSG", "PING", "WHOIS"};
+	std::string array[] = {"CAP", "PASS", "NICK", "USER", "MODE", "TOPIC", "INVITE", "KICK", "JOIN", "PRIVMSG", "PING", "WHOIS", "QUIT"};
 	int			size = sizeof(array) / sizeof(array[0]);
 	int			last_upper;
 	int			level = -1;
@@ -37,8 +35,11 @@ int Server::parsing (std::string input, int j)
 		if (!raw_cmd.compare(array[i]))
 			level = i;
 	}
-	if (level > 1 && connected[j] == false)
+	if (level > 1 && !user.getConnected())
+	{
+		level = 0;
 		std::cout << "you have to enter the password first" << std::endl;
+	}
 	else
 	{
 		switch (level)
@@ -47,14 +48,14 @@ int Server::parsing (std::string input, int j)
 				break;
 			case 1:
 			{
-				if (connected[j] == true)
+				if (user.getConnected())
 					std::cout << "Client has already entered the password" << std::endl;
 				else if (check_password(_argument) == -1)
 				{
 					std::cout << "Client has entered wrong password" << std::endl;
 					return (-1);
 				}
-				connected[j] = true;
+				user.setConnected(true);
 				return (0);
 			}
 			case 2:
@@ -77,6 +78,8 @@ int Server::parsing (std::string input, int j)
 				return (9);
 			case 11:
 				return (10);
+			case 12:
+				return(11);
 			default:
 				std::cout << input << " is not a valid command" <<std::endl;
 				return (-1);
