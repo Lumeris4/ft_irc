@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   HandleTopic.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 12:21:36 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/15 15:29:49 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/19 10:29:56 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,24 +14,25 @@
 #include "User.hpp"
 
 
-void Server::handle_topic(std::string argument, int socketfd)
+void Server::handle_topic(std::string argument, int socketfd, User user)
 {
 	size_t index = argument.find('#');
 	if (index == std::string::npos)
 	{
-		std::cout << "Invalid format" << std::endl;
-		return;
+		std::string message = ":irc.example.net 403 " + user.getNickname() + " " + argument + " :No such channel\r\n";
+        send(socketfd, message.c_str(), message.length(), 0);
+        return;
 	}
 	size_t pos = argument.find(' ');
 	std::string channel = argument.substr(0, pos);
 	if (channel.empty())
 	{
-		std::cout << "Invalid format (bad channel)\n";
-		return;
+		std::string message = ":irc.example.net 461 " + user.getNickname() + " MODE :Not enough parameters\r\n";
+        send(socketfd, message.c_str(), message.length(), 0);
+        return;
 	}
 	if (pos == std::string::npos)
 	{
-		std::cout << "Ceci est le topic du channel" << std::endl;
 		this->changeTopic(channel, "", socketfd);
 		return;
 	}
