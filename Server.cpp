@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/19 16:04:13 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/19 16:05:28 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -285,8 +285,13 @@ int Server::init_server()
 								case 11:
 								{
 									deleteUser(fds[i].fd);
+									user.setNickname("");
+									user.setUsername("");
+									user.setConnected(false);
+									user.setFirstmode(true);
 									user.setCap(false);
 									close(fds[i].fd);
+									i--;
 									break;
 								}
 								case 20:
