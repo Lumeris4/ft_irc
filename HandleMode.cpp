@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 10:38:15 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/18 15:54:19 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/19 09:58:37 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,9 @@ void Server::handle_mode(std::string argument, int socketfd, User user)
 {
 	size_t pos = argument.find('#');
 	size_t space = argument.find(' ');
-	std::string channel = argument.substr(pos, space);
 	if (pos == std::string::npos)
-	{
-		std::string message = ":irc.example.net 403 " + user.getNickname() + channel + " :No such channel";
-		send(socketfd, message.c_str(), message.length(), 0);
 		return;
-	}
+	std::string channel = argument.substr(pos, space);
 	// size_t space = argument.find(' ');
 	// std::string channel = argument.substr(pos, space);
 	if (channel.empty())
