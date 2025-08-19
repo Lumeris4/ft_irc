@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/13 10:51:01 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/19 10:31:14 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/19 10:37:00 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,10 @@ void Server::handle_ping( std::string argument, int socketfd)
 	if (argument.empty())
 		message = ":" + _servername + " PONG " + _servername + "\r\n";
 	else
-		message = ":" + _servername + " PONG " + _servername + " " + argument + "\r\n";
+    {
+        if (argument[0] != ':')
+            argument = ":" + argument;
+        message = ":" + _servername + " PONG " + _servername + " " + argument + "\r\n";
+    }
 	send (socketfd, message.c_str(), message.length(), 0);
 }
