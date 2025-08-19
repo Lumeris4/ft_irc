@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:22:10 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/19 14:45:35 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/19 15:29:54 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,14 +60,14 @@ class Server
 	std::string								whatUser(int socketfd);
 	bool									exist(std::string nickname, int socketfd);
 	bool									haveright(int socketfd, std::string channel);
-	void 									handle_join(std::string argument, int socketfd);
+	void 									handle_join(std::string argument, int socketfd, User user);
 	void									handle_mode(std::string argument, int socketfd, User user);
-	void									handle_topic(std::string argument, int socketfd);
-	void									handle_invite(std::string argument, int socketfd);
-	void									handle_kick(std::string argument, int socketfd);
+	void									handle_topic(std::string argument, int socketfd, User user);
+	void									handle_invite(std::string argument, int socketfd, User user);
+	void									handle_kick(std::string argument, int socketfd, User user);
 	void 									handle_ping( std::string argument, int socketfd);
 	void									handle_whois(std::string argument, int socketfd, User user);
-	void									handle_privmsg(std::string argument, int socketfd);
+	void									handle_privmsg(std::string argument, int socketfd, User user);
 	void									handle_cap(const std::string& arg, User& user, int socketfd);
 	void									deleteUser(int socket);
 };

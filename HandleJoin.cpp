@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 13:48:24 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/13 12:59:50 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/19 10:20:17 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,14 @@ std::vector<std::string> split(const std::string& input, char delimiter) {
 	return tokens;
 }
 
-void Server::handle_join(std::string argument, int socketfd)
+void Server::handle_join(std::string argument, int socketfd, User user)
 {
 	if (argument.empty())
 	{
-		std::cout << "JOIN error: missing argument.\n";
-		return;
-	}
+        std::string message = ":irc.example.net 461 " + user.getNickname() + " MODE :Not enough parameters\r\n";
+        send(socketfd, message.c_str(), message.length(), 0);
+        return;
+    }
 	size_t space_pos = argument.find(' ');
 	std::string channels_str = argument;
 	std::string keys_str = "";
