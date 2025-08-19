@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/18 15:58:46 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/19 10:36:03 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -221,27 +221,27 @@ int Server::init_server()
 								}
 								case 4:
 								{
-									handle_topic(_argument, fds[i].fd);
+									handle_topic(_argument, fds[i].fd, user);
 									break;
 								}
 								case 5:
 								{
-									handle_invite(_argument, fds[i].fd);
+									handle_invite(_argument, fds[i].fd, user);
 									break;
 								}
 								case 6:
 								{
-									handle_kick(_argument, fds[i].fd);
+									handle_kick(_argument, fds[i].fd, user);
 									break;
 								}
 								case 7:
 								{
-									handle_join(_argument, fds[i].fd);
+									handle_join(_argument, fds[i].fd, user);
 									break;
 								}
 								case 8:
 								{
-									handle_privmsg(_argument, fds[i].fd);
+									handle_privmsg(_argument, fds[i].fd, user);
 									break;
 								}
 								case 9:
