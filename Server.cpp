@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/19 15:40:56 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/19 16:04:13 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -679,6 +679,26 @@ void Server::invite(std::string channel, std::string user, int socketfd)
 	}
 }
 
+std::string getNamesList(const Channel &channel) {
+    std::string names;
+    bool first = true;
+	std::vector<std::string> chefs = channel.getListChef();
+	for (size_t i = 0; i < chefs.size(); ++i)
+	{	
+    	if (!first) names += " ";
+    	names += "@" + chefs[i];
+    	first = false;
+	}
+	std::vector<std::string> users = channel.getListUser();
+	for (size_t i = 0; i < users.size(); ++i)
+	{
+		if (!first) names += " ";
+		names += users[i];
+	    first = false;
+	}
+    return names;
+}
+
 void	Server::joinCanal(std::string canal, std::string password, int socketfd)
 {
 	std::string nickname = whatUser(socketfd);
@@ -703,7 +723,19 @@ void	Server::joinCanal(std::string canal, std::string password, int socketfd)
 					it->second.adduser(nickname);
 					std::string message = ":" + _servername +  ":" + nickname + "!ident@host JOIN :" + canal + "\r\n";
 					sendToChannel(canal, message);
-					it->second.adduser(nickname);
+					if (it->second.getTopic().empty())
+						std::string message = ":" + _servername + "331 " + nickname + " " + canal + " :No topic is set\r\n";
+					else 
+						std::string message = ":" + _servername + "331 " + nickname + " " +  canal + ":" + it->second.getTopic() + "\r\n";
+					std::string names = getNamesList(it->second);
+					std::cout << "[" << message << "]" << std::endl;
+					send(socketfd, message.c_str(), message.length(), 0);
+					message = ":" + _servername + "353 " + nickname + " = " + canal + " :"  + names + "\r\n";
+					std::cout << "[" << message << "]" << std::endl;
+					send(socketfd, message.c_str(), message.length(), 0);
+					message = ":" + _servername + "366 " + nickname + " " + canal + ":End of /NAMES list\r\n";
+					std::cout << "[" << message << "]" << std::endl;
+					send(socketfd, message.c_str(), message.length(), 0);
 				}
 				else
 				{
@@ -716,6 +748,20 @@ void	Server::joinCanal(std::string canal, std::string password, int socketfd)
 					it->second.adduser(nickname);
 					std::string message = ":" + nickname + "!ident@host JOIN :" + canal + "\r\n";
 					sendToChannel(canal, message);
+					if (it->second.getTopic().empty())
+						std::string message = ":" + _servername + "331 " + nickname + " " + canal + " :No topic is set\r\n";
+					else 
+						std::string message = ":" + _servername + "331 " + nickname + " " +  canal + ":" + it->second.getTopic() + "\r\n";
+					std::string names = getNamesList(it->second);
+					std::cout << "[" << message << "]" << std::endl;
+					send(socketfd, message.c_str(), message.length(), 0);
+					std::cout << "[" << message << "]" << std::endl;
+					message = ":" + _servername + "353 " + nickname + " = " + canal + " :"  + names + "\r\n";
+					send(socketfd, message.c_str(), message.length(), 0);
+					std::cout << "[" << message << "]" << std::endl;
+					message = ":" + _servername + "366 " + nickname + " " + canal + ":End of /NAMES list\r\n";
+					std::cout << "[" << message << "]" << std::endl;
+					send(socketfd, message.c_str(), message.length(), 0);
 			}
 		}
 		else
@@ -727,9 +773,14 @@ void	Server::joinCanal(std::string canal, std::string password, int socketfd)
 	else
 	{
 		this->addChannel(canal, nickname, password);
+		std::string message = ":" + _servername + "331 " + nickname + canal + " :No topic is set\r\n";
+		send(socketfd, message.c_str(), message.length(), 0);
+		message = ":" + _servername + "353 " + nickname + " = " + canal + " :@" + nickname + "\r\n";
+		send(socketfd, message.c_str(), message.length(), 0);
+		message = ":" + _servername + "366 " + nickname + canal + ":End of /NAMES list\r\n";
+		send(socketfd, message.c_str(), message.length(), 0);
 		std::cout << canal << " add\n";
 	}
-	
 }
 
 void Server::sendMessage(std::string destination, std::string content, bool user, int socketfd)
