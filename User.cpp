@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 12:49:13 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/18 11:22:50 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/19 12:50:51 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,16 @@ void User::setConnected(bool connected)
 bool User::getConnected()
 {
 	return this->connected;
+}
+
+void User::setLeftover(std::string leftover)
+{
+	this->_leftover = leftover;
+}
+
+std::string	User::getLeftover()
+{
+	return this->_leftover;
 }
 
 int User::getSocket() const
