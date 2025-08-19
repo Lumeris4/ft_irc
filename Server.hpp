@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:22:10 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/19 10:29:26 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/19 15:29:54 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,4 +69,5 @@ class Server
 	void									handle_whois(std::string argument, int socketfd, User user);
 	void									handle_privmsg(std::string argument, int socketfd, User user);
 	void									handle_cap(const std::string& arg, User& user, int socketfd);
+	void									deleteUser(int socket);
 };

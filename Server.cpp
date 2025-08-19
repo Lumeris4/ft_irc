@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/19 15:33:50 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/19 15:46:50 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ bool isValidNickStart(char c)
 
 int Server::setNickname(std::string nick, int socket, User &user)
 {
+	std::string former_nick = user.getNickname();
 	if (nick.empty())
 	{
 		std::string message = ":" + _servername + " 431 * :No nickname given\r\n";
@@ -50,7 +51,6 @@ int Server::setNickname(std::string nick, int socket, User &user)
 		send(socket, message.c_str(), message.size(), 0);
 		return (-1);
 	}
-	std::string former_nick = user.getNickname();
 	user.setNickname(nick);
 	if (!former_nick.empty())
 	{
@@ -284,6 +284,8 @@ int Server::init_server()
 								}
 								case 11:
 								{
+									deleteUser(fds[i].fd);
+									user.setCap(false);
 									close(fds[i].fd);
 									break;
 								}
@@ -385,6 +387,29 @@ bool Server::haveright(int socketfd, std::string channel)
 	return false;
 }
 
+void Server::deleteUser(int socket)
+{
+	std::string user = whatUser(socket);
+	std::map<std::string , User>::iterator it = _list_user.find(user);
+	_list_user.erase(it);
+	std::map<std::string, Channel>::iterator itp;
+	std::vector<std::string> copy;
+	std::vector<std::string>::iterator iv;
+	for (itp = _list_channel.begin(); itp != _list_channel.end(); ++itp)
+	{
+		copy = itp->second.getListUser();
+		iv = find(copy.begin(), copy.end(), user);
+		if (iv != copy.end())
+			itp->second.kickuser(user);
+		copy = itp->second.getListInvitation();
+		iv = find(copy.begin(), copy.end(), user);
+		if (iv != copy.end())
+			itp->second.baninvitation(user);
+	}
+	for (it = _list_user.begin(); it !=_list_user.end(); it++)
+		std::cout << "(" + it->first + ")"<< std::endl;
+}
+
 void	Server::sendToChannel(std::string channel, std::string message)
 {
 	std::map<std::string, Channel>::iterator it;
@@ -409,7 +434,7 @@ bool	Server::exist(std::string nickname, int socketfd)
 		return true;
 	std::string message = ":" + _servername + " 401 " + whoami + " " + nickname + " :No such Nick/Channel\r\n";
 	send(socketfd, message.c_str(), message.size(), 0);
-	return true;
+	return false;
 }
 
 void	Server::addChannel(std::string name, std::string proprio, std::string password)
