@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/19 12:54:13 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/19 14:14:16 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,24 +24,29 @@ int Server::createUser(int socketfd, int i, User &user)
 	return (0);
 }
 
+bool isValidNickStart(char c)
+{
+	return std::isalpha(c) || c == '[' || c == '\\' || c == ']' || c == '`' || c == '_' || c == '{' || c == '}';
+}
+
 int Server::setNickname(std::string nick, int socket, User &user)
 {
 	if (nick.empty())
 	{
-		std::string message = ":irc.example.net 431 * :No nickname given\r\n";
+		std::string message = ":" + _servername + " 431 * :No nickname given\r\n";
 		send(socket, message.c_str(), message.size(), 0);
 		return (-1);
 	}
-	if (nick.length() > 9)
+	if (nick.length() > 9 || !isValidNickStart(nick[0]))
 	{	
-		std::string message = ":irc.example.net 432 * " + nick + " :Erroneous nickname\r\n";
+		std::string message = ":" + _servername + "432 * " + nick + " :Erroneous nickname\r\n";
 		send(socket, message.c_str(), message.size(), 0);
 		return (-1);
 	}
 	std::map<std::string, User>::iterator it = _list_user.find(nick);
 	if (it != _list_user.end())
 	{
-		std::string message = ":irc.example.net 433 * " + nick + " :Nickname is already in use\r\n";
+		std::string message = ":" + _servername + " 433 * " + nick + " :Nickname is already in use\r\n";
 		send(socket, message.c_str(), message.size(), 0);
 		return (-1);
 	}
@@ -94,9 +99,14 @@ void handler(int sig)
     stop = 1;
 }
 
-int Server::setUser(std::string nick, int socket, User &user)
+int Server::setUser(std::string name, int socket, User &user)
 {
-	if (nick.empty())
+	size_t first_space = name.find(' ');
+	if (first_space != std::string::npos)
+		name = name.substr(0, first_space);
+	std::string nickname = user.getNickname().empty() ? name + "_" : user.getNickname();
+	std::string hostname = "ircserv";
+	if (name.empty())
 	{
 		std::string message = ":irc.example.net 461 * USER :Not enough parameters\r\n";
 		send(socket, message.c_str(), message.length(), 0);
@@ -104,14 +114,13 @@ int Server::setUser(std::string nick, int socket, User &user)
 	}
 	if (!user.getUsername().empty())
 	{
-		std::string message = ":irc.example.net 462 " + user.getNickname() + " :You may not reregister\r\n";
+		std::string message = ":irc.example.net 462 " + nickname + " :You may not reregister\r\n";
 		send(socket, message.c_str(), message.length(), 0);
 		return -1;
 	}
-	user.setUsername(nick);
-	std::string message;
+	user.setUsername(name);
 	std::string servername = "ircserv";
-	message = ":" + servername + " 001 " + user.getNickname() + " :Welcome to the Internet Relay Network " + user.getNickname() + "!" + user.getUsername() + "@lelanglo&@bfiquet\r\n";
+	std::string message = ":" + servername + " 001 " + nickname + " :Welcome to the Internet Relay Network " + nickname + "!" + user.getUsername() + "@" + hostname + "\r\n";
 	send(socket, message.c_str(), message.length(), 0);
 	return (0);
 }
@@ -197,6 +206,7 @@ int Server::init_server()
 						User &user = _list_socket_user[fds[i].fd];
 						
     		 			buffer[n] = '\0';
+						std::cout << input << std::endl;
 						input = user.getLeftover() + buffer;
 						user.setLeftover("");
 						std::stringstream ss(input);
@@ -231,7 +241,10 @@ int Server::init_server()
 								}
 								case 3:
 								{
-									handle_mode(_argument, fds[i].fd, user);
+									if (user.getFirstmode() != true)
+										handle_mode(_argument, fds[i].fd, user);
+									if (user.getFirstmode() == true)
+										user.setFirstmode(false);
 									break;
 								}
 								case 4:
@@ -618,6 +631,11 @@ void Server::kick(std::string channel, std::string nickname, std::string reason,
 		socketmember = imap->second.getSocket();
 		send(socketmember, message.c_str(), message.size(), 0);
 	}
+	ito->second.kickuser(nickname);
+	int members = ito->second.getMembers();
+	std::cout << members << "\n";
+	if (members == 0)
+		_list_channel.erase(ito);
 }
 
 void Server::invite(std::string channel, std::string user, int socketfd)

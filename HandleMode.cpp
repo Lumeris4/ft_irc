@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 10:38:15 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/19 10:39:30 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/19 13:02:27 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ void Server::handle_mode(std::string argument, int socketfd, User user)
     if (channel.empty() || channel[0] != '#')
     {
         std::string message = ":irc.example.net 403 " + user.getNickname() + " " + argument + " :No such channel\r\n";
+		std::cout << argument << std::endl;
         send(socketfd, message.c_str(), message.length(), 0);
         return;
     }

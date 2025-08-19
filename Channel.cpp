@@ -6,14 +6,14 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 09:08:11 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/19 09:53:39 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/19 11:38:01 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "include.hpp"
 #include "Channel.hpp"
 
-Channel::Channel(std::string name, std::string creator): _name(name), _limit(-1), _access(false), _access_topic(true), _members(0)
+Channel::Channel(std::string name, std::string creator): _name(name), _limit(-1), _access(false), _access_topic(true), _members(1)
 {
 	this->_password = "";
 	this->_chef_usernames.push_back(creator);
