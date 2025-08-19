@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/19 10:22:48 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/19 11:37:55 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -603,7 +603,9 @@ void Server::kick(std::string channel, std::string nickname, std::string reason,
 		send(socketmember, message.c_str(), message.size(), 0);
 	}
 	ito->second.kickuser(nickname);
-	if (copy.empty() == true)
+	int members = ito->second.getMembers();
+	std::cout << members << "\n";
+	if (members == 0)
 		_list_channel.erase(ito);
 }
 
