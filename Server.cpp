@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/19 15:57:40 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/20 09:48:56 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,14 @@ int Server::createUser(int socketfd, int i, User &user)
 	return (0);
 }
 
-bool isValidNickStart(char c)
+bool isValidName(std::string nick)
 {
+	for (size_t i = 0; i < nick.length(); i++)
+	{
+		if (nick[i] == ' ' || nick[i] == '\t' || nick[i] ==',' || nick[i] == ':')
+			return false;
+	}
+	char c = nick[0];
 	return std::isalpha(c) || c == '[' || c == '\\' || c == ']' || c == '`' || c == '_' || c == '{' || c == '}';
 }
 
@@ -38,7 +44,7 @@ int Server::setNickname(std::string nick, int socket, User &user)
 		send(socket, message.c_str(), message.size(), 0);
 		return (-1);
 	}
-	if (nick.length() > 9 || !isValidNickStart(nick[0]))
+	if (nick.length() > 9 || !isValidName(nick))
 	{	
 		std::string message = ":" + _servername + "432 * " + nick + " :Erroneous nickname\r\n";
 		send(socket, message.c_str(), message.size(), 0);
@@ -101,24 +107,27 @@ void handler(int sig)
 
 int Server::setUser(std::string name, int socket, User &user)
 {
-	size_t first_space = name.find(' ');
-	if (first_space != std::string::npos)
-		name = name.substr(0, first_space);
-	std::string nickname = user.getNickname().empty() ? name + "_" : user.getNickname();
-	std::string hostname = "ircserv";
-	if (name.empty())
+	std::istringstream iss(name);
+	std::vector<std::string> parts;
+	std::string part;
+	while (iss >> part)
+		parts.push_back(part);
+	if (parts.size() < 4)
 	{
 		std::string message = ":irc.example.net 461 * USER :Not enough parameters\r\n";
 		send(socket, message.c_str(), message.length(), 0);
 		return -1;
 	}
+	std::string username = parts[0];
+	std::string nickname = user.getNickname().empty() ? username + "_" : user.getNickname();
+	std::string hostname = parts[1];
 	if (!user.getUsername().empty())
 	{
 		std::string message = ":irc.example.net 462 " + nickname + " :You may not reregister\r\n";
 		send(socket, message.c_str(), message.length(), 0);
 		return -1;
 	}
-	user.setUsername(name);
+	user.setUsername(username);
 	std::string servername = "ircserv";
 	std::string message = ":" + servername + " 001 " + nickname + " :Welcome to the Internet Relay Network " + nickname + "!" + user.getUsername() + "@" + hostname + "\r\n";
 	send(socket, message.c_str(), message.length(), 0);
