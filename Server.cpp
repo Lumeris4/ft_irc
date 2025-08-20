@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/20 10:33:02 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/20 10:45:24 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -281,7 +281,7 @@ bool Server::haveright(int socketfd, std::string channel)
 		std::vector<std::string>::iterator itp = find(copy.begin(), copy.end(), nickname);
 		if (itp != copy.end())
 			return true;
-		std::string response = ":" + _servername + "482 " + nickname + " " + channel + " :You're not the channel operator\r\n";
+		std::string response = ":" + _servername + " 482 " + nickname + " " + channel + " :You're not the channel operator\r\n";
 		send(socketfd, response.c_str(), response.size(), 0);
 	}
 	else
@@ -379,7 +379,11 @@ void	Server::changeTopic(std::string channel, std::string topic, int socketfd)
 		std::vector<std::string> copy2 = ito->second.getListUser();
 		it = find(copy2.begin(), copy2.end(), user);
 		if (it == copy2.end())
-			return;
+		{
+			std::string message = ":" + _servername + " 442 " + user + " " + channel + " :You're not on that channel\r\n";
+			send(socketfd, message.c_str(), message.size(), 0);
+				return;
+		}
 		if (topic == "")
 		{
 			send(socketfd, ito->second.getTopic().c_str(), ito->second.getTopic().size(), 0);
@@ -410,7 +414,7 @@ void	Server::changeTopic(std::string channel, std::string topic, int socketfd)
 		}
 		else
 		{
-			std::string response = ":" + _servername + "482 " + user + " " + channel + " :You're not the channel operator\r\n";
+			std::string response = ":" + _servername + " 482 " + user + " " + channel + " :You're not the channel operator\r\n";
 			send(socketfd, response.c_str(), response.size(), 0);
 		}
 	}
@@ -485,7 +489,7 @@ void	Server::givePerm(std::string channel, std::string name, bool give, int sock
 		}
 		else
 		{
-			std::string response = ":" + _servername +  "482 " + nickname + " " + channel + " :You're not the channel operator\r\n";
+			std::string response = ":" + _servername +  " 482 " + nickname + " " + channel + " :You're not the channel operator\r\n";
 			send(socketfd, response.c_str(), response.size(), 0);
 		}
 	}
@@ -516,7 +520,7 @@ void Server::changeLimit(std::string channel, std::string limit, int perm ,int s
 		}
 		else
 		{
-			std::string response = ":" + _servername +  "471 " + whoami + " " + channel + " :Cannot set channel limit\r\n";
+			std::string response = ":" + _servername +  " 471 " + whoami + " " + channel + " :Cannot set channel limit\r\n";
 			send(socketfd, response.c_str(), response.size(), 0);
 		}
 	}
