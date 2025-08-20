@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/20 10:33:02 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/20 12:22:16 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,6 +110,7 @@ int Server::init_server()
     		 			buffer[n] = '\0';
 						input = user.getLeftover() + buffer;
 						user.setLeftover("");
+						std::cout << input << std::endl;
 						std::stringstream ss(input);
 						std::string cmd;
 						while (std::getline(ss, cmd, '\n'))
@@ -383,7 +384,6 @@ void	Server::changeTopic(std::string channel, std::string topic, int socketfd)
 		if (topic == "")
 		{
 			send(socketfd, ito->second.getTopic().c_str(), ito->second.getTopic().size(), 0);
-			std::cout << ito->second.getTopic() + "\n";
 			return;
 		}
 		std::vector<std::string> copy = ito->second.getListChef();
@@ -604,7 +604,7 @@ std::string getNamesList(const Channel &channel) {
     return names;
 }
 
-void	Server::joinCanal(std::string canal, std::string password, int socketfd)
+void	Server::joinCanal(std::string canal, std::string password, int socketfd, User &user)
 {
 	std::string message;
 	std::string nickname = whatUser(socketfd);
@@ -629,14 +629,17 @@ void	Server::joinCanal(std::string canal, std::string password, int socketfd)
 					message = ":" + nickname + "!ident@host JOIN :" + canal + "\r\n";
 					sendToChannel(canal, message);
 					it->second.adduser(nickname);
-					if (it->second.getTopic().empty())
-						message = message + ":" + _servername + " 331 " + nickname + " " + canal + " :No topic is set\r\n";
-					else 
-						message = message + ":" + _servername + " 331 " + nickname + " " +  canal + " :" + it->second.getTopic() + "\r\n";
 					std::string names = getNamesList(it->second);
-					message = message + ":" + _servername + " 353 " + nickname + " = " + canal + " :"  + names + "\r\n";
+					message = ":" + _servername + " 353 " + nickname + " = " + canal + " :"  + names + "\r\n";
 					message = message + ":" + _servername + " 366 " + nickname + " " + canal + " :End of /NAMES list\r\n";
 					send(socketfd, message.c_str(), message.length(), 0);
+					std::string topic = it->second.getTopic();
+					if (topic.empty())
+    					message = ":" + _servername + " 331 " + canal + " :No topic is set\r\n";
+					else
+    					message = ":" + _servername + " 332 " + nickname + " " + canal + " :" + topic + "\r\n";
+					send(socketfd, message.c_str(), message.size(), 0);
+					user.setIgnore(true);
 					
 				}
 				else
@@ -646,18 +649,20 @@ void	Server::joinCanal(std::string canal, std::string password, int socketfd)
 				}
 			}
 			else
-			{
-					message = ":" + nickname + "!ident@host JOIN :" + canal + "\r\n";
-					sendToChannel(canal, message);
-					if (it->second.getTopic().empty())
-						message = message + ":" + _servername + " 331 " + nickname + " " + canal + " :No topic is set\r\n";
-					else 
-						message = message + ":" + _servername + " 332 " + nickname + " " +  canal + " :" + it->second.getTopic() + "\r\n";
-					std::string names = getNamesList(it->second);
-					message = message + ":" + _servername + " 353 " + nickname + " = " + canal + " :"  + names + "\r\n";
-					message = message + ":" + _servername + " 366 " + nickname + " " + canal + " :End of /NAMES list\r\n";
-					send(socketfd, message.c_str(), message.length(), 0);
-					it->second.adduser(nickname);
+			{			
+				std::string join_msg = ":" + nickname + "!ident@host JOIN :" + canal + "\r\n";
+				sendToChannel(canal, join_msg);
+				std::string names = getNamesList(it->second);
+				message = ":" + _servername + " 353 " + nickname + " = " + canal + " :" + names + "\r\n";
+				message += ":" + _servername + " 366 " + nickname + " " + canal + " :End of /NAMES list\r\n";
+				send(socketfd, message.c_str(), message.length(), 0);
+				std::string topic = it->second.getTopic();
+				if (topic.empty())
+    				message = ":" + _servername + " 331 " + canal + " :No topic is set\r\n";
+				else
+    				message = ":" + _servername + " 332 " + nickname + " " + canal + " :" + topic + "\r\n";
+				send(socketfd, message.c_str(), message.size(), 0);
+				user.setIgnore(true);
 			}
 		}
 		else
@@ -669,12 +674,18 @@ void	Server::joinCanal(std::string canal, std::string password, int socketfd)
 	else
 	{
 		this->addChannel(canal, nickname, password);
-		message = ":" + _servername + " 331 " + nickname + " " + canal + " :No topic is set\r\n";
-		message = message + ":" + _servername + " 353 " + nickname + " = " + canal + " :@" + nickname + "\r\n";
-		message = message + ":" + _servername + " 366 " + nickname + " " + canal + " :End of /NAMES list\r\n";
-		message += ":" + nickname + "!ident@host MODE " + canal + " +t\r\n";
+		it = _list_channel.find(canal);
+		message = ":" + _servername + " 353 " + nickname + " = " + canal + " :@" + nickname + "\r\n";
+		message += ":" + _servername + " 366 " + nickname + " " + canal + " :End of /NAMES list\r\n";
+		message += ":" + _servername + " MODE " + canal + " +t\r\n";
 		send(socketfd, message.c_str(), message.length(), 0);
-		std::cout << canal << " add\n";
+		std::string topic = it->second.getTopic();
+		if (topic.empty())
+    		message = ":" + _servername + " 331 " + canal + " :No topic is set\r\n";
+		else
+    		message = ":" + _servername + " 332 " + canal + " :" + topic + "\r\n";
+		send(socketfd, message.c_str(), message.size(), 0);
+		user.setIgnore(true);
 	}
 }
 

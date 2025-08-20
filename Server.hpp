@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:22:10 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/19 15:29:54 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/20 11:42:48 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include "Channel.hpp"
 #include "User.hpp"
 
-#define MAX_CLIENTS 10
+#define MAX_CLIENTS 100
 
 class Server;
 class User;
@@ -54,14 +54,14 @@ class Server
 	void									permTopic(std::string channel, bool perm, int socketfd);
 	void									kick(std::string channel, std::string nickname, std::string reason, int socketfd);
 	void									invite(std::string channel, std::string user, int socketfd);
-	void									joinCanal(std::string channel, std::string password, int socketfd);
+	void									joinCanal(std::string channel, std::string password, int socketfd, User &user);
 	void									sendMessage(std::string destination, std::string content, bool user, int socketfd);
 	void									sendToChannel(std::string channel, std::string message);
 	std::string								whatUser(int socketfd);
 	bool									exist(std::string nickname, int socketfd);
 	bool									haveright(int socketfd, std::string channel);
-	void 									handle_join(std::string argument, int socketfd, User user);
-	void									handle_mode(std::string argument, int socketfd, User user);
+	void 									handle_join(std::string argument, int socketfd, User &user);
+	void									handle_mode(std::string argument, int socketfd, User &user);
 	void									handle_topic(std::string argument, int socketfd, User user);
 	void									handle_invite(std::string argument, int socketfd, User user);
 	void									handle_kick(std::string argument, int socketfd, User user);

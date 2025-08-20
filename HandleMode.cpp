@@ -6,15 +6,20 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 10:38:15 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/19 13:02:27 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/20 11:42:42 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 #include "User.hpp"
 
-void Server::handle_mode(std::string argument, int socketfd, User user)
+void Server::handle_mode(std::string argument, int socketfd, User &user)
 {
+	if (user.getIgnore() == true)
+	{
+		user.setIgnore(false);
+		return;
+	}
 	size_t space = argument.find(' ');
 	if (space == std::string::npos || space + 1 >= argument.length())
     {

@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 14:33:16 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/19 13:08:49 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/20 11:39:24 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ class User
 		bool					 first_mode;
 		bool					 connected;
 		bool					 capDone;
+		bool					 ignore;
 	
 	public:
 		User(int socket);
@@ -41,11 +42,12 @@ class User
 		void				setUsername(std::string username);
 		void				setCap(bool cap);
 		bool				getCap();
+		void				setIgnore(bool ignore);
+		bool				getIgnore();
 		void				setConnected(bool cap);
 		bool				getFirstmode();
 		void				setFirstmode(bool first);
 		bool				getConnected();
-		void 				clearHistory();
 		void				setLeftover(std::string leftover);
 		std::string			getLeftover();
 		int 				getSocket() const;
