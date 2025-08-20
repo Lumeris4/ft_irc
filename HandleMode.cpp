@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   HandleMode.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 10:38:15 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/19 13:02:27 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/20 15:42:58 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,14 @@ void Server::handle_mode(std::string argument, int socketfd, User user)
 	size_t space = argument.find(' ');
 	if (space == std::string::npos || space + 1 >= argument.length())
     {
-        std::string message = ":irc.example.net 461 " + user.getNickname() + " MODE :Not enough parameters\r\n";
+        std::string message = ":" + _servername + " 461 " + user.getNickname() + " MODE :Not enough parameters\r\n";
         send(socketfd, message.c_str(), message.length(), 0);
         return;
     }
 	std::string channel = argument.substr(0, space);
     if (channel.empty() || channel[0] != '#')
     {
-        std::string message = ":irc.example.net 403 " + user.getNickname() + " " + argument + " :No such channel\r\n";
+        std::string message = ":" + _servername + " 403 " + user.getNickname() + " " + argument + " :No such channel\r\n";
 		std::cout << argument << std::endl;
         send(socketfd, message.c_str(), message.length(), 0);
         return;
@@ -40,7 +40,7 @@ void Server::handle_mode(std::string argument, int socketfd, User user)
 		set_mode = true;
 	else 
 	{
-		std::string message = ":irc.example.net 472 " + user.getNickname() + " " + mode_char + " :is unknown flag\r\n";
+		std::string message = ":" + _servername + " 472 " + user.getNickname() + " " + mode_char + " :is unknown flag\r\n";
 		send(socketfd, message.c_str(), message.length(), 0);
 		return ;
 	}
@@ -90,7 +90,7 @@ void Server::handle_mode(std::string argument, int socketfd, User user)
 		}
 		default:
 		{
-			std::string message = ":irc.example.net 472 " + user.getNickname() + " " + mode_option + " :is unknown mode char\r\n";
+			std::string message = ":" + _servername + " 472 " + user.getNickname() + " " + mode_option + " :is unknown mode char\r\n";
 			send(socketfd, message.c_str(), message.length(), 0);
 			break;
 		}	

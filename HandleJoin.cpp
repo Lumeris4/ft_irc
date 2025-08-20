@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   HandleJoin.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 13:48:24 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/19 10:20:17 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/20 15:41:35 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void Server::handle_join(std::string argument, int socketfd, User user)
 {
 	if (argument.empty())
 	{
-        std::string message = ":irc.example.net 461 " + user.getNickname() + " MODE :Not enough parameters\r\n";
+        std::string message = ":" + _servername + " 461 " + user.getNickname() + " MODE :Not enough parameters\r\n";
         send(socketfd, message.c_str(), message.length(), 0);
         return;
     }
