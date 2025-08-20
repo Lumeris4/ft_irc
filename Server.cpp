@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/20 10:45:24 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/20 14:00:12 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -633,12 +633,14 @@ void	Server::joinCanal(std::string canal, std::string password, int socketfd)
 					message = ":" + nickname + "!ident@host JOIN :" + canal + "\r\n";
 					sendToChannel(canal, message);
 					it->second.adduser(nickname);
-					if (it->second.getTopic().empty())
-						message = message + ":" + _servername + " 331 " + nickname + " " + canal + " :No topic is set\r\n";
-					else 
-						message = message + ":" + _servername + " 331 " + nickname + " " +  canal + " :" + it->second.getTopic() + "\r\n";
+					std::string topic = it->second.getTopic();
+					if (topic.empty())
+    					message = ":" + _servername + " 331 " + canal + " :No topic is set\r\n";
+					else
+    					message = ":" + _servername + " 332 " + canal + " :" + topic + "\r\n";
+					send(socketfd, message.c_str(), message.size(), 0);
 					std::string names = getNamesList(it->second);
-					message = message + ":" + _servername + " 353 " + nickname + " = " + canal + " :"  + names + "\r\n";
+					message = + ":" + _servername + " 353 " + nickname + " = " + canal + " :"  + names + "\r\n";
 					message = message + ":" + _servername + " 366 " + nickname + " " + canal + " :End of /NAMES list\r\n";
 					send(socketfd, message.c_str(), message.length(), 0);
 					
@@ -653,12 +655,14 @@ void	Server::joinCanal(std::string canal, std::string password, int socketfd)
 			{
 					message = ":" + nickname + "!ident@host JOIN :" + canal + "\r\n";
 					sendToChannel(canal, message);
-					if (it->second.getTopic().empty())
-						message = message + ":" + _servername + " 331 " + nickname + " " + canal + " :No topic is set\r\n";
-					else 
-						message = message + ":" + _servername + " 332 " + nickname + " " +  canal + " :" + it->second.getTopic() + "\r\n";
+					std::string topic = it->second.getTopic();
+					if (topic.empty())
+    					message = ":" + _servername + " 331 " + canal + " :No topic is set\r\n";
+					else
+    					message = ":" + _servername + " 332 " + canal + " :" + topic + "\r\n";
+					send(socketfd, message.c_str(), message.size(), 0);
 					std::string names = getNamesList(it->second);
-					message = message + ":" + _servername + " 353 " + nickname + " = " + canal + " :"  + names + "\r\n";
+					message = ":" + _servername + " 353 " + nickname + " = " + canal + " :"  + names + "\r\n";
 					message = message + ":" + _servername + " 366 " + nickname + " " + canal + " :End of /NAMES list\r\n";
 					send(socketfd, message.c_str(), message.length(), 0);
 					it->second.adduser(nickname);
@@ -673,8 +677,14 @@ void	Server::joinCanal(std::string canal, std::string password, int socketfd)
 	else
 	{
 		this->addChannel(canal, nickname, password);
-		message = ":" + _servername + " 331 " + nickname + " " + canal + " :No topic is set\r\n";
-		message = message + ":" + _servername + " 353 " + nickname + " = " + canal + " :@" + nickname + "\r\n";
+		it = _list_channel.find(canal);
+		std::string topic = it->second.getTopic();
+		if (topic.empty())
+    		message = ":" + _servername + " 331 " + canal + " :No topic is set\r\n";
+		else
+    		message = ":" + _servername + " 332 " + canal + " :" + topic + "\r\n";
+		send(socketfd, message.c_str(), message.size(), 0);
+		message = ":" + _servername + " 353 " + nickname + " = " + canal + " :@" + nickname + "\r\n";
 		message = message + ":" + _servername + " 366 " + nickname + " " + canal + " :End of /NAMES list\r\n";
 		message += ":" + nickname + "!ident@host MODE " + canal + " +t\r\n";
 		send(socketfd, message.c_str(), message.length(), 0);
