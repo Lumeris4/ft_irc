@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 12:21:36 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/20 12:23:46 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/20 13:14:33 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void Server::handle_topic(std::string argument, int socketfd, User user)
 	size_t index = argument.find('#');
 	if (index == std::string::npos)
 	{
-		std::string message = ":irc.example.net 403 " + user.getNickname() + " " + argument + " :No such channel\r\n";
+		std::string message = ":" + _servername + " 403 " + user.getNickname() + " " + argument + " :No such channel\r\n";
         send(socketfd, message.c_str(), message.length(), 0);
         return;
 	}
@@ -27,7 +27,7 @@ void Server::handle_topic(std::string argument, int socketfd, User user)
 	std::string channel = argument.substr(0, pos);
 	if (channel.empty())
 	{
-		std::string message = ":irc.example.net 461 " + user.getNickname() + " MODE :Not enough parameters\r\n";
+		std::string message = ":" + _servername + " 461 " + user.getNickname() + " MODE :Not enough parameters\r\n";
         send(socketfd, message.c_str(), message.length(), 0);
         return;
 	}
