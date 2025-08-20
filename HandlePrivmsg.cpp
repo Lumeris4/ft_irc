@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/14 10:48:30 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/19 10:19:17 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/20 09:39:53 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void Server::handle_privmsg(std::string argument, int socketfd, User user)
     if (content[0] != ':')
     {
         size_t space_pos2 = content.find(' ');
-        if (space_pos != std::string::npos)
+        if (space_pos2 != std::string::npos)
             content = content.substr(0, space_pos2);
     }
     else 
