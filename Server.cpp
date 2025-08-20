@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/20 09:56:19 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/20 10:23:15 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -605,13 +605,13 @@ void Server::changeLimit(std::string channel, std::string limit, int perm ,int s
 	std::map<std::string, Channel>::iterator ito = this->_list_channel.find(channel);
 	if (ito != _list_channel.end())
 	{
-		if (new_limit != -1 || ito->second.getMembers() < new_limit)
+		if (ito->second.getMembers() <= new_limit)
 		{
 			std::string message =  ":" + whoami + "!ident@host MODE " + channel + " " + mode + " " + limit + "\r\n";
 			if (perm)
 				ito->second.setLimit(new_limit);
 			else
-				ito->second.setLimit(-1);
+				ito->second.setLimit(MAX_CLIENTS);
 			sendToChannel(channel, message);
 		}
 		else

@@ -6,12 +6,12 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 14:46:43 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/19 09:53:49 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/20 10:20:04 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
-
+#define MAX_CLIENT 10
 #include "include.hpp"
 
 class Channel;
