@@ -3,15 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 14:46:43 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/20 10:20:04 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/20 10:41:05 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
-#define MAX_CLIENT 10
+#define MAX_CLIENT 100
 #include "include.hpp"
 
 class Channel;

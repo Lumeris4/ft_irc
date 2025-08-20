@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 13:48:24 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/19 10:20:17 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/20 11:40:26 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ std::vector<std::string> split(const std::string& input, char delimiter) {
 	return tokens;
 }
 
-void Server::handle_join(std::string argument, int socketfd, User user)
+void Server::handle_join(std::string argument, int socketfd, User &user)
 {
 	if (argument.empty())
 	{
@@ -46,11 +46,11 @@ void Server::handle_join(std::string argument, int socketfd, User user)
 	if (keys.size() != 0)
 	{
 		for (size_t i = 0; i < channels.size(); i++)
-			joinCanal(channels[i], keys[i], socketfd);
+			joinCanal(channels[i], keys[i], socketfd, user);
 	}
 	else
 	{
 		for (size_t i = 0; i < channels.size(); i++)
-			joinCanal(channels[i], "", socketfd);
+			joinCanal(channels[i], "", socketfd, user);
 	}
 }

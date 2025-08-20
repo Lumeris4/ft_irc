@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 12:49:13 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/19 13:09:27 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/08/20 11:41:09 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,14 @@ User::User(int socket): _socket(socket)
 	capDone = false;
 	first_mode = true;
 	connected = false;
+	ignore = false;
 }
 User::User(): _socket(-1)
 {
 	connected = false;
 	capDone = false;
 	first_mode = true;
+	ignore = false;
 }
 
 User::User(int socketfd, std::string username, std::string nickname):_username(username), _nickname(nickname), _socket(socketfd)
@@ -30,6 +32,7 @@ User::User(int socketfd, std::string username, std::string nickname):_username(u
 	connected = false;
 	capDone = false;
 	first_mode = true;
+	ignore = false;
 }
 
 User::~User() {}
@@ -78,6 +81,16 @@ void User::setConnected(bool connected)
 bool User::getConnected()
 {
 	return this->connected;
+}
+
+void User::setIgnore(bool ignore)
+{
+	this->ignore = ignore;
+}
+
+bool User::getIgnore()
+{
+	return this->ignore;
 }
 
 void User::setFirstmode(bool first)
