@@ -3,15 +3,25 @@
 /*                                                        :::      ::::::::   */
 /*   HandleMode.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 10:38:15 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/20 15:42:58 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/08/21 09:55:50 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 #include "User.hpp"
+
+int ft_isdigit(std::string arg)
+{
+	for (size_t i = 0; i < arg.size(); i++)
+	{
+		if (arg[i] < 48 || arg[i] > 57)
+			return (0); 
+	}
+	return (1);
+}
 
 void Server::handle_mode(std::string argument, int socketfd, User user)
 {
@@ -48,6 +58,15 @@ void Server::handle_mode(std::string argument, int socketfd, User user)
 		arg = argument.substr(space + 4);
 	else
 		arg = "";
+	if (mode_char == '+' && mode_option == 'l')
+	{
+		if (arg.empty() || !ft_isdigit(arg))
+		{
+			std::string message = ":" + _servername + " 461 " + user.getNickname() + channel + " MODE :Invalid limit parameter\r\n";
+			send(socketfd, message.c_str(), message.length(), 0);
+			return;
+		}
+	}
 	int level = -1;
 	std::string array[] = {"i", "t", "k", "o", "l"};
 	for (int j = 0; j < 5; j++)
