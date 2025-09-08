@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 10:38:15 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/09/08 15:21:48 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/09/08 15:27:19 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ void Server::handle_mode(std::string argument, int socketfd, User user)
 		{
 			std::string message = ":" + _servername + " 472 " + user.getNickname() + " " + mode_option + " :is unknown mode char\r\n";
 			send(socketfd, message.c_str(), message.length(), 0);
-			break;
+			break ;
 		}	
 	}
 }

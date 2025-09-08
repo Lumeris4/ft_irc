@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/09/08 15:21:30 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/09/08 15:27:28 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -736,3 +736,4 @@ void Server::sendMessage(std::string destination, std::string content, bool user
 		}
 	}
 }
+
