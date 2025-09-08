@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/13 13:35:51 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/18 11:04:01 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/09/08 15:23:12 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,6 @@ void Server::handle_cap(const std::string& arg, User& user, int socketfd)
     else if (subcmd == "END")
     {
         user.setCap(true);
-        std::cout << "Client " << user.getNickname() << " finished CAP negotiation" << std::endl;
+        std::cout << "Client" << " finished CAP negotiation" << std::endl;
     }
 }

@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 10:38:15 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/21 09:55:50 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/09/08 15:21:48 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ void Server::handle_mode(std::string argument, int socketfd, User user)
     if (channel.empty() || channel[0] != '#')
     {
         std::string message = ":" + _servername + " 403 " + user.getNickname() + " " + argument + " :No such channel\r\n";
-		std::cout << argument << std::endl;
         send(socketfd, message.c_str(), message.length(), 0);
         return;
     }
