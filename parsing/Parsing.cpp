@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 13:10:28 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/09/08 15:26:48 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/09/09 15:36:20 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,8 @@ int Server::parsing(std::string input, User &user)
 				return(11);
 			default:
 			{
+				if (input.empty())
+					return (-1);
 				std::string message = input + " is not a valid command\n";
 				send(user.getSocket(), message.c_str(), message.length(), 0);
 				return (-1);

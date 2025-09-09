@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/09/08 15:27:28 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/09/09 16:00:53 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,11 +62,11 @@ int Server::init_server()
 	int nfds = 1;
     fds[0].fd = servsocket;
     fds[0].events = POLLIN;
-	fds[0].revents = POLLIN;
+	fds[0].revents = 0;
 	while (1 && !stop)
 	{
 		signal(SIGINT, handler);
-		int ret = poll(fds, nfds, -1); // attend indefiniment
+		int ret = poll(fds, nfds, 0);
     	if (ret == -1)
 			return (-1);
     	else
@@ -84,7 +84,7 @@ int Server::init_server()
 				{
             	    fds[nfds].fd = new_socket;
             	    fds[nfds].events = POLLIN;
-					fds[nfds].revents = POLLIN;
+					fds[nfds].revents = 0;
             	    nfds++;
 					_list_socket_user.insert(std::make_pair(new_socket, User(new_socket)));
 					std::string message = "You are now connected to server.\n";
@@ -103,10 +103,9 @@ int Server::init_server()
 				if (fds[i].revents & POLLIN)
 				{
     		     	ssize_t n = recv(fds[i].fd, buffer, sizeof(buffer) - 1, 0);
+					User &user = _list_socket_user[fds[i].fd];
     				if (n > 0)
-					{
-						User &user = _list_socket_user[fds[i].fd];
-						
+					{	
     		 			buffer[n] = '\0';
 						input = user.getLeftover() + buffer;
 						user.setLeftover("");
@@ -186,6 +185,7 @@ int Server::init_server()
 								case 11:
 								{
 									deleteUser(fds[i].fd);
+									user.setLeftover("");
 									user.setNickname("");
 									user.setUsername("");
 									user.setConnected(false);
@@ -219,6 +219,12 @@ int Server::init_server()
 					{
     		 			std::cout << "Client disconnected." << std::endl;
 						close(fds[i].fd);
+						user.setLeftover("");
+						user.setNickname("");
+						user.setUsername("");
+						user.setConnected(false);
+						user.setFirstmode(true);
+						user.setCap(false);
 						fds[i] = fds[nfds - 1];
 						_list_socket_user.erase(fds[i].fd);
 						nfds--;
@@ -227,6 +233,12 @@ int Server::init_server()
 					else
 					{
 						close(fds[i].fd);
+						user.setLeftover("");
+						user.setNickname("");
+						user.setUsername("");
+						user.setConnected(false);
+						user.setFirstmode(true);
+						user.setCap(false);
 						fds[i] = fds[nfds - 1];
 						_list_socket_user.erase(fds[i].fd);
 						nfds--;
@@ -503,7 +515,7 @@ void Server::changeLimit(std::string channel, std::string limit, int perm ,int s
 	std::map<std::string, Channel>::iterator ito = this->_list_channel.find(channel);
 	if (ito != _list_channel.end())
 	{
-		if (ito->second.getMembers() <= new_limit)
+		if (ito->second.getMembers() <= new_limit || limit.empty())
 		{
 			std::string message =  ":" + whoami + "!ident@host MODE " + channel + " " + mode + " " + limit + "\r\n";
 			if (perm)

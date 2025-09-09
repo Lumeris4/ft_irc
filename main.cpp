@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:10:27 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/11 14:28:15 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/09/09 12:45:01 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,3 @@ int main(int argc, char **argv)
 	server.init_server();
 	return 1;
 }
-
-//TODO refaire parsing en fonction du nombre de lignes pour le client
-// retourner des codes en fonction de la commande appelee puis reparser pour detecter d'eventuelles options
-
-//attendre que le user ait entre PASS, NICK et USER puis lui creer un socket et le bind au serveur
-
-//mod -i -t -k -o -l
