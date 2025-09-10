@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/09/09 16:00:53 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/09/10 21:31:37 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -580,15 +580,23 @@ void Server::invite(std::string channel, std::string user, int socketfd)
 		return;
 	std::string whoami = whatUser(socketfd);
 	std::map<std::string, Channel>::iterator ito = this->_list_channel.find(channel);
-	std::vector<std::string>::iterator it;
 	if (ito != _list_channel.end())
 	{
+		std::vector<std::string> copy = ito->second.getListUser();
+		std::vector<std::string>::iterator ity = find(copy.begin(), copy.end(), user);
+		if (ity != copy.end())
+			return; 
 		if (ito->second.getAccess() == true && !haveright(socketfd, channel))
 			return;
 		std::map<std::string, User>::iterator itp = this->_list_user.find(user);
 		std::string message = ":" + whoami + "!ident@host INVITE " + user + " :" + channel + "\r\n";
 		ito->second.addinvitation(user);
 		send(itp->second.getSocket(), message.c_str(), message.size(), 0);
+	}
+	else
+	{
+		std::string response = ":" + _servername +  " 403 " + whoami + channel + " :No such Channel\r\n";
+		send(socketfd, response.c_str(), response.size(), 0);
 	}
 }
 

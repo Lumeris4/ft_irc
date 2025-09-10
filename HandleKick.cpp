@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 12:44:06 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/20 15:42:11 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/09/10 21:16:49 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void Server::handle_kick(std::string argument, int socket, User user)
 	size_t first_space = argument.find(' ');
 	if (first_space == std::string::npos)
 	{
-		std::string message = ":" + _servername + " 461 " + user.getNickname() + " MODE :Not enough parameters\r\n";
+		std::string message = ":" + _servername + " 461 " + user.getNickname() + " KICK :Not enough parameters\r\n";
         send(socket, message.c_str(), message.length(), 0);
         return;
 	}

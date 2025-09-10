@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/14 10:48:30 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/20 15:43:05 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/09/10 21:17:23 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void Server::handle_privmsg(std::string argument, int socketfd, User user)
 	}
     else
     {
-        std::string message = ":" + _servername + " 461 " + user.getNickname() + " MODE :Not enough parameters\r\n";
+        std::string message = ":" + _servername + " 461 " + user.getNickname() + " PRIVMSG :Not enough parameters\r\n";
         send(socketfd, message.c_str(), message.length(), 0);
         return;
     }

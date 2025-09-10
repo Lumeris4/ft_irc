@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   HandleInvite.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 12:50:42 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/09/08 15:26:55 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/09/10 21:16:28 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void Server::handle_invite(std::string argument, int socketfd, User user)
 	size_t index = argument.find('#');
 	if (index == std::string::npos)
 	{
-		std::string message = ":" + _servername + " 461 " + user.getNickname() + " MODE :Not enough parameters\r\n";
+		std::string message = ":" + _servername + " 461 " + user.getNickname() + " INVITE :Not enough parameters\r\n";
         send(socketfd, message.c_str(), message.length(), 0);
         return;
 	}
@@ -26,7 +26,7 @@ void Server::handle_invite(std::string argument, int socketfd, User user)
 	std::string user1 = argument.substr(0, pos);
 	if (pos == std::string::npos)
 	{
-        std::string message = ":" + _servername + " 461 " + user.getNickname() + " MODE :Not enough parameters\r\n";
+        std::string message = ":" + _servername + " 461 " + user.getNickname() + " INVITE :Not enough parameters\r\n";
         send(socketfd, message.c_str(), message.length(), 0);
         return;
 	}

@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 12:21:36 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/20 15:43:21 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/09/10 21:17:33 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void Server::handle_topic(std::string argument, int socketfd, User user)
 	std::string channel = argument.substr(0, pos);
 	if (channel.empty())
 	{
-		std::string message = ":" + _servername + " 461 " + user.getNickname() + " MODE :Not enough parameters\r\n";
+		std::string message = ":" + _servername + " 461 " + user.getNickname() + " TOPIC :Not enough parameters\r\n";
         send(socketfd, message.c_str(), message.length(), 0);
         return;
 	}
