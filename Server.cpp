@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/09/10 21:31:37 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/09/13 16:25:00 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -304,6 +304,27 @@ bool Server::haveright(int socketfd, std::string channel)
 	return false;
 }
 
+bool Server::IntheChannel(std::string channel, std::string user, int socketfd)
+{
+	std::string me = whatUser(socketfd);
+	std::map<std::string, Channel>::iterator it = _list_channel.find(channel);
+	if (it == _list_channel.end())
+	{
+		std::string response = ":" + _servername +  " 403 " + me + channel + " :No such Channel\r\n";
+		send(socketfd, response.c_str(), response.size(), 0);
+		return false;
+	}
+	std::vector<std::string> copy = it->second.getListUser();
+	std::vector<std::string>::iterator itv = find(copy.begin(), copy.end(), user);
+	if (itv == copy.end())
+	{
+		std::string response = ":" + _servername + " 441 " + me + user + channel + " :They aren't on that channel\r\n";
+		send(socketfd, response.c_str(), response.size(), 0);
+		return false;
+	}
+	return true;
+}
+
 void Server::deleteUser(int socket)
 {
 	std::string user = whatUser(socket);
@@ -484,13 +505,22 @@ void	Server::givePerm(std::string channel, std::string name, bool give, int sock
 		std::vector<std::string>::iterator itt = find(list.begin(), list.end(), nickname);
 		if (itt != list.end())
 		{
-			if (!exist(nickname, socketfd))
+			if (!exist(name, socketfd) || !IntheChannel(channel, name, socketfd))
 				return;
 			std::string message =  ":" + nickname + "!ident@host MODE " + channel + " " + mode + " " + name + "\r\n";
+			itt = find(list.begin(), list.end(), name);
 			if (give)
+			{
+				if (itt != list.end())
+					return;
 				ito->second.remote(name);
+			}
 			else
+			{
+				if (itt == list.end())
+					return;
 				ito->second.demote(name);
+			}
 			sendToChannel(channel, message);
 		}
 		else
@@ -515,6 +545,9 @@ void Server::changeLimit(std::string channel, std::string limit, int perm ,int s
 	std::map<std::string, Channel>::iterator ito = this->_list_channel.find(channel);
 	if (ito != _list_channel.end())
 	{
+		int clients = ito->second.getMembers();
+		if (perm == false && clients == MAX_CLIENT)
+			return;
 		if (ito->second.getMembers() <= new_limit || limit.empty())
 		{
 			std::string message =  ":" + whoami + "!ident@host MODE " + channel + " " + mode + " " + limit + "\r\n";
@@ -545,6 +578,9 @@ void Server::permTopic(std::string channel, bool perm, int socketfd)
 	std::map<std::string, Channel>::iterator ito = this->_list_channel.find(channel);
 	if (ito != _list_channel.end())
 	{
+		bool perm_topic = ito->second.getAccessTopic();
+		if (perm_topic == perm)
+			return;
 		std::string message =  ":" + whoami + "!ident@host MODE " + channel + " " + mode + "\r\n";
 		ito->second.setAccessTopic(perm);
 		sendToChannel(channel, message);
@@ -553,7 +589,7 @@ void Server::permTopic(std::string channel, bool perm, int socketfd)
 
 void Server::kick(std::string channel, std::string nickname, std::string reason, int socketfd)
 {
-	if (!haveright(socketfd, channel) || !exist(nickname, socketfd))
+	if (!haveright(socketfd, channel) || !exist(nickname, socketfd) || !IntheChannel(channel, nickname, socketfd))
 		return;
 	std::string whoami = whatUser(socketfd);
 	std::map<std::string, Channel>::iterator ito = this->_list_channel.find(channel);

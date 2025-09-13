@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:22:10 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/19 15:29:54 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/09/13 15:58:10 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ class Server
 	void									invite(std::string channel, std::string user, int socketfd);
 	void									joinCanal(std::string channel, std::string password, int socketfd);
 	void									sendMessage(std::string destination, std::string content, bool user, int socketfd);
+	bool									IntheChannel(std::string channel, std::string user, int socketfd);
 	void									sendToChannel(std::string channel, std::string message);
 	std::string								whatUser(int socketfd);
 	bool									exist(std::string nickname, int socketfd);
