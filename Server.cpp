@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/09/15 15:48:33 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/09/15 21:19:46 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -307,7 +307,7 @@ bool Server::IntheChannel(std::string channel, std::string user, int socketfd)
 	std::vector<std::string>::iterator itv = find(copy.begin(), copy.end(), user);
 	if (itv == copy.end())
 	{
-		std::string response = ":" + _servername + " 441 " + me + user + channel + " :They aren't on that channel\r\n";
+		std::string response = ":" + _servername + " 441 " + me + " " + user + " " + channel + " :They aren't on that channel\r\n";
 		send(socketfd, response.c_str(), response.size(), 0);
 		return false;
 	}
@@ -338,30 +338,6 @@ void Server::deleteUser(int socket)
 		_list_user.erase(it);
 }
 
-
-// void Server::deleteUser(int socket)
-// {
-// 	std::string user = whatUser(socket);
-// 	if (user.empty())
-// 		return;
-// 	std::map<std::string, Channel>::iterator itp;
-// 	std::vector<std::string> copy;
-// 	std::vector<std::string>::iterator iv;
-// 	for (itp = _list_channel.begin(); itp != _list_channel.end(); ++itp)
-// 	{
-// 		copy = itp->second.getListInvitation();
-// 		iv = find(copy.begin(), copy.end(), user);
-// 		if (iv != copy.end())
-// 			itp->second.baninvitation(user);
-// 		copy = itp->second.getListUser();
-// 		iv = find(copy.begin(), copy.end(), user);
-// 		if (iv != copy.end())
-// 			kick(itp->first, user, "", socket);
-// 	}
-// 	std::map<std::string , User>::iterator it = _list_user.find(user);
-// 	_list_user.erase(it);
-// }
-
 void Server::sendToChannel(std::string channel, std::string message)
 {
 	std::map<std::string, Channel>::iterator it = _list_channel.find(channel);
@@ -386,7 +362,7 @@ bool	Server::exist(std::string nickname, int socketfd)
 	std::map<std::string, User>::iterator it = _list_user.find(nickname);
 	if (it != _list_user.end())
 		return true;
-	std::string message = ":" + _servername + " 401 " + whoami + nickname + " :No such Nick/Channel\r\n";
+	std::string message = ":" + _servername + " 401 " + whoami + " " + nickname + " :No such Nick/Channel\r\n";
 	send(socketfd, message.c_str(), message.size(), 0);
 	return false;
 }
@@ -426,7 +402,7 @@ void	Server::changeTopic(std::string channel, std::string topic, int socketfd)
 		it = find(copy2.begin(), copy2.end(), user);
 		if (it == copy2.end())
 		{
-			std::string message = ":" + _servername + " 442 " + user + channel + " :You're not on that channel\r\n";
+			std::string message = ":" + _servername + " 442 " + user + " " +  channel + " :You're not on that channel\r\n";
 			send(socketfd, message.c_str(), message.size(), 0);
 				return;
 		}
@@ -652,7 +628,7 @@ void Server::invite(std::string channel, std::string user, int socketfd)
 	}
 	else
 	{
-		std::string response = ":" + _servername +  " 403 " + whoami + channel + " :No such Channel\r\n";
+		std::string response = ":" + _servername +  " 403 " + whoami + " " + channel + " :No such Channel\r\n";
 		send(socketfd, response.c_str(), response.size(), 0);
 	}
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 09:08:11 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/09/15 15:26:12 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/09/15 20:53:14 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,11 +108,9 @@ void Channel::adduser(std::string nickname)
 		this->_list_user.push_back(nickname);
 		_members++;
 	}
-	if (this->_access)
-	{
-		it = find(_invitate.begin(), _invitate.end(), nickname);
+	it = find(_invitate.begin(), _invitate.end(), nickname);
+	if (it != _invitate.end())
 		this->_invitate.erase(it);
-	}
 }
 
 void Channel::kickuser(std::string nickname)
@@ -127,7 +125,6 @@ void Channel::kickuser(std::string nickname)
 	it = find(_chef_usernames.begin(), _chef_usernames.end(), nickname);
 	if (it != _chef_usernames.end())
 		this->_chef_usernames.erase(it);
-	std::cout << this->_members << std::endl;
 	if (this->_members == 0)
 		this->_topic = "";
 }
