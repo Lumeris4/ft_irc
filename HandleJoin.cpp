@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   HandleJoin.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 13:48:24 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/09/10 21:16:39 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/09/15 09:43:22 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,12 @@ void Server::handle_join(std::string argument, int socketfd, User user)
 		channels_str = argument.substr(0, space_pos);
 		keys_str = argument.substr(space_pos + 1);
 	}
+    if (channels_str[0] != '#')
+    {
+        std::string message = ":" + _servername + " 403 " + user.getNickname() + " " + argument + " :No such channel\r\n";
+        send(socketfd, message.c_str(), message.length(), 0);
+        return;
+    }
 	std::vector<std::string> channels = split(channels_str, ',');
 	std::vector<std::string> keys = split(keys_str, ',');
 	if (keys.size() != 0)
