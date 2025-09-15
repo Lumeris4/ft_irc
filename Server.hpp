@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:22:10 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/09/13 15:58:10 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/09/15 13:39:46 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ class Server
 	Server();
 	Server(std::string password, int port);
 	~Server();
-	void									addUser(int socketfd, std::string name, std::string nickname);
+	void									addUser(int socketfd, std::string hostname, std::string name, std::string nickname);
 	void									addChannel(std::string name, std::string proprio, std::string password);
 	const std::map<std::string, User>		&getListUser() const;
 	const std::map<std::string, Channel>	&getListChannel() const;
@@ -71,4 +71,5 @@ class Server
 	void									handle_privmsg(std::string argument, int socketfd, User user);
 	void									handle_cap(const std::string& arg, User& user, int socketfd);
 	void									deleteUser(int socket);
+	void									sendWelcome(User& user);
 };

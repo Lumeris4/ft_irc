@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 09:08:11 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/09/08 15:26:39 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/09/15 15:26:12 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ Channel::Channel(std::string name, std::string creator): _name(name), _limit(MAX
 	this->_password = "";
 	this->_chef_usernames.push_back(creator);
 	this->_list_user.push_back(creator);
+	this->_topic = "";
 }
 
 Channel::~Channel() {};
@@ -126,6 +127,9 @@ void Channel::kickuser(std::string nickname)
 	it = find(_chef_usernames.begin(), _chef_usernames.end(), nickname);
 	if (it != _chef_usernames.end())
 		this->_chef_usernames.erase(it);
+	std::cout << this->_members << std::endl;
+	if (this->_members == 0)
+		this->_topic = "";
 }
 
 void Channel::addinvitation(std::string nickname)

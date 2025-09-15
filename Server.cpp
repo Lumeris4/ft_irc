@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/09/13 16:25:00 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/09/15 15:48:33 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int Server::createUser(int socketfd, int i, User &user)
 {
 	if (is_registered[i])
 		return (0);
-	addUser(socketfd, user.getUsername(), user.getNickname());
+	addUser(socketfd, user.getHostname(), user.getUsername(), user.getNickname());
 	is_registered[i] = true;
 	return (0);
 }
@@ -66,7 +66,7 @@ int Server::init_server()
 	while (1 && !stop)
 	{
 		signal(SIGINT, handler);
-		int ret = poll(fds, nfds, 0);
+		int ret = poll(fds, nfds, -1);
     	if (ret == -1)
 			return (-1);
     	else
@@ -120,7 +120,7 @@ int Server::init_server()
     						}
 							_argument= "";
     		 				j = parsing(cmd, user);
-							if (is_registered[i] == false && (j > 2 && j < 9))
+							if (!is_registered[i] && (j > 2 && j < 9))
 								j = 20;
 							switch (j)
 							{
@@ -184,7 +184,9 @@ int Server::init_server()
 								}
 								case 11:
 								{
+									std::cout << "Client disconnected." << std::endl;
 									deleteUser(fds[i].fd);
+									is_registered[i] = false;
 									user.setLeftover("");
 									user.setNickname("");
 									user.setUsername("");
@@ -215,33 +217,20 @@ int Server::init_server()
 							}
 						}
 					}
-					else if (n == 0)
-					{
-    		 			std::cout << "Client disconnected." << std::endl;
-						close(fds[i].fd);
-						user.setLeftover("");
-						user.setNickname("");
-						user.setUsername("");
-						user.setConnected(false);
-						user.setFirstmode(true);
-						user.setCap(false);
-						fds[i] = fds[nfds - 1];
-						_list_socket_user.erase(fds[i].fd);
-						nfds--;
-						i--;
-					}
 					else
 					{
+						deleteUser(fds[i].fd);
 						close(fds[i].fd);
+						is_registered[i] = false;
 						user.setLeftover("");
 						user.setNickname("");
 						user.setUsername("");
 						user.setConnected(false);
 						user.setFirstmode(true);
 						user.setCap(false);
-						fds[i] = fds[nfds - 1];
 						_list_socket_user.erase(fds[i].fd);
 						nfds--;
+						fds[i] = fds[nfds];
 						i--;
 					}
     			}
@@ -271,7 +260,7 @@ std::string Server::whatUser(int socketfd)
 			nickname = it->second.getNickname();
 	}
 	if (nickname.empty())
-		return NULL;
+		return "";
 	return nickname;
 }
 
@@ -328,39 +317,68 @@ bool Server::IntheChannel(std::string channel, std::string user, int socketfd)
 void Server::deleteUser(int socket)
 {
 	std::string user = whatUser(socket);
-	std::map<std::string , User>::iterator it = _list_user.find(user);
-	_list_user.erase(it);
-	std::map<std::string, Channel>::iterator itp;
-	std::vector<std::string> copy;
-	std::vector<std::string>::iterator iv;
-	for (itp = _list_channel.begin(); itp != _list_channel.end(); ++itp)
+	if (user.empty())
+		return;
+	std::vector<std::string> channels_to_kick;
+	for (std::map<std::string, Channel>::iterator itp = _list_channel.begin(); itp != _list_channel.end(); ++itp)
 	{
+		std::vector<std::string> copy = itp->second.getListInvitation();
+		std::vector<std::string>::iterator iv = find(copy.begin(), copy.end(), user);
+		if (iv != copy.end())
+			itp->second.baninvitation(user);
 		copy = itp->second.getListUser();
 		iv = find(copy.begin(), copy.end(), user);
 		if (iv != copy.end())
-			itp->second.kickuser(user);
-		copy = itp->second.getListInvitation();
-		iv = find(copy.begin(), copy.end(), user);
-		if (iv != copy.end())
-			itp->second.baninvitation(user);
+			channels_to_kick.push_back(itp->first);
 	}
+	for (std::vector<std::string>::iterator it = channels_to_kick.begin(); it != channels_to_kick.end(); ++it)
+		kick(*it, user, "", socket);
+	std::map<std::string, User>::iterator it = _list_user.find(user);
+	if (it != _list_user.end())
+		_list_user.erase(it);
 }
 
-void	Server::sendToChannel(std::string channel, std::string message)
+
+// void Server::deleteUser(int socket)
+// {
+// 	std::string user = whatUser(socket);
+// 	if (user.empty())
+// 		return;
+// 	std::map<std::string, Channel>::iterator itp;
+// 	std::vector<std::string> copy;
+// 	std::vector<std::string>::iterator iv;
+// 	for (itp = _list_channel.begin(); itp != _list_channel.end(); ++itp)
+// 	{
+// 		copy = itp->second.getListInvitation();
+// 		iv = find(copy.begin(), copy.end(), user);
+// 		if (iv != copy.end())
+// 			itp->second.baninvitation(user);
+// 		copy = itp->second.getListUser();
+// 		iv = find(copy.begin(), copy.end(), user);
+// 		if (iv != copy.end())
+// 			kick(itp->first, user, "", socket);
+// 	}
+// 	std::map<std::string , User>::iterator it = _list_user.find(user);
+// 	_list_user.erase(it);
+// }
+
+void Server::sendToChannel(std::string channel, std::string message)
 {
-	std::map<std::string, Channel>::iterator it;
-	std::map<std::string, User>::iterator itt;
+	std::map<std::string, Channel>::iterator it = _list_channel.find(channel);
+	if (it == _list_channel.end())
+		return;
+	std::vector<std::string> users = it->second.getListUser();
 	std::vector<std::string>::iterator itp;
-	int socket_destinate;
-	it = _list_channel.find(channel);
-	std::vector<std::string> copy = it->second.getListUser();
-	for (itp = copy.begin(); itp != copy.end(); itp++)
+	for (itp = users.begin(); itp != users.end(); ++itp)
 	{
-		itt = _list_user.find(*itp);
-		socket_destinate = itt->second.getSocket();
+		std::map<std::string, User>::iterator itt = _list_user.find(*itp);
+		if (itt == _list_user.end())
+			continue;
+		int socket_destinate = itt->second.getSocket();
 		send(socket_destinate, message.c_str(), message.size(), 0);
 	}
 }
+
 
 bool	Server::exist(std::string nickname, int socketfd)
 {
@@ -380,9 +398,9 @@ void	Server::addChannel(std::string name, std::string proprio, std::string passw
 	this->_list_channel.insert(std::pair<std::string, Channel>(name, channel));
 }
 
-void	Server::addUser(int socketfd, std::string name, std::string nickname)
+void	Server::addUser(int socketfd, std::string hostname, std::string name, std::string nickname)
 {
-	User user = User(socketfd, name, nickname);
+	User user = User(socketfd, hostname,  name, nickname);
 	this->_list_user.insert(std::pair<std::string, User>(nickname, user));
 	this->_list_socket_user.insert(std::pair<int, User>(socketfd, user));
 }
@@ -607,7 +625,10 @@ void Server::kick(std::string channel, std::string nickname, std::string reason,
 	ito->second.kickuser(nickname);
 	int members = ito->second.getMembers();
 	if (members == 0)
+	{
+		ito->second.setTopic("");
 		_list_channel.erase(ito);
+	}
 }
 
 void Server::invite(std::string channel, std::string user, int socketfd)
@@ -668,7 +689,7 @@ void	Server::joinCanal(std::string canal, std::string password, int socketfd)
 		{
 			if (it->second.getLimit() == it->second.getMembers())
 			{
-				std::string message = ":" + _servername +  " 471 " + nickname + canal + " :Cannot join channel (+l)\r\n";
+				std::string message = ":" + _servername +  " 471 " + nickname + " " + canal + " :Cannot join channel (+l)\r\n";
 				send(socketfd, message.c_str(), message.size(), 0);
 				return;
 			}
@@ -718,7 +739,7 @@ void	Server::joinCanal(std::string canal, std::string password, int socketfd)
 		}
 		else
 		{
-			std::string response = ":" + _servername +  " 475 " + nickname + canal + " :Cannot join channel (+k)\r\n";
+			std::string response = ":" + _servername +  " 475 " + nickname + " " + canal + " :Cannot join channel (+k)\r\n";
 			send(socketfd, response.c_str(), response.size(), 0);
 		}
 	}
@@ -779,6 +800,8 @@ void Server::sendMessage(std::string destination, std::string content, bool user
 				if (*it != nickname)
 				{
 					itp = _list_user.find(*it);
+					if (itp == _list_user.end())
+						return;
 					socket_destinate = itp->second.getSocket();
 					std::string message = ":" + operato + nickname + "!ident@host PRIVMSG " + destination + " :" + content + "\r\n";
 					send(socket_destinate, message.c_str(), message.size(),0);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   HandleUser.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 09:51:14 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/20 15:44:08 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/09/15 14:43:32 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,24 @@ int Server::setUser(std::string name, int socket, User &user)
 		return -1;
 	}
 	user.setUsername(username);
-	std::string message = ":" + _servername + " 001 " + nickname + " :Welcome to the Internet Relay Network " + nickname + "!" + user.getUsername() + "@" + hostname + "\r\n";
-	send(socket, message.c_str(), message.length(), 0);
+	if (!user.getNickname().empty() && !user.getRegistered())
+	{
+		addUser(socket, hostname, name, nickname);
+    	sendWelcome(user);
+	}
 	return (0);
+}
+
+void Server::sendWelcome(User& user)
+{
+    std::string nickname = user.getNickname();
+    std::string username = user.getUsername();
+	std::string hostname = user.getHostname();
+    int socket = user.getSocket();
+
+    std::string message = ":" + _servername + " 001 " + nickname +
+                          " :Welcome to the Internet Relay Network " +
+                          nickname + "!" + username + "@" + hostname + "\r\n";
+
+    send(socket, message.c_str(), message.length(), 0);
 }

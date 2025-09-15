@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 09:51:17 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/08/20 09:52:19 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/09/15 14:45:08 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,11 @@ int Server::setNickname(std::string nick, int socket, User &user)
 		return (-1);
 	}
 	user.setNickname(nick);
+	if (!user.getUsername().empty() && !user.getRegistered())
+    {
+        sendWelcome(user);
+        user.setRegistered(true);
+    }
 	if (!former_nick.empty())
 	{
 		std::map<std::string, User>::iterator it2 = _list_user.find(former_nick);

@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 12:49:13 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/08/19 13:09:27 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/09/15 13:42:29 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,19 +17,22 @@ User::User(int socket): _socket(socket)
 	capDone = false;
 	first_mode = true;
 	connected = false;
+	registered = false;
 }
 User::User(): _socket(-1)
 {
 	connected = false;
 	capDone = false;
 	first_mode = true;
+	registered = false;
 }
 
-User::User(int socketfd, std::string username, std::string nickname):_username(username), _nickname(nickname), _socket(socketfd)
+User::User(int socketfd, std::string hostname, std::string username, std::string nickname):_username(username), _nickname(nickname), _hostname(hostname), _socket(socketfd)
 {
 	connected = false;
 	capDone = false;
 	first_mode = true;
+	registered = false;
 }
 
 User::~User() {}
@@ -60,6 +63,16 @@ void User::setUsername(std::string username)
 	this->_username = username;
 }
 
+const std::string	User::getHostname() const
+{
+	return this->_hostname;
+}
+
+void User::setHostname(std::string hostname)
+{
+	this->_hostname = hostname;
+}
+
 void User::setCap(bool cap)
 {
 	this->capDone = cap;
@@ -68,6 +81,16 @@ void User::setCap(bool cap)
 bool User::getCap()
 {
 	return this->capDone;
+}
+
+void User::setRegistered(bool cap)
+{
+	this->registered = cap;
+}
+
+bool User::getRegistered()
+{
+	return this->registered;
 }
 
 void User::setConnected(bool connected)
