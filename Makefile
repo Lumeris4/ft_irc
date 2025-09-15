@@ -1,5 +1,3 @@
-MAKEFLAGS += --silent
-
 NAME = ircserv
 
 CC = c++
