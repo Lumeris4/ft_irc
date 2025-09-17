@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 09:51:14 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/09/17 11:17:27 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/09/17 14:48:32 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,24 @@
 
 int Server::setUser(std::string name, int socket, User &user)
 {
+	std::string realname;
 	std::istringstream iss(name);
 	std::vector<std::string> parts;
 	std::string part;
+	int i = 0;
 	while (iss >> part)
+	{
 		parts.push_back(part);
+		i++;
+	}
+	size_t index = name.find(':');
+	if (index != std::string::npos)
+	{
+		realname = name.substr(index + 1);
+		while (parts.size() > 3)
+			parts.pop_back();
+		parts.push_back(realname);
+	}
 	if (parts.size() != 4)
 	{
 		std::string message = ":" + _servername + " 461 * USER :Not enough parameters\r\n";
@@ -36,6 +49,7 @@ int Server::setUser(std::string name, int socket, User &user)
 		return -1;
 	}
 	user.setUsername(username);
+	user.setHostname(hostname);
 	if (!user.getNickname().empty() && !user.getRegistered())
 	{
 		addUser(socket, hostname, name, nickname);
