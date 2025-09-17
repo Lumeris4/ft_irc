@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:22:10 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/09/15 13:39:46 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/09/16 08:32:19 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ class Server
 	void									givePerm(std::string channel, std::string name, bool give, int socketfd);
 	void									changeLimit(std::string channel, std::string limit, int perm, int socketfd);
 	void									permTopic(std::string channel, bool perm, int socketfd);
-	void									kick(std::string channel, std::string nickname, std::string reason, int socketfd);
+	void									kick(std::string channel, std::string nickname, std::string reason, bool pass, int socketfd);
 	void									invite(std::string channel, std::string user, int socketfd);
 	void									joinCanal(std::string channel, std::string password, int socketfd);
 	void									sendMessage(std::string destination, std::string content, bool user, int socketfd);

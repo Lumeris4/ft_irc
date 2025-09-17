@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/09/15 21:19:46 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/09/17 11:04:19 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 #include "User.hpp"
 
-bool is_registered[MAX_CLIENTS];
+bool is_registered[MAX_CLIENTS] = {false};
 
 int Server::createUser(int socketfd, int i, User &user)
 {
@@ -24,7 +24,7 @@ int Server::createUser(int socketfd, int i, User &user)
 	return (0);
 }
 
-int stop = 0;
+volatile sig_atomic_t stop = 0;
 
 void handler(int sig)
 {
@@ -63,10 +63,10 @@ int Server::init_server()
     fds[0].fd = servsocket;
     fds[0].events = POLLIN;
 	fds[0].revents = 0;
+	signal(SIGINT, handler);
 	while (1 && !stop)
 	{
-		signal(SIGINT, handler);
-		int ret = poll(fds, nfds, -1);
+		int ret = poll(fds, nfds, 0);
     	if (ret == -1)
 			return (-1);
     	else
@@ -121,7 +121,7 @@ int Server::init_server()
 							_argument= "";
     		 				j = parsing(cmd, user);
 							if (!is_registered[i] && (j > 2 && j < 9))
-								j = 20;
+								j = 12;
 							switch (j)
 							{
 								case 0:
@@ -192,12 +192,18 @@ int Server::init_server()
 									user.setUsername("");
 									user.setConnected(false);
 									user.setFirstmode(true);
+									user.setRegistered(false);
 									user.setCap(false);
 									close(fds[i].fd);
-									i--;
+									if (i > 1)
+									{
+										fds[i] = fds[nfds - 1];
+										nfds--;
+										i--;
+									}
 									break;
 								}
-								case 20:
+								case 12:
 								{
 									std::string message = "Cannot execute command if client is not a user.\n";
 									send(fds[i].fd, message.c_str(), message.length(), 0);
@@ -219,22 +225,26 @@ int Server::init_server()
 					}
 					else
 					{
+						std::cout << "Client disconnected." << std::endl;
 						deleteUser(fds[i].fd);
-						close(fds[i].fd);
 						is_registered[i] = false;
 						user.setLeftover("");
 						user.setNickname("");
 						user.setUsername("");
 						user.setConnected(false);
 						user.setFirstmode(true);
+						user.setRegistered(false);
 						user.setCap(false);
 						_list_socket_user.erase(fds[i].fd);
-						nfds--;
-						fds[i] = fds[nfds];
-						i--;
+						close(fds[i].fd);
+						if (i > 1)
+						{
+							fds[i] = fds[nfds - 1];
+							nfds--;
+							i--;
+						}
 					}
     			}
-				
 			}		
         }
 	}
@@ -307,7 +317,7 @@ bool Server::IntheChannel(std::string channel, std::string user, int socketfd)
 	std::vector<std::string>::iterator itv = find(copy.begin(), copy.end(), user);
 	if (itv == copy.end())
 	{
-		std::string response = ":" + _servername + " 441 " + me + " " + user + " " + channel + " :They aren't on that channel\r\n";
+		std::string response = ":" + _servername + " 441 " + me + user + channel + " :They aren't on that channel\r\n";
 		send(socketfd, response.c_str(), response.size(), 0);
 		return false;
 	}
@@ -332,7 +342,7 @@ void Server::deleteUser(int socket)
 			channels_to_kick.push_back(itp->first);
 	}
 	for (std::vector<std::string>::iterator it = channels_to_kick.begin(); it != channels_to_kick.end(); ++it)
-		kick(*it, user, "", socket);
+		kick(*it, user, "", true , socket);
 	std::map<std::string, User>::iterator it = _list_user.find(user);
 	if (it != _list_user.end())
 		_list_user.erase(it);
@@ -362,7 +372,7 @@ bool	Server::exist(std::string nickname, int socketfd)
 	std::map<std::string, User>::iterator it = _list_user.find(nickname);
 	if (it != _list_user.end())
 		return true;
-	std::string message = ":" + _servername + " 401 " + whoami + " " + nickname + " :No such Nick/Channel\r\n";
+	std::string message = ":" + _servername + " 401 " + whoami + nickname + " :No such Nick/Channel\r\n";
 	send(socketfd, message.c_str(), message.size(), 0);
 	return false;
 }
@@ -402,7 +412,7 @@ void	Server::changeTopic(std::string channel, std::string topic, int socketfd)
 		it = find(copy2.begin(), copy2.end(), user);
 		if (it == copy2.end())
 		{
-			std::string message = ":" + _servername + " 442 " + user + " " +  channel + " :You're not on that channel\r\n";
+			std::string message = ":" + _servername + " 442 " + user + channel + " :You're not on that channel\r\n";
 			send(socketfd, message.c_str(), message.size(), 0);
 				return;
 		}
@@ -581,10 +591,13 @@ void Server::permTopic(std::string channel, bool perm, int socketfd)
 	}
 }
 
-void Server::kick(std::string channel, std::string nickname, std::string reason, int socketfd)
+void Server::kick(std::string channel, std::string nickname, std::string reason, bool pass, int socketfd)
 {
-	if (!haveright(socketfd, channel) || !exist(nickname, socketfd) || !IntheChannel(channel, nickname, socketfd))
-		return;
+	if (!pass)
+	{
+		if ((!haveright(socketfd, channel) || !exist(nickname, socketfd) || !IntheChannel(channel, nickname, socketfd)))
+			return;
+	}
 	std::string whoami = whatUser(socketfd);
 	std::map<std::string, Channel>::iterator ito = this->_list_channel.find(channel);
 	std::vector<std::string> copy = ito->second.getListUser();
@@ -596,7 +609,8 @@ void Server::kick(std::string channel, std::string nickname, std::string reason,
 	{
 		imap = _list_user.find(*ivector);
 		socketmember = imap->second.getSocket();
-		send(socketmember, message.c_str(), message.size(), 0);
+		if (!pass)
+			send(socketmember, message.c_str(), message.size(), 0);
 	}
 	ito->second.kickuser(nickname);
 	int members = ito->second.getMembers();
@@ -628,7 +642,7 @@ void Server::invite(std::string channel, std::string user, int socketfd)
 	}
 	else
 	{
-		std::string response = ":" + _servername +  " 403 " + whoami + " " + channel + " :No such Channel\r\n";
+		std::string response = ":" + _servername +  " 403 " + whoami + channel + " :No such Channel\r\n";
 		send(socketfd, response.c_str(), response.size(), 0);
 	}
 }
@@ -660,8 +674,10 @@ void	Server::joinCanal(std::string canal, std::string password, int socketfd)
 	std::map<std::string, Channel>::iterator it = _list_channel.find(canal);
 	if (it != _list_channel.end())
 	{
+		if (IntheChannel(canal, nickname, socketfd))
+			return;
 		bool a = it->second.getAccess();
-		if (password.compare(it->second.getPassword()) == 0)
+		if (password.compare(it->second.getPassword()) == 0 || it->second.getPassword().empty())
 		{
 			if (it->second.getLimit() == it->second.getMembers())
 			{
@@ -792,3 +808,4 @@ void Server::sendMessage(std::string destination, std::string content, bool user
 	}
 }
 
+//probleme si on deco le user pendant la creation du user 

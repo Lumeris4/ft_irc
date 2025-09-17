@@ -6,7 +6,7 @@
 /*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 12:44:06 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/09/10 21:16:49 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/09/16 08:32:51 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,6 @@ void Server::handle_kick(std::string argument, int socket, User user)
 	std::string user1 = rest.substr(0, second_space);
 	if (!reason.empty() && reason[0] == ':')
 		reason = reason.substr(1);
-	kick(channel, user1, reason, socket);
+	kick(channel, user1, reason, false,socket);
 }
 
