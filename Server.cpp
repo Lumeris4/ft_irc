@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/09/17 11:15:06 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/09/17 15:08:31 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -318,7 +318,8 @@ bool Server::IntheChannel(std::string channel, std::string user, int socketfd)
 	if (itv == copy.end())
 	{
 		std::string response = ":" + _servername + " 441 " + me + user + channel + " :They aren't on that channel\r\n";
-		send(socketfd, response.c_str(), response.size(), 0);
+		if (user != me)
+			send(socketfd, response.c_str(), response.size(), 0);
 		return false;
 	}
 	return true;
