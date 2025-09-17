@@ -3,26 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/09/17 15:08:31 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/09/17 15:31:37 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 #include "User.hpp"
-
-bool is_registered[MAX_CLIENTS] = {false};
-
-int Server::createUser(int socketfd, int i, User &user)
-{
-	if (is_registered[i])
-		return (0);
-	addUser(socketfd, user.getHostname(), user.getUsername(), user.getNickname());
-	is_registered[i] = true;
-	return (0);
-}
 
 volatile sig_atomic_t stop = 0;
 
@@ -102,6 +91,7 @@ int Server::init_server()
 			{
 				if (fds[i].revents & POLLIN)
 				{
+					bzero(buffer, 1024);
     		     	ssize_t n = recv(fds[i].fd, buffer, sizeof(buffer) - 1, 0);
 					User &user = _list_socket_user[fds[i].fd];
     				if (n > 0)
@@ -120,7 +110,7 @@ int Server::init_server()
     						}
 							_argument= "";
     		 				j = parsing(cmd, user);
-							if (!is_registered[i] && (j > 2 && j < 9))
+							if (!user.getRegistered() && (j > 2 && j < 9))
 								j = 12;
 							switch (j)
 							{
@@ -186,7 +176,6 @@ int Server::init_server()
 								{
 									std::cout << "Client disconnected." << std::endl;
 									deleteUser(fds[i].fd);
-									is_registered[i] = false;
 									user.setLeftover("");
 									user.setNickname("");
 									user.setUsername("");
@@ -194,6 +183,7 @@ int Server::init_server()
 									user.setFirstmode(true);
 									user.setRegistered(false);
 									user.setCap(false);
+									_list_socket_user.erase(fds[i].fd);
 									close(fds[i].fd);
 									if (i > 1)
 									{
@@ -212,22 +202,12 @@ int Server::init_server()
 									break;
 							}
 							j = -1;
-							if (!user.getNickname().empty() && !user.getUsername().empty() && !is_registered[i])
-								createUser(fds[i].fd, i, user);
-							// if (user.getCap() && (!user.getNickname().empty() && !user.getUsername().empty() && !is_registered[i]))
-							// {
-							// 	std::string servername = "ircserv";
-							// 	std::string message = ":" + _servername + " 001 " + user.getNickname() + " :Welcome to the IRC Network " + user.getNickname() + "!* @lelanglo&@bfiquet\r\n";
-							// 	send(fds[i].fd, message.c_str(), message.length(), 0);
-							// 	break;
-							// }
 						}
 					}
 					else
 					{
 						std::cout << "Client disconnected." << std::endl;
 						deleteUser(fds[i].fd);
-						is_registered[i] = false;
 						user.setLeftover("");
 						user.setNickname("");
 						user.setUsername("");
