@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 09:51:17 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/09/15 14:45:08 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/09/17 11:27:37 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,18 +39,23 @@ int Server::setNickname(std::string nick, int socket, User &user)
 		send(socket, message.c_str(), message.size(), 0);
 		return (-1);
 	}
-	std::map<std::string, User>::iterator it = _list_user.find(nick);
-	if (it != _list_user.end())
+	for (std::map<int, User>::iterator it = _list_socket_user.begin(); it != _list_socket_user.end(); ++it)
 	{
-		std::string message = ":" + _servername + " 433 * " + nick + " :Nickname is already in use\r\n";
-		send(socket, message.c_str(), message.size(), 0);
-		return (-1);
+		User &other = it->second;
+		if (other.getNickname() == nick && it->first != socket)
+		{
+			std::string message = ":" + _servername + " 433 * " + nick + " :Nickname is already in use\r\n";
+			send(socket, message.c_str(), message.size(), 0);
+			return -1;
+		}
 	}
 	user.setNickname(nick);
 	if (!user.getUsername().empty() && !user.getRegistered())
     {
+		addUser(socket, user.getHostname(), user.getUsername(), nick);
         sendWelcome(user);
         user.setRegistered(true);
+		return (0);
     }
 	if (!former_nick.empty())
 	{

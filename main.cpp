@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 13:10:27 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/09/09 12:45:01 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/09/17 11:20:40 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,11 @@ int main(int argc, char **argv)
 	{
 		std::cerr << "Please respect this format: './ircserv <port> <password>" << std::endl;
 		return -1;
+	}
+	if (!atoi(argv[1]))
+	{
+		std::cout << "invalid port" << std::endl;
+		return (-1);
 	}
 	Server server = Server(argv[2], atoi(argv[1]));
 	server.init_server();

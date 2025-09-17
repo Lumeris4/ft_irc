@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/09/17 11:04:19 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/09/17 11:15:06 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -214,13 +214,13 @@ int Server::init_server()
 							j = -1;
 							if (!user.getNickname().empty() && !user.getUsername().empty() && !is_registered[i])
 								createUser(fds[i].fd, i, user);
-							if (user.getCap() && (!user.getNickname().empty() && !user.getUsername().empty() && !is_registered[i]))
-							{
-								std::string servername = "ircserv";
-								std::string message = ":" + servername + " 001 " + user.getNickname() + " :Welcome to the IRC Network " + user.getNickname() + "!* @lelanglo&@bfiquet\r\n";
-								send(fds[i].fd, message.c_str(), message.length(), 0);
-								break;
-							}
+							// if (user.getCap() && (!user.getNickname().empty() && !user.getUsername().empty() && !is_registered[i]))
+							// {
+							// 	std::string servername = "ircserv";
+							// 	std::string message = ":" + _servername + " 001 " + user.getNickname() + " :Welcome to the IRC Network " + user.getNickname() + "!* @lelanglo&@bfiquet\r\n";
+							// 	send(fds[i].fd, message.c_str(), message.length(), 0);
+							// 	break;
+							// }
 						}
 					}
 					else
