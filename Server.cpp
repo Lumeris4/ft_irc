@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/09/17 15:31:37 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/09/22 10:53:33 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ int Server::init_server()
         return (-1);
 	struct sockaddr_in serv_addr, cli_addr;
 	serv_addr.sin_family = AF_INET;
-	serv_addr.sin_addr.s_addr = INADDR_ANY;    // toutes les interfaces locales	
+	serv_addr.sin_addr.s_addr = INADDR_ANY;    // local interfaces
 	serv_addr.sin_port = htons(this->_port);          // port	
 	if (bind(servsocket, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) != 0)
 	{
@@ -187,7 +187,7 @@ int Server::init_server()
 									close(fds[i].fd);
 									if (i > 1)
 									{
-										fds[i] = fds[nfds - 1];
+										// fds[i] = fds[nfds - 1];
 										nfds--;
 										i--;
 									}
@@ -219,7 +219,7 @@ int Server::init_server()
 						close(fds[i].fd);
 						if (i > 1)
 						{
-							fds[i] = fds[nfds - 1];
+							// fds[i] = fds[nfds - 1];
 							nfds--;
 							i--;
 						}

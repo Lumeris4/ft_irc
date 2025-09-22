@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   HandleKick.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 12:44:06 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/09/16 08:32:51 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/09/22 10:25:08 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 #include "User.hpp"
 
-void Server::handle_kick(std::string argument, int socket, User user)
+void Server::handle_kick(std::string argument, int socket, User &user)
 {
 	std::string reason;
 	size_t first_space = argument.find(' ');

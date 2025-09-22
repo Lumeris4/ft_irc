@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 13:48:24 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/09/15 09:43:22 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/09/22 10:34:25 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,10 @@ std::vector<std::string> split(const std::string& input, char delimiter) {
 	return tokens;
 }
 
-void Server::handle_join(std::string argument, int socketfd, User user)
+void Server::handle_join(std::string argument, int socketfd, User &user)
 {
+
+	std::cout << socketfd << " " << user.getNickname() << std::endl;
 	if (argument.empty())
 	{
         std::string message = ":" + _servername + " 461 " + user.getNickname() + " JOIN :Not enough parameters\r\n";

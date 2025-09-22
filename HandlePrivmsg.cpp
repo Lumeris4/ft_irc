@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   HandlePrivmsg.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/14 10:48:30 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/09/10 21:17:23 by lelanglo         ###   ########.fr       */
+/*   Updated: 2025/09/22 10:26:52 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 #include "User.hpp"
 
-void Server::handle_privmsg(std::string argument, int socketfd, User user)
+void Server::handle_privmsg(std::string argument, int socketfd, User &user)
 {
     bool is_channel = false;
     std::string content = "";

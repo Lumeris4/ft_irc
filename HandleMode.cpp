@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 10:38:15 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/09/08 15:27:19 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/09/22 10:25:12 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int ft_isdigit(std::string arg)
 	return (1);
 }
 
-void Server::handle_mode(std::string argument, int socketfd, User user)
+void Server::handle_mode(std::string argument, int socketfd, User &user)
 {
 	size_t space = argument.find(' ');
 	if (space == std::string::npos || space + 1 >= argument.length())
