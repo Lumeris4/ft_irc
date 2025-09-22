@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/09/22 10:53:33 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/09/22 14:28:15 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ volatile sig_atomic_t stop = 0;
 void handler(int sig)
 {
 	(void) sig;
-	std::cout << "\nClosing server" << std::endl;
+	std::cout << "Closing server" << std::endl;
     stop = 1;
 }
 
@@ -176,18 +176,11 @@ int Server::init_server()
 								{
 									std::cout << "Client disconnected." << std::endl;
 									deleteUser(fds[i].fd);
-									user.setLeftover("");
-									user.setNickname("");
-									user.setUsername("");
-									user.setConnected(false);
-									user.setFirstmode(true);
-									user.setRegistered(false);
-									user.setCap(false);
 									_list_socket_user.erase(fds[i].fd);
 									close(fds[i].fd);
 									if (i > 1)
 									{
-										// fds[i] = fds[nfds - 1];
+										fds[i] = fds[nfds - 1];
 										nfds--;
 										i--;
 									}
@@ -208,18 +201,11 @@ int Server::init_server()
 					{
 						std::cout << "Client disconnected." << std::endl;
 						deleteUser(fds[i].fd);
-						user.setLeftover("");
-						user.setNickname("");
-						user.setUsername("");
-						user.setConnected(false);
-						user.setFirstmode(true);
-						user.setRegistered(false);
-						user.setCap(false);
 						_list_socket_user.erase(fds[i].fd);
 						close(fds[i].fd);
 						if (i > 1)
 						{
-							// fds[i] = fds[nfds - 1];
+							fds[i] = fds[nfds - 1];
 							nfds--;
 							i--;
 						}

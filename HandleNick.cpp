@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 09:51:17 by bfiquet           #+#    #+#             */
-/*   Updated: 2025/09/22 10:50:29 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/09/22 11:18:46 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,15 +50,18 @@ int Server::setNickname(std::string nick, int socket, User &user)
 		}
 	}
 	user.setNickname(nick);
-	if (!user.getUsername().empty() && !user.getRegistered())
+	std::string message = ":" + nick + "!ident@host NICK :" + nick + "\r\n";
+	if (!user.getRegistered())
     {
-		addUser(socket, user.getHostname(), user.getUsername(), nick);
-        sendWelcome(user);
-        user.setRegistered(true);
+		if (!user.getUsername().empty())
+		{
+			addUser(socket, user.getHostname(), user.getUsername(), nick);
+        	sendWelcome(user);
+        	user.setRegistered(true);
+		}
+		send(socket, message.c_str(), message.size(), 0);
 		return (0);
     }
-	if (!user.getRegistered())
-		return (0);
 	if (!former_nick.empty())
 	{
 		std::map<std::string, User>::iterator it2 = _list_user.find(former_nick);
@@ -92,7 +95,7 @@ int Server::setNickname(std::string nick, int socket, User &user)
 			ito->second.addinvitation(user.getNickname());
 		}
 	}
-	std::string message = ":" + former_nick + "!ident@host NICK :" + nick + "\r\n";
+	message = ":" + former_nick + "!ident@host NICK :" + nick + "\r\n";
 	send(socket, message.c_str(), message.size(), 0);
 	return (0);
 }
