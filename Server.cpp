@@ -6,7 +6,7 @@
 /*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/09/22 14:28:15 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/09/23 11:07:06 by bfiquet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,15 +47,16 @@ int Server::init_server()
        	close(servsocket);
        	return (-1);
     }	
-	struct pollfd fds[1 + MAX_CLIENTS];
-	int nfds = 1;
-    fds[0].fd = servsocket;
-    fds[0].events = POLLIN;
-	fds[0].revents = 0;
+	std::vector<struct pollfd> fds;
+	struct pollfd server_pollfd;
+	server_pollfd.fd = servsocket;
+	server_pollfd.events = POLLIN;
+	server_pollfd.revents = 0;
+	fds.push_back(server_pollfd);
 	signal(SIGINT, handler);
 	while (1 && !stop)
 	{
-		int ret = poll(fds, nfds, 0);
+		int ret = poll(fds.data(), fds.size(), 0);
     	if (ret == -1)
 			return (-1);
     	else
@@ -69,30 +70,26 @@ int Server::init_server()
     			   	close(servsocket);
     			   	return (-1);
 				}
-				if (nfds - 1 < MAX_CLIENTS)
+				if (new_socket >= 0)
 				{
-            	    fds[nfds].fd = new_socket;
-            	    fds[nfds].events = POLLIN;
-					fds[nfds].revents = 0;
-            	    nfds++;
+            	    struct pollfd client_pollfd;
+    				client_pollfd.fd = new_socket;
+    				client_pollfd.events = POLLIN;
+    				client_pollfd.revents = 0;
+    				fds.push_back(client_pollfd);
 					_list_socket_user.insert(std::make_pair(new_socket, User(new_socket)));
 					std::string message = "You are now connected to server.\n";
 					send(new_socket, message.c_str(), message.length(), 0);
 					std::cout << "client connected to server" << std::endl;
             	} 
-				else
-				{
-					std::string message = "Too many clients connected.\n";
-					send(new_socket, message.c_str(), message.length(), 0);
-                	close(new_socket);
-            	}
 			}
-			for (int i = 1; i < nfds; i++)
+			for (size_t i = 1; i < fds.size(); i++)
 			{
 				if (fds[i].revents & POLLIN)
 				{
 					bzero(buffer, 1024);
     		     	ssize_t n = recv(fds[i].fd, buffer, sizeof(buffer) - 1, 0);
+					std::cout << buffer;
 					User &user = _list_socket_user[fds[i].fd];
     				if (n > 0)
 					{	
@@ -104,31 +101,19 @@ int Server::init_server()
 						while (std::getline(ss, cmd, '\n'))
 						{
 							if (ss.eof() && !input.empty() && input[input.length() - 1] != '\n')
-   							{
+							{
 	       						user.setLeftover(cmd);
-     						    break;
-    						}
+								break;
+							}
 							_argument= "";
     		 				j = parsing(cmd, user);
 							if (!user.getRegistered() && (j > 2 && j < 9))
 								j = 12;
 							switch (j)
 							{
-								case 0:
-								{
-									handle_cap(_argument, user, fds[i].fd);
-									break;
-								}		
-								case 1:
-								{
-									setNickname(_argument, fds[i].fd, user);
-									break;
-								}
-								case 2:
-								{
-									setUser(_argument, fds[i].fd, user);
-									break;
-								}
+								case 0: handle_cap(_argument, user, fds[i].fd); break;		
+								case 1: setNickname(_argument, fds[i].fd, user); break;
+								case 2: setUser(_argument, fds[i].fd, user); break;
 								case 3:
 								{
 									if (user.getFirstmode() != true)
@@ -137,55 +122,14 @@ int Server::init_server()
 										user.setFirstmode(false);
 									break;
 								}
-								case 4:
-								{
-									handle_topic(_argument, fds[i].fd, user);
-									break;
-								}
-								case 5:
-								{
-									handle_invite(_argument, fds[i].fd, user);
-									break;
-								}
-								case 6:
-								{
-									handle_kick(_argument, fds[i].fd, user);
-									break;
-								}
-								case 7:
-								{
-									handle_join(_argument, fds[i].fd, user);
-									break;
-								}
-								case 8:
-								{
-									handle_privmsg(_argument, fds[i].fd, user);
-									break;
-								}
-								case 9:
-								{
-									handle_ping(_argument, fds[i].fd);
-									break;
-								}
-								case 10: 
-								{
-									handle_whois(_argument, fds[i].fd, user);
-									break;
-								}
-								case 11:
-								{
-									std::cout << "Client disconnected." << std::endl;
-									deleteUser(fds[i].fd);
-									_list_socket_user.erase(fds[i].fd);
-									close(fds[i].fd);
-									if (i > 1)
-									{
-										fds[i] = fds[nfds - 1];
-										nfds--;
-										i--;
-									}
-									break;
-								}
+								case 4: handle_topic(_argument, fds[i].fd, user); break;
+								case 5:	handle_invite(_argument, fds[i].fd, user); break;
+								case 6: handle_kick(_argument, fds[i].fd, user); break;
+								case 7: handle_join(_argument, fds[i].fd, user); break;
+								case 8: handle_privmsg(_argument, fds[i].fd, user); break;
+								case 9: handle_ping(_argument, fds[i].fd) ;break;
+								case 10: handle_whois(_argument, fds[i].fd, user); break;
+								case 11: break;
 								case 12:
 								{
 									std::string message = "Cannot execute command if client is not a user.\n";
@@ -203,19 +147,16 @@ int Server::init_server()
 						deleteUser(fds[i].fd);
 						_list_socket_user.erase(fds[i].fd);
 						close(fds[i].fd);
-						if (i > 1)
-						{
-							fds[i] = fds[nfds - 1];
-							nfds--;
-							i--;
-						}
+						if (i < fds.size() - 1)
+        					std::swap(fds[i], fds.back());
+    					fds.pop_back();
 					}
     			}
 			}		
         }
 	}
 	close(servsocket);
-	for (int i = 1; i < nfds; i++)
+	for (size_t i = 1; i < fds.size(); i++)
 		close(fds[i].fd);
 	return (0);
 }
