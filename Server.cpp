@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bfiquet <bfiquet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lelanglo <lelanglo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 13:26:38 by lelanglo          #+#    #+#             */
-/*   Updated: 2025/09/23 11:07:06 by bfiquet          ###   ########.fr       */
+/*   Updated: 2025/09/25 09:25:32 by lelanglo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ int Server::init_server()
 	signal(SIGINT, handler);
 	while (1 && !stop)
 	{
-		int ret = poll(fds.data(), fds.size(), 0);
+		int ret = poll(fds.data(), fds.size(), -1);
     	if (ret == -1)
 			return (-1);
     	else
