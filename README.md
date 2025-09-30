@@ -41,4 +41,4 @@ irssi -n <nickname> -w <password> -p <port> -c <server>
 ## 📜 Credits & Contributors
 
 - 🛠️ **Lumeris4** — Developer ([GitHub](https://github.com/Lumeris4))
-- 🤖 **Bfquet** — Developer ([GitHub](https://github.com/Bfiquet))
+- 🤖 **Bfiquet** — Developer ([GitHub](https://github.com/Bfiquet))
